@@ -10,7 +10,7 @@
 
 #include "util.h"
 
-bool set_clipboard_text(char *text)
+bool clipboard_set_text(char *text)
 {
 #ifdef SYS_WINDOWS
     bool retval;
@@ -46,6 +46,50 @@ bool set_clipboard_text(char *text)
 #endif
 
     return true;
+}
+
+bool clipboard_get_text(char *text, size_t text_sz)
+{
+#ifdef SYS_WINDOWS
+    HGLOBAL hsrc;
+    char *src;
+
+    bool status = false;
+
+    // Set clipboard data
+    if (!OpenClipboard(NULL))
+    {
+        printf("Error opening clipboard\n");
+        return false;
+    }
+
+    hsrc = GetClipboardData(CF_TEXT);
+    if (hsrc == NULL)
+    {
+        printf("Nothing in clipboard\n");
+        // Nothing to retrieve
+        goto error;
+    }
+
+    src = GlobalLock(hsrc);
+    if (src == NULL)
+    {
+        printf("Error locking clipboard data\n");
+        goto error;
+    }
+
+    util_strlcpy(text, src, text_sz);
+
+    GlobalUnlock(hsrc);
+
+    status = true;
+
+error:
+    CloseClipboard();
+    return status;
+#else
+    return true;
+#endif
 }
 
 bool reg_read_key(char *key, char *val, void *buf, size_t buflen)

@@ -101,6 +101,6 @@ void group_ap_eligible(void)
     printf("%s\n", clip_buf);
 
     /* Copy this to the clipboard */
-    set_clipboard_text(clip_buf);
+    clipboard_set_text(clip_buf);
 }
 

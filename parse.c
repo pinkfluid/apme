@@ -13,11 +13,12 @@
 #include "items.h"
 #include "group.h"
 #include "util.h"
+#include "aion.h"
 
 #define REGEX_NAME_SZ   64
-#define REGEX_NAME  "([0-9a-zA-Z_]+)"
+#define REGEX_NAME      "([0-9a-zA-Z_]+)"
 #define REGEX_ITEM_SZ   16
-#define REGEX_ITEM  "([0-9]+)"
+#define REGEX_ITEM      "([0-9]+)"
 
 #define RP_ITEM_LOOT_SELF       100
 #define RP_ITEM_LOOT_PLAYER     101
@@ -32,6 +33,8 @@
 #define RP_GROUP_DISBAND        304
 
 #define RP_CHAT_GENERAL         400
+
+char *aion_char_name = "Playme";
 
 struct regex_parse
 {
@@ -89,13 +92,23 @@ void parse_action_loot_item(char *_player, uint32_t itemid)
     struct item *item;
     char *player;
    
-    player = (_player == NULL) ? "You" : _player;
+    if (_player == NULL)
+    {
+        player = "You";
+    }
+    else
+    {
+        player = _player;
+        /* If we see a player's loot, he IS in the group */
+        aion_group_join(player);
+    }
 
     item = item_find(itemid);
     if (item != NULL)
     {
         if (item->item_ap != 0)
         {
+            aion_group_ap_update(player, item->item_ap);
             group_ap_update(player, item->item_ap);
             group_stats();
             group_ap_eligible();
@@ -117,16 +130,18 @@ void parse_action_damage_inflict(char *player, char *target, char *damage, char 
 void parse_action_group_join(char *who)
 {
     printf("GROUP: %s joined the group.\n", who);
+    aion_group_join(who);
 }
 
 void parse_action_group_leave(char *who)
 {
     printf("GROUP: %s left the group.\n", who);
+    aion_group_leave(who);
 }
 
 void parse_action_chat_general(char *name, char *txt)
 {
-    printf("CHAT: %s -> %s\n", name, txt);
+//    printf("CHAT: %s -> %s\n", name, txt);
 }
 
 void re_strlcpy(char *outstr, const char *instr, ssize_t outsz, regmatch_t rem)
@@ -241,9 +256,15 @@ int main(int argc, char* argv[])
     int retval;
     int ii;
 
+    if (!aion_init())
+    {
+        printf("Unable to initialize the Aion subsystem.\n");
+        return 0;
+    }
+
     if (!group_init(argc - 1, argv + 1))
     {
-        printf("Unable to initialize the group.");
+        printf("Unable to initialize the group.\n");
         return 0;
     }
 
@@ -292,6 +313,15 @@ int main(int argc, char* argv[])
         for (;;)
         {
             char *chopptr;
+            char command[256];
+
+            if (clipboard_get_text(command, sizeof(command)))
+            {
+                if (command[0] == '?')
+                {
+                    clipboard_set_text("OK");
+                }
+            }
 
             if (fgets(buf, sizeof(buf), f) == NULL)
             {
