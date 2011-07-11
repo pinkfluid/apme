@@ -137,7 +137,6 @@ size_t util_strlcat(char *dst, const char *src, size_t dst_size)
 
     if (dst_size < (src_len + dst_len + 1)) src_len = dst_size - dst_len - 1;
 
-    printf("src_len = %d, dst_len = %d, src = %s, dst = %s\n", src_len, dst_len, src, dst);
     memcpy(dst + dst_len, src, src_len);
 
     dst[dst_len + src_len] = '\0';
