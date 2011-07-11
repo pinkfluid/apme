@@ -95,7 +95,7 @@ void group_ap_eligible(void)
         if (group[ii].gm_ap != lowest_ap) continue;
 
         snprintf(buf, sizeof(buf), "%s | ", group[ii].gm_name);
-        strlcat(clip_buf, buf, sizeof(clip_buf));
+        util_strlcat(clip_buf, buf, sizeof(clip_buf));
     }
 
     printf("%s\n", clip_buf);

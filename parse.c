@@ -275,8 +275,8 @@ int main(int argc, char* argv[])
         }
 
         buf[0] = '\0';
-        strlcat(buf, install_path, sizeof(buf));
-        strlcat(buf, "\\Chat.log", sizeof(buf));
+        util_strlcat(buf, install_path, sizeof(buf));
+        util_strlcat(buf, "\\Chat.log", sizeof(buf));
 
         printf("Opening chat file '%s'\n", buf);
         f = fopen(buf, "r");

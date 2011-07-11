@@ -1,10 +1,22 @@
 SRC:=parse.c util.c items.c group.c
 
-CFLAGS:=-Wall -O2 -mwindows
+CFLAGS:=-Wall -O2 
 
 #####################
 
-SYS:=$(shell uname -s)
+UNAME:=$(shell uname -s)
+
+ifneq ($(findstring CYGWIN, $(UNAME)),)
+    CFLAGS+=-DSYS_WINDOWS -mwindows
+endif
+
+ifneq ($(findstring DragonFly, $(UNAME)),)
+    CFLAGS+=-DSYS_UNIX -DOS_DRAGONFLY
+endif
+
+ifneq ($(findstring Linux, $(UNAME)),)
+    CFLAGS+=-DSYS_UNIX -DOS_LINUX
+endif
 
 OBJ:=$(patsubst %.c,%.o,$(SRC))
 

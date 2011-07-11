@@ -1,13 +1,18 @@
 
 #include <stdbool.h>
 #include <stdio.h>
+#include <assert.h>
+#include <string.h>
 
+#ifdef SYS_WINDOWS
 #include <windows.h>
+#endif
 
 #include "util.h"
 
 bool set_clipboard_text(char *text)
 {
+#ifdef SYS_WINDOWS
     bool retval;
     DWORD len = strlen(text);
     HGLOBAL hdst;
@@ -38,12 +43,14 @@ bool set_clipboard_text(char *text)
     }
 
     CloseClipboard();
+#endif
 
     return true;
 }
 
 bool reg_read_key(char *key, char *val, void *buf, size_t buflen)
 {
+#ifdef SYS_WINDOWS
     LONG retval;
     HKEY key_handle;
     bool status = false;
@@ -67,6 +74,9 @@ bool reg_read_key(char *key, char *val, void *buf, size_t buflen)
 error:
     RegCloseKey(key_handle);
     return status;
+#else
+    return true;
+#endif
 }
 
 char *reg_aion_keys[] =
@@ -77,6 +87,7 @@ char *reg_aion_keys[] =
 
 char* aion_get_install_path(void)
 {
+#ifdef SYS_WINDOWS
     static char aion_install_path[1024];
     int ii;
     bool retval;
@@ -92,8 +103,45 @@ char* aion_get_install_path(void)
             return aion_install_path;
         }
     }
+#endif
 
     return NULL;
 }
 
+/* 
+ * Thansk to Ulrich Drepper, these two functions probably get the re-inventing-the-wheel-over-and-over-again award.
+ */
+size_t util_strlcpy(char *dst, const char *src, size_t dst_size)
+{
+    size_t src_len = strlen(src);
+    size_t dst_len;
+
+    if (dst_size == 0) return 0;
+
+    dst_len = ((src_len + 1) < dst_size) ? src_len : (dst_size - 1);
+
+    memcpy(dst, src, dst_len);
+
+    dst[dst_len] = '\0';
+
+    return dst_len;
+}
+
+size_t util_strlcat(char *dst, const char *src, size_t dst_size)
+{
+    size_t src_len = strlen(src);
+    size_t dst_len = strlen(dst);
+
+    if (dst_size == 0) return 0;
+    if (dst_len >= dst_size) assert(!"Invalid string passed to util_strlcat()");
+
+    if (dst_size < (src_len + dst_len + 1)) src_len = dst_size - dst_len - 1;
+
+    printf("src_len = %d, dst_len = %d, src = %s, dst = %s\n", src_len, dst_len, src, dst);
+    memcpy(dst + dst_len, src, src_len);
+
+    dst[dst_len + src_len] = '\0';
+
+    return dst_len + src_len;
+}
 
