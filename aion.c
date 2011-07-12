@@ -8,6 +8,8 @@
 
 #include "bsd/queue.h"
 
+#include "aion.h"
+
 struct aion_player
 {
     LIST_ENTRY(aion_player)     apl_list;       /* Next linked list element      */
@@ -29,7 +31,6 @@ struct aion_player_list aion_group;             /* Current group        */
 static struct aion_player* aion_player_alloc(char *charname);
 static void aion_player_release(struct aion_player *player);
 static struct aion_player* aion_group_find(char *charname);
-static void aion_group_flush(void);
 static void aion_group_dump(void);
 
 bool aion_init(void)
@@ -126,12 +127,6 @@ bool aion_group_join(char *charname)
     player = aion_group_find(charname);
     if (player != NULL)
     {
-        if (player == &aion_player_self)
-        {
-            /* Ok, we joined another group, flush the current one */
-            aion_group_flush();
-        }
-
         aion_group_dump();
 
         return true;
@@ -162,14 +157,14 @@ bool aion_group_leave(char *charname)
     player = aion_group_find(charname);
     if (player == NULL)
     {
-        printf("ERROR: Player %s cannot leave since it's not in the group.\n", charname);
+        /* Player was not in the group list, so no need to remove it :( */
         return true;
     }
 
     if (player == &aion_player_self)
     {
         /* We left the group, remove all other players from it */
-        aion_group_flush();
+        aion_group_disband();
     }
     else
     {
@@ -184,7 +179,7 @@ bool aion_group_leave(char *charname)
 /*
  * Remove all group members from the list
  */
-void aion_group_flush(void)
+void aion_group_disband(void)
 {
     struct aion_player *curplayer;
     struct aion_player *nextplayer;

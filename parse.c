@@ -27,11 +27,13 @@
 
 #define RP_GROUP_SELF_JOIN          300
 #define RP_GROUP_SELF_LEAVE         301
-#define RP_GROUP_DISBAND            302
 #define RP_GROUP_PLAYER_JOIN        303
 #define RP_GROUP_PLAYER_LEAVE       304
 #define RP_GROUP_PLAYER_DISCONNECT  305
 #define RP_GROUP_PLAYER_KICK        306
+#define RP_GROUP_PLAYER_OFFLINE     307
+#define RP_GROUP_DISBAND            310
+#define RP_GROUP_ROLL_DICE          311
 
 #define RP_CHAT_GENERAL             400
 
@@ -85,6 +87,14 @@ struct regex_parse rp_aion[] =
         .rp_exp = ": " REGEX_NAME " has been kicked out of your group\\.",
     },
     {
+        .rp_id  = RP_GROUP_ROLL_DICE,
+        .rp_exp = ": " REGEX_NAME " rolled the dice and got [0-9]+ \\(max\\. [0-9]+\\)\\.",
+    },
+    {
+        .rp_id  = RP_GROUP_PLAYER_OFFLINE,
+        .rp_exp = ": " REGEX_NAME " has been offline for too long and is automatically excluded from the group\\.",
+    },
+    {
         .rp_id  = RP_GROUP_DISBAND,
         .rp_exp = "The group has been disbanded\\.",
     },
@@ -98,12 +108,8 @@ void parse_action_loot_item(char *player, uint32_t itemid)
 {
     struct item *item;
    
-    /* Do not "join a group" if we see ourselves looting. */
-    if (!aion_player_is_self(player))
-    {
-        /* If we see a player's loot, he is in the group. */
-        aion_group_join(player);
-    }
+    /* If we see a player's loot, he is in the group. */
+    aion_group_join(player);
 
     item = item_find(itemid);
     if (item != NULL)
@@ -126,17 +132,37 @@ void parse_action_damage_inflict(char *player, char *target, char *damage, char 
     //printf("DMG: %s -> %s: %s (%s)\n", player, target, damage, skill);
 }
 
-void parse_action_group_join(char *who)
+void parse_action_group_self_join(void)
+{
+    /*
+     * When joining a group, forget all previously remembered members
+     * which is the same as disbanding the group.
+     */
+    aion_group_disband();
+}
+
+void parse_action_group_self_leave(void)
+{
+    aion_group_disband();
+}
+
+void parse_action_group_player_join(char *who)
 {
     printf("GROUP: %s joined the group.\n", who);
     aion_group_join(who);
 }
 
-void parse_action_group_leave(char *who)
+void parse_action_group_player_leave(char *who)
 {
     printf("GROUP: %s left the group.\n", who);
     aion_group_leave(who);
 }
+
+void parse_action_group_roll_dice(char *who)
+{
+    aion_group_join(who);
+}
+
 
 void parse_action_chat_general(char *name, char *txt)
 {
@@ -216,24 +242,30 @@ int parse_process(uint32_t rp_id, const char* matchstr, regmatch_t *rematch, uin
             break;
 
         case RP_GROUP_SELF_JOIN:
-            parse_action_group_join("You");
+            parse_action_group_self_join();
             break;
 
         case RP_GROUP_SELF_LEAVE:
         case RP_GROUP_DISBAND:
-            parse_action_group_leave("You");
+            parse_action_group_self_leave();
             break;
 
         case RP_GROUP_PLAYER_JOIN:
             re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
-            parse_action_group_join(name);
+            parse_action_group_player_join(name);
             break;
 
         case RP_GROUP_PLAYER_DISCONNECT:
         case RP_GROUP_PLAYER_LEAVE:
         case RP_GROUP_PLAYER_KICK:
+        case RP_GROUP_PLAYER_OFFLINE:
             re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
-            parse_action_group_leave(name);
+            parse_action_group_player_leave(name);
+            break;
+
+        case RP_GROUP_ROLL_DICE:
+            re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
+            parse_action_group_roll_dice(name);
             break;
 
         case RP_CHAT_GENERAL:
@@ -316,15 +348,8 @@ int main(int argc, char* argv[])
         for (;;)
         {
             char *chopptr;
-            char command[256];
 
-            if (clipboard_get_text(command, sizeof(command)))
-            {
-                if (command[0] == '?')
-                {
-                    clipboard_set_text("OK");
-                }
-            }
+            //cmd_poll();
 
             if (fgets(buf, sizeof(buf), f) == NULL)
             {
