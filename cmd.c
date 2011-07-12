@@ -96,7 +96,6 @@ bool cmd_func_ap_stats(int argc, char *argv[], char *txt)
 
     if (!aion_group_get_stats(buf, sizeof(buf)))
     {
-        cmd_retval_set(CMD_RETVAL_UNKNOWN);
         return false;
     }
 
@@ -115,7 +114,6 @@ bool cmd_func_ap_roll(int argc, char *argv[], char *txt)
 
     if (!aion_group_get_aprollrights(buf, sizeof(buf)))
     {
-        cmd_retval_set(CMD_RETVAL_UNKNOWN);
         return false;
     }
 

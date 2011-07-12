@@ -122,7 +122,13 @@ void parse_action_loot_item(char *player, uint32_t itemid)
     {
         if (item->item_ap != 0)
         {
+            char aprolls[256];
+
             aion_group_apvalue_update(player, item->item_ap);
+            
+            /* automatically paste the new roll rights to the clipboard */
+            aion_group_get_aprollrights(aprolls, sizeof(aprolls));
+            clipboard_set_text(aprolls);
         }
 
         printf("LOOT: %s -> %s (%u AP)\n", player, item->item_name, item->item_ap);
