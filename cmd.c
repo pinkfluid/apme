@@ -14,16 +14,20 @@
 #define CMD_DELIM           " ,"
 #define CMD_TEXT_SZ         1024
 
-#define CMD_RETVAL_DEFAULT  "Unknown command"
-#define CMD_RETVAL_UNKNOWN  "Unknown func"
-#define CMD_RETVAL_PARAM    "Parameter error"
+#define CMD_RETVAL_OK       "OK"
+#define CMD_RETVAL_ERROR    "Error"
+#define CMD_RETVAL_UNKNOWN  "Unknown"
 
 static char cmd_retval[CMD_TEXT_SZ];
 
 typedef bool cmd_func_t(int argc, char *argv[], char *txt);
 
 static cmd_func_t cmd_func_hello;
-static cmd_func_t cmd_func_group_stats;
+static cmd_func_t cmd_func_ap_stats;
+static cmd_func_t cmd_func_ap_roll;
+static cmd_func_t cmd_func_ap_set;
+static cmd_func_t cmd_func_group_join;
+static cmd_func_t cmd_func_group_leave;
 
 struct cmd_entry
 {
@@ -40,8 +44,24 @@ struct cmd_entry cmd_list[] =
     },
     {
         .cmd_command    = "apstat",
-        .cmd_func       = cmd_func_group_stats,
+        .cmd_func       = cmd_func_ap_stats,
     },
+    {
+        .cmd_command    = "aproll",
+        .cmd_func       = cmd_func_ap_roll,
+    },
+    {
+        .cmd_command    = "apset",
+        .cmd_func       = cmd_func_ap_set,
+    },
+    {
+        .cmd_command    = "gradd",
+        .cmd_func       = cmd_func_group_join,
+    },
+    {
+        .cmd_command    = "grdel",
+        .cmd_func       = cmd_func_group_leave,
+    }
 };
 
 
@@ -66,12 +86,13 @@ bool cmd_func_hello(int argc, char *argv[], char *txt)
     return true;
 }
 
-bool cmd_func_group_stats(int argc, char *argv[], char *txt)
+bool cmd_func_ap_stats(int argc, char *argv[], char *txt)
 {
+    char buf[256];
+
     (void)argc;
     (void)argv;
     (void)txt;
-    char buf[128];
 
     if (!aion_group_get_stats(buf, sizeof(buf)))
     {
@@ -80,6 +101,77 @@ bool cmd_func_group_stats(int argc, char *argv[], char *txt)
     }
 
     cmd_retval_set(buf);
+
+    return true;
+}
+
+bool cmd_func_ap_roll(int argc, char *argv[], char *txt)
+{
+    char buf[256];
+
+    (void)argc;
+    (void)argv;
+    (void)txt;
+
+    if (!aion_group_get_aprollrights(buf, sizeof(buf)))
+    {
+        cmd_retval_set(CMD_RETVAL_UNKNOWN);
+        return false;
+    }
+
+    cmd_retval_set(buf);
+
+    return true;
+}
+
+bool cmd_func_ap_set(int argc, char *argv[], char *txt)
+{
+    uint32_t apvalue;
+
+    (void)txt;
+
+    if (argc < 3)
+    {
+        return false;
+    }
+
+    apvalue = strtoul(argv[2], NULL, 0);
+
+    if (!aion_group_apvalue_set(argv[1], apvalue))
+    {
+        return false;
+    }
+
+    cmd_retval_set(CMD_RETVAL_OK);
+    return true;
+}
+
+bool cmd_func_group_join(int argc, char *argv[], char *txt)
+{
+    (void)txt;
+    int ii;
+
+    for (ii = 1; ii < argc; ii++)
+    {
+        aion_group_join(argv[ii]);
+    }
+
+    cmd_retval_set(CMD_RETVAL_OK);
+
+    return true;
+}
+
+bool cmd_func_group_leave(int argc, char *argv[], char *txt)
+{
+    (void)txt;
+    int ii;
+
+    for (ii = 1; ii < argc; ii++)
+    {
+        aion_group_leave(argv[ii]);
+    }
+
+    cmd_retval_set(CMD_RETVAL_OK);
 
     return true;
 }
@@ -118,13 +210,16 @@ void cmd_exec(char *txt)
         if (argv[argc] == NULL) break;
     }
 
-    cmd_retval_set(CMD_RETVAL_DEFAULT);
+    cmd_retval_set(CMD_RETVAL_UNKNOWN);
 
     for (ii = 0; ii < sizeof(cmd_list) / sizeof(cmd_list[0]); ii++)
     {
         if (strcasecmp(cmd_list[ii].cmd_command, argv[0]) == 0)
         {
-            cmd_list[ii].cmd_func(argc, argv, cmd);
+            if (!cmd_list[ii].cmd_func(argc, argv, cmd))
+            {
+                cmd_retval_set(CMD_RETVAL_ERROR);
+            }
         }
     }
 

@@ -212,19 +212,71 @@ bool aion_group_apvalue_update(char *charname, uint32_t apval)
     return true;
 }
 
+bool aion_group_apvalue_set(char *charname, uint32_t apval)
+{
+    struct aion_player *player;
+
+    player = aion_group_find(charname);
+
+    if (player == NULL)
+    {
+        printf("ERROR: Player %s is not in the group.\n", charname);
+        return false;
+    }
+
+    player->apl_apvalue = apval;
+
+    return true;
+}
+
 bool aion_group_get_stats(char *stats, size_t stats_sz)
 {
     char curstat[64];
     struct aion_player *player;
 
     snprintf(curstat, sizeof(curstat), "| %s (AP %u) ", "You", aion_player_self.apl_apvalue); 
-
     util_strlcpy(stats, curstat, stats_sz);
 
     LIST_FOREACH(player, &aion_group, apl_list)
     {
         snprintf(curstat, sizeof(curstat), "| %s (AP %u) ", player->apl_name, player->apl_apvalue); 
         util_strlcat(stats, curstat, stats_sz);
+    }
+
+    return true;
+}
+
+bool aion_group_get_aprollrights(char *stats, size_t stats_sz)
+{
+    char curstats[64];
+    uint32_t lowest_ap;
+    struct aion_player *player;
+
+    lowest_ap = aion_player_self.apl_apvalue;
+
+    LIST_FOREACH(player, &aion_group, apl_list)
+    {
+        if (player->apl_apvalue < lowest_ap)
+        {
+            lowest_ap = player->apl_apvalue;
+        }
+    }
+
+    snprintf(stats, stats_sz, "Roll rights: ");
+
+    /* Do we have the lowest AP? */
+    if (aion_player_self.apl_apvalue <= lowest_ap)
+    {
+        snprintf(curstats, sizeof(curstats), "%s ", "You");
+        util_strlcat(stats, curstats, stats_sz);
+    }
+
+    LIST_FOREACH(player, &aion_group, apl_list)
+    {
+        if (player->apl_apvalue > lowest_ap) continue;
+
+        snprintf(curstats, sizeof(curstats), "%s ", player->apl_name);
+        util_strlcat(stats, curstats, stats_sz);
     }
 
     return true;
