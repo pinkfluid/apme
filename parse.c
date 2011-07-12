@@ -11,7 +11,6 @@
 #include <unistd.h>
 
 #include "items.h"
-#include "group.h"
 #include "util.h"
 #include "aion.h"
 
@@ -20,21 +19,21 @@
 #define REGEX_ITEM_SZ   16
 #define REGEX_ITEM      "([0-9]+)"
 
-#define RP_ITEM_LOOT_SELF       100
-#define RP_ITEM_LOOT_PLAYER     101
+#define RP_ITEM_LOOT_SELF           100
+#define RP_ITEM_LOOT_PLAYER         101
 
-#define RP_DAMAGE_INFLICT       200
-#define RP_DAMAGE_CRITICAL      201
+#define RP_DAMAGE_INFLICT           200
+#define RP_DAMAGE_CRITICAL          201
 
-#define RP_GROUP_JOIN_SELF      300
-#define RP_GROUP_LEAVE_SELF     301
-#define RP_GROUP_JOIN_PLAYER    302
-#define RP_GROUP_LEAVE_PLAYER   303
-#define RP_GROUP_DISBAND        304
+#define RP_GROUP_SELF_JOIN          300
+#define RP_GROUP_SELF_LEAVE         301
+#define RP_GROUP_DISBAND            302
+#define RP_GROUP_PLAYER_JOIN        303
+#define RP_GROUP_PLAYER_LEAVE       304
+#define RP_GROUP_PLAYER_DISCONNECT  305
+#define RP_GROUP_PLAYER_KICK        306
 
-#define RP_CHAT_GENERAL         400
-
-char *aion_char_name = "Playme";
+#define RP_CHAT_GENERAL             400
 
 struct regex_parse
 {
@@ -62,24 +61,32 @@ struct regex_parse rp_aion[] =
         .rp_exp = ": Critical Hit! You inflicted ([0-9.]+) critical damage on ([A-Za-z ]+)\\.",
     },
     {
-        .rp_id  = RP_GROUP_JOIN_SELF,
+        .rp_id  = RP_GROUP_SELF_JOIN,
         .rp_exp = "You have joined the group\\.",
     },
     {
-        .rp_id  = RP_GROUP_LEAVE_SELF,
+        .rp_id  = RP_GROUP_SELF_LEAVE,
         .rp_exp = "You left the group\\.",
+    },
+    {
+        .rp_id  = RP_GROUP_PLAYER_JOIN,
+        .rp_exp = ": " REGEX_NAME " has joined your group\\.",
+    },
+    {
+        .rp_id  = RP_GROUP_PLAYER_LEAVE,
+        .rp_exp = ": " REGEX_NAME " has left your group\\.",
+    },
+    {
+        .rp_id  = RP_GROUP_PLAYER_DISCONNECT,
+        .rp_exp = ": " REGEX_NAME " has been disconnected\\.",
+    },
+    {
+        .rp_id  = RP_GROUP_PLAYER_KICK,
+        .rp_exp = ": " REGEX_NAME " has been kicked out of your group\\.",
     },
     {
         .rp_id  = RP_GROUP_DISBAND,
         .rp_exp = "The group has been disbanded\\.",
-    },
-    {
-        .rp_id  = RP_GROUP_JOIN_PLAYER,
-        .rp_exp = ": " REGEX_NAME " has joined your group\\.",
-    },
-    {
-        .rp_id  = RP_GROUP_LEAVE_PLAYER,
-        .rp_exp = ": " REGEX_NAME " has left your group\\.",
     },
     {
         .rp_id  = RP_CHAT_GENERAL,
@@ -87,19 +94,14 @@ struct regex_parse rp_aion[] =
     }
 };
 
-void parse_action_loot_item(char *_player, uint32_t itemid)
+void parse_action_loot_item(char *player, uint32_t itemid)
 {
     struct item *item;
-    char *player;
    
-    if (_player == NULL)
+    /* Do not "join a group" if we see ourselves looting. */
+    if (!aion_player_is_self(player))
     {
-        player = "You";
-    }
-    else
-    {
-        player = _player;
-        /* If we see a player's loot, he IS in the group */
+        /* If we see a player's loot, he is in the group. */
         aion_group_join(player);
     }
 
@@ -108,10 +110,7 @@ void parse_action_loot_item(char *_player, uint32_t itemid)
     {
         if (item->item_ap != 0)
         {
-            aion_group_ap_update(player, item->item_ap);
-            group_ap_update(player, item->item_ap);
-            group_stats();
-            group_ap_eligible();
+            aion_group_apvalue_update(player, item->item_ap);
         }
 
         printf("LOOT: %s -> %s (%u AP)\n", player, item->item_name, item->item_ap);
@@ -190,8 +189,7 @@ int parse_process(uint32_t rp_id, const char* matchstr, regmatch_t *rematch, uin
     {
         case RP_ITEM_LOOT_SELF:
             re_strlcpy(item, matchstr, sizeof(item), rematch[1]);
-
-            parse_action_loot_item(NULL, strtoul(item, NULL, 10));
+            parse_action_loot_item("You", strtoul(item, NULL, 10));
             break;
 
         case RP_ITEM_LOOT_PLAYER:
@@ -217,21 +215,23 @@ int parse_process(uint32_t rp_id, const char* matchstr, regmatch_t *rematch, uin
             parse_action_damage_inflict("You", target, damage, "Critical");
             break;
 
-        case RP_GROUP_JOIN_SELF:
+        case RP_GROUP_SELF_JOIN:
             parse_action_group_join("You");
             break;
 
-        case RP_GROUP_LEAVE_SELF:
+        case RP_GROUP_SELF_LEAVE:
         case RP_GROUP_DISBAND:
             parse_action_group_leave("You");
             break;
 
-        case RP_GROUP_JOIN_PLAYER:
+        case RP_GROUP_PLAYER_JOIN:
             re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
             parse_action_group_join(name);
             break;
 
-        case RP_GROUP_LEAVE_PLAYER:
+        case RP_GROUP_PLAYER_DISCONNECT:
+        case RP_GROUP_PLAYER_LEAVE:
+        case RP_GROUP_PLAYER_KICK:
             re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
             parse_action_group_leave(name);
             break;
@@ -262,12 +262,6 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    if (!group_init(argc - 1, argv + 1))
-    {
-        printf("Unable to initialize the group.\n");
-        return 0;
-    }
-
     for (ii = 0; ii < sizeof(rp_aion) / sizeof(rp_aion[0]); ii++)
     {
         retval = regcomp(&rp_aion[ii].rp_comp, rp_aion[ii].rp_exp, REG_EXTENDED);
@@ -286,6 +280,7 @@ int main(int argc, char* argv[])
         regmatch_t rematch[16];
         char buf[1024];
 
+#ifdef SYS_WINDOWS
         char *install_path = NULL;
 
         install_path = aion_get_install_path();
@@ -303,12 +298,20 @@ int main(int argc, char* argv[])
         f = fopen(buf, "r");
         if (f == NULL)
         {
-            printf("Error opening ifle\n");
+            printf("Error opening file\n");
             return 1;
         }
 
         // Seek to the end of file
         fseek(f, 0, SEEK_END);
+#else
+        f = fopen("./Chat.log", "r");
+        if (f == NULL)
+        {
+            printf("Unable to open ./Chat.log");
+            return 1;
+        }
+#endif
 
         for (;;)
         {

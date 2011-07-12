@@ -1,4 +1,4 @@
-SRC:=parse.c util.c items.c group.c aion.c
+SRC:=parse.c util.c items.c aion.c
 
 CFLAGS:=-Wall -O2 
 
