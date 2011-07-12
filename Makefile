@@ -1,4 +1,4 @@
-SRC:=parse.c util.c items.c aion.c
+SRC:=parse.c util.c items.c aion.c cmd.c
 
 CFLAGS:=-Wall -O2 
 
@@ -7,7 +7,7 @@ CFLAGS:=-Wall -O2
 UNAME:=$(shell uname -s)
 
 ifneq ($(findstring CYGWIN, $(UNAME)),)
-    CFLAGS+=-DSYS_WINDOWS -mwindows
+    CFLAGS+=-DSYS_WINDOWS
 endif
 
 ifneq ($(findstring DragonFly, $(UNAME)),)

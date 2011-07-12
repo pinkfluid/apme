@@ -9,6 +9,7 @@
 #include "bsd/queue.h"
 
 #include "aion.h"
+#include "util.h"
 
 struct aion_player
 {
@@ -207,6 +208,24 @@ bool aion_group_apvalue_update(char *charname, uint32_t apval)
     }
 
     player->apl_apvalue += apval;
+
+    return true;
+}
+
+bool aion_group_get_stats(char *stats, size_t stats_sz)
+{
+    char curstat[64];
+    struct aion_player *player;
+
+    snprintf(curstat, sizeof(curstat), "| %s (AP %u) ", "You", aion_player_self.apl_apvalue); 
+
+    util_strlcpy(stats, curstat, stats_sz);
+
+    LIST_FOREACH(player, &aion_group, apl_list)
+    {
+        snprintf(curstat, sizeof(curstat), "| %s (AP %u) ", player->apl_name, player->apl_apvalue); 
+        util_strlcat(stats, curstat, stats_sz);
+    }
 
     return true;
 }

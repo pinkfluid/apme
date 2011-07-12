@@ -13,6 +13,7 @@
 #include "items.h"
 #include "util.h"
 #include "aion.h"
+#include "cmd.h"
 
 #define REGEX_NAME_SZ   64
 #define REGEX_NAME      "([0-9a-zA-Z_]+)"
@@ -33,7 +34,8 @@
 #define RP_GROUP_PLAYER_KICK        306
 #define RP_GROUP_PLAYER_OFFLINE     307
 #define RP_GROUP_DISBAND            310
-#define RP_GROUP_ROLL_DICE          311
+#define RP_GROUP_SELF_ROLL_DICE     311
+#define RP_GROUP_PLAYER_ROLL_DICE   312
 
 #define RP_CHAT_GENERAL             400
 
@@ -87,7 +89,11 @@ struct regex_parse rp_aion[] =
         .rp_exp = ": " REGEX_NAME " has been kicked out of your group\\.",
     },
     {
-        .rp_id  = RP_GROUP_ROLL_DICE,
+        .rp_id  = RP_GROUP_SELF_ROLL_DICE,
+        .rp_exp = ": You rolled the dice and got a [0-9]+ \\(max\\. [0-9]+\\)\\.",
+    },
+    {
+        .rp_id  = RP_GROUP_PLAYER_ROLL_DICE,
         .rp_exp = ": " REGEX_NAME " rolled the dice and got [0-9]+ \\(max\\. [0-9]+\\)\\.",
     },
     {
@@ -158,11 +164,15 @@ void parse_action_group_player_leave(char *who)
     aion_group_leave(who);
 }
 
-void parse_action_group_roll_dice(char *who)
+void parse_action_group_player_roll_dice(char *who)
 {
     aion_group_join(who);
 }
 
+void parse_action_group_self_roll_dice(void)
+{
+    //printf("ROLL: You rolled.\n");
+}
 
 void parse_action_chat_general(char *name, char *txt)
 {
@@ -263,9 +273,13 @@ int parse_process(uint32_t rp_id, const char* matchstr, regmatch_t *rematch, uin
             parse_action_group_player_leave(name);
             break;
 
-        case RP_GROUP_ROLL_DICE:
+        case RP_GROUP_SELF_ROLL_DICE:
+            parse_action_group_self_roll_dice();
+            break;
+
+        case RP_GROUP_PLAYER_ROLL_DICE:
             re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
-            parse_action_group_roll_dice(name);
+            parse_action_group_player_roll_dice(name);
             break;
 
         case RP_CHAT_GENERAL:
@@ -349,7 +363,7 @@ int main(int argc, char* argv[])
         {
             char *chopptr;
 
-            //cmd_poll();
+            cmd_poll();
 
             if (fgets(buf, sizeof(buf), f) == NULL)
             {
