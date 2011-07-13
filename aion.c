@@ -5,6 +5,7 @@
 #include <assert.h>
 
 #include <stdio.h>
+#include <ctype.h>
 
 #include "bsd/queue.h"
 
@@ -280,6 +281,107 @@ bool aion_group_get_aprollrights(char *stats, size_t stats_sz)
     }
 
     return true;
+}
+
+
+struct aion_table
+{
+    char *at_alpha;
+    char *at_next;
+};
+
+struct aion_language
+{
+    struct aion_table al_table[4];
+};
+
+struct aion_language aion_lang_asmodian =
+{
+    .al_table =
+    {
+        {
+            .at_alpha = "ihkjmlonqpsrutwvyxazcbedgf",
+            .at_next  = "11111111111111111121222222",
+        },
+        {
+            .at_alpha = "dcfehgjilknmporqtsvuxwzyba",
+            .at_next  = "11111111111111111111111122",
+        },
+        {
+            .at_alpha = "edgfihkjmlonqpsrutwvyxazcb",
+            .at_next  = "11111111111111111111112122",
+        },
+        {
+            .at_alpha = "@@@@@@@@@@@@@@@@@@@@@@@@@@",
+            .at_next  = "33333333333333333333333333",
+        }
+    }
+};
+
+struct aion_language aion_lang_elyos =
+{
+
+    .al_table =
+    {
+        {
+            .at_alpha = "jkhinolmrspqvwtuzGbcJafgde",
+            .at_next  = "11111111111111111322322222",
+        },
+        {
+            .at_alpha = "efcdijghmnklqropuvstyzabIJ",
+            .at_next  = "11111111111111111111112222",
+        },
+        {
+            .at_alpha = "fgdejkhinolmrspqvwtuzGbcJa",
+            .at_next  = "11111111111111111111132222",
+        },
+        {
+            .at_alpha = "ghefklijopmnstqrwxuvGHcdab",
+            .at_next  = "11111111111111111111332222",
+        }
+    }
+};
+
+
+void aion_translate(char *txt, uint32_t langid)
+{
+    int index;
+    struct aion_language *lang = NULL;
+
+    switch (langid)
+    {
+        case LANG_ASMODIAN:
+            lang = &aion_lang_asmodian;
+            break;
+
+        case LANG_ELYOS:
+            lang = &aion_lang_elyos;
+            break;
+
+        default:
+            printf("Unknown language\n");
+            return;
+    }
+
+    index = 0;
+
+    while (*txt != '\0')
+    {
+        int c = tolower((int)*txt);
+
+        if (isalpha(c))
+        {
+            int offset = c - 'a';
+            *txt  = lang->al_table[index].at_alpha[offset];
+            index = lang->al_table[index].at_next[offset] - '0';
+        }
+        else
+        {
+            index = 0;
+        }
+
+        txt++;
+    }
 }
 
 void aion_group_dump(void)

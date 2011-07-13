@@ -28,6 +28,8 @@ static cmd_func_t cmd_func_ap_roll;
 static cmd_func_t cmd_func_ap_set;
 static cmd_func_t cmd_func_group_join;
 static cmd_func_t cmd_func_group_leave;
+static cmd_func_t cmd_func_elyos;
+static cmd_func_t cmd_func_asmo;
 
 struct cmd_entry
 {
@@ -61,7 +63,15 @@ struct cmd_entry cmd_list[] =
     {
         .cmd_command    = "grdel",
         .cmd_func       = cmd_func_group_leave,
-    }
+    },
+    {
+        .cmd_command    = "elyos",
+        .cmd_func       = cmd_func_elyos,
+    },
+    {
+        .cmd_command    = "asmo",
+        .cmd_func       = cmd_func_asmo,
+    },
 };
 
 
@@ -174,6 +184,37 @@ bool cmd_func_group_leave(int argc, char *argv[], char *txt)
     return true;
 }
 
+bool cmd_func_translate(char *argv[], char *txt, int langid)
+{
+    char tr_txt[1024];
+
+    /* Skip the command, and whitespaces */
+    txt += strlen(argv[0]);
+    while (*txt == ' ') txt++;
+
+    util_strlcpy(tr_txt, txt, sizeof(tr_txt));
+
+    aion_translate(tr_txt, langid);
+
+    cmd_retval_set(tr_txt);
+
+    return true;
+}
+
+bool cmd_func_elyos(int argc, char *argv[], char *txt)
+{
+    (void)argc;
+
+    return cmd_func_translate(argv, txt, LANG_ELYOS);
+}
+
+bool cmd_func_asmo(int argc, char *argv[], char *txt)
+{
+    (void)argc;
+
+    return cmd_func_translate(argv, txt, LANG_ASMODIAN);
+}
+
 /*
  * Parse and execute a command 
  */ 
@@ -214,7 +255,7 @@ void cmd_exec(char *txt)
     {
         if (strcasecmp(cmd_list[ii].cmd_command, argv[0]) == 0)
         {
-            if (!cmd_list[ii].cmd_func(argc, argv, cmd))
+            if (!cmd_list[ii].cmd_func(argc, argv, txt))
             {
                 cmd_retval_set(CMD_RETVAL_ERROR);
             }
