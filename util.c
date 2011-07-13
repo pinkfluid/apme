@@ -3,12 +3,50 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
+#include <regex.h>
 
 #ifdef SYS_WINDOWS
 #include <windows.h>
 #endif
 
 #include "util.h"
+
+/*
+ * Copy a string from a matched regular expression
+ */
+void util_re_strlcpy(char *outstr, const char *instr, ssize_t outsz, regmatch_t rem)
+{
+    ssize_t sz = rem.rm_eo - rem.rm_so;
+
+    /* We cannot copy 0 bytes */
+    if ((outsz == 0) || (outstr == NULL))
+    {
+        /* I know this message makes 0 sense, but that makes it unique too */
+        assert(!"Unable to copy 0 bytes to NULL");
+    }
+
+    /* Sanity checks */
+    if ((rem.rm_so < 0) || 
+        (rem.rm_eo < 0) ||
+        (sz <= 0))
+    {
+        *outstr = '\0';
+    }
+
+    /* Check if the out string has enough space + the terminating NULL character */
+    if ((sz + 1) > outsz)
+    {
+        /* Cap the size */
+        sz = outsz - 1;
+    }
+
+
+    strncpy(outstr, instr + rem.rm_so, sz);
+
+    /* Terminate it with NULL */
+    outstr[sz] = '\0';
+}
+
 
 bool clipboard_set_text(char *text)
 {

@@ -185,39 +185,6 @@ void parse_action_chat_general(char *name, char *txt)
 //    printf("CHAT: %s -> %s\n", name, txt);
 }
 
-void re_strlcpy(char *outstr, const char *instr, ssize_t outsz, regmatch_t rem)
-{
-    ssize_t sz = rem.rm_eo - rem.rm_so;
-
-    /* We cannot copy 0 bytes */
-    if ((outsz == 0) || (outstr == NULL))
-    {
-        /* I know this message makes 0 sense, but that makes it unique too */
-        assert(!"Unable to copy 0 bytes to NULL");
-    }
-
-    /* Sanity checks */
-    if ((rem.rm_so < 0) || 
-        (rem.rm_eo < 0) ||
-        (sz <= 0))
-    {
-        *outstr = '\0';
-    }
-
-    /* Check if the out string has enough space + the terminating NULL character */
-    if ((sz + 1) > outsz)
-    {
-        /* Cap the size */
-        sz = outsz - 1;
-    }
-
-
-    strncpy(outstr, instr + rem.rm_so, sz);
-
-    /* Terminate it with NULL */
-    outstr[sz] = '\0';
-}
-
 int parse_process(uint32_t rp_id, const char* matchstr, regmatch_t *rematch, uint32_t rematch_num)
 {
     char item[REGEX_ITEM_SZ];
@@ -230,29 +197,29 @@ int parse_process(uint32_t rp_id, const char* matchstr, regmatch_t *rematch, uin
     switch (rp_id)
     {
         case RP_ITEM_LOOT_SELF:
-            re_strlcpy(item, matchstr, sizeof(item), rematch[1]);
+            util_re_strlcpy(item, matchstr, sizeof(item), rematch[1]);
             parse_action_loot_item("You", strtoul(item, NULL, 10));
             break;
 
         case RP_ITEM_LOOT_PLAYER:
-            re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
-            re_strlcpy(item, matchstr, sizeof(item), rematch[2]);
+            util_re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
+            util_re_strlcpy(item, matchstr, sizeof(item), rematch[2]);
 
             parse_action_loot_item(name, strtoul(item, NULL, 10));
             break;
 
         case RP_DAMAGE_INFLICT:
-            re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
-            re_strlcpy(damage, matchstr, sizeof(damage), rematch[2]);
-            re_strlcpy(target, matchstr, sizeof(target), rematch[3]);
-            re_strlcpy(skill, matchstr, sizeof(skill), rematch[4]);
+            util_re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
+            util_re_strlcpy(damage, matchstr, sizeof(damage), rematch[2]);
+            util_re_strlcpy(target, matchstr, sizeof(target), rematch[3]);
+            util_re_strlcpy(skill, matchstr, sizeof(skill), rematch[4]);
 
             parse_action_damage_inflict(name, target, damage, skill);
             break;
 
         case RP_DAMAGE_CRITICAL:
-            re_strlcpy(damage, matchstr, sizeof(damage), rematch[1]);
-            re_strlcpy(target, matchstr, sizeof(target), rematch[2]);
+            util_re_strlcpy(damage, matchstr, sizeof(damage), rematch[1]);
+            util_re_strlcpy(target, matchstr, sizeof(target), rematch[2]);
 
             parse_action_damage_inflict("You", target, damage, "Critical");
             break;
@@ -267,7 +234,7 @@ int parse_process(uint32_t rp_id, const char* matchstr, regmatch_t *rematch, uin
             break;
 
         case RP_GROUP_PLAYER_JOIN:
-            re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
+            util_re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
             parse_action_group_player_join(name);
             break;
 
@@ -275,7 +242,7 @@ int parse_process(uint32_t rp_id, const char* matchstr, regmatch_t *rematch, uin
         case RP_GROUP_PLAYER_LEAVE:
         case RP_GROUP_PLAYER_KICK:
         case RP_GROUP_PLAYER_OFFLINE:
-            re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
+            util_re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
             parse_action_group_player_leave(name);
             break;
 
@@ -284,13 +251,13 @@ int parse_process(uint32_t rp_id, const char* matchstr, regmatch_t *rematch, uin
             break;
 
         case RP_GROUP_PLAYER_ROLL_DICE:
-            re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
+            util_re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
             parse_action_group_player_roll_dice(name);
             break;
 
         case RP_CHAT_GENERAL:
-            re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
-            re_strlcpy(chat, matchstr, sizeof(chat), rematch[2]);
+            util_re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
+            util_re_strlcpy(chat, matchstr, sizeof(chat), rematch[2]);
 
             parse_action_chat_general(name, chat);
             break;

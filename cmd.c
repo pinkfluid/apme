@@ -8,7 +8,8 @@
 #include "util.h"
 #include "aion.h"
 
-#define CMD_CHAR            '?'
+#define CMD_COMMAND_CHAR    '?'
+#define CMD_CHATHIST_CHAR   '!'
 #define CMD_SIZE            64
 #define CMD_ARGC_MAX        32
 #define CMD_DELIM           " ,"
@@ -30,6 +31,7 @@ static cmd_func_t cmd_func_group_join;
 static cmd_func_t cmd_func_group_leave;
 static cmd_func_t cmd_func_elyos;
 static cmd_func_t cmd_func_asmo;
+static cmd_func_t cmd_func_echo;
 
 struct cmd_entry
 {
@@ -72,7 +74,12 @@ struct cmd_entry cmd_list[] =
         .cmd_command    = "asmo",
         .cmd_func       = cmd_func_asmo,
     },
+    {
+        .cmd_command    = "echo",
+        .cmd_func       = cmd_func_echo,
+    },
 };
+
 
 
 void cmd_retval_printf(char *fmt, ...)
@@ -211,22 +218,93 @@ bool cmd_func_asmo(int argc, char *argv[], char *txt)
     return cmd_func_translate(argv, txt, LANG_ASMODIAN);
 }
 
+bool cmd_func_echo(int argc, char *argv[], char *txt)
+{
+    (void)argc;
+
+    cmd_retval_set(txt);
+
+    return true;
+}
+
+bool cmd_chat_hist(int argc, char *argv[], char *player, size_t player_sz, int *msgnum)
+{
+    /* Regex for matching the !Player-X format  */
+    static regex_t  cmd_chathist_re;
+    static bool     cmd_chathist_first = true;
+
+    int retval;
+    regmatch_t rematch[4];  /* We wont match more than 2 items */
+    char strmsg[16];
+
+
+    if (cmd_chathist_first)
+    {
+        /* Compile the regex for matching the !Player-X format  */
+        retval = regcomp(&cmd_chathist_re, "^!([A-Za-z0-9_]+)$|^!([A-Za-z0-9_]+)-([0-9]+)$", REG_EXTENDED);
+        if (retval != 0)
+        {
+            printf("Error initializing CMD subsystem\n");
+            return false;
+        }
+
+        cmd_chathist_first = false;
+    }
+
+
+    /* This format always takes just two arguments */
+    if (argc != 2) return false;
+
+    /* Must start with ! */
+    if (argv[1][0] != CMD_CHATHIST_CHAR) return false;
+
+    /* Use regular expressions to parse the syntax */
+    retval = regexec(&cmd_chathist_re,
+                     argv[1],
+                     sizeof(rematch) / sizeof(rematch[0]),
+                     rematch,
+                     0);
+    if (retval != 0)
+    {
+        return false;
+    }
+
+    if ((rematch[1].rm_so == -1) || (rematch[1].rm_eo == -1))
+    {
+        util_re_strlcpy(player, argv[1], player_sz, rematch[2]);
+        util_re_strlcpy(strmsg, argv[1], sizeof(strmsg), rematch[3]);
+
+        *msgnum = strtoul(strmsg, NULL, 0);
+    }
+    else
+    {
+        util_re_strlcpy(player, argv[1], player_sz, rematch[1]);
+        *msgnum = 0;
+    }
+
+    return true;
+}
+
 /*
  * Parse and execute a command 
  */ 
 void cmd_exec(char *txt)
 {
     char cmdbuf[CMD_SIZE];
+    char cmdchat[CMD_TEXT_SZ];
+    /* Parse the arguments */
+    char cmdplayer[64];
+
     char *pcmdbuf;
     char *cmdtxt;
     int  argc;
     char *argv[CMD_ARGC_MAX];
     int ii;
+    int msgnum;
 
     /* Extract the command */
-    if (txt[0] != CMD_CHAR) return;
+    if (txt[0] != CMD_COMMAND_CHAR) return;
     txt++;
-
 
     /*
      * Extract the arguments, but copy txt first since
@@ -247,10 +325,27 @@ void cmd_exec(char *txt)
         if (argv[argc] == NULL) break;
     }
 
-    /* For cmdtxt, skip the command name and whitespaces */
-    cmdtxt = txt;
-    cmdtxt += strlen(argv[0]);
-    while (*cmdtxt == ' ') cmdtxt++;
+    /* Check if the user used the ?command !Player syntax */
+    if (cmd_chat_hist(argc, argv, cmdplayer, sizeof(cmdplayer), &msgnum))
+    {
+        /* Use the player's last chat message as cmdtxt */
+        if (aion_player_chat_get(cmdplayer, msgnum, cmdchat, sizeof(cmdchat)))
+        {
+            cmdtxt = cmdchat;
+            printf("LAST CHAT: %s\n", cmdchat);
+        }
+        else
+        {
+            cmdtxt = "No chat";
+        }
+    }
+    else
+    {
+        /* Nope, just pass the text after the command, but clear initial spaces */
+        cmdtxt = txt;
+        cmdtxt += strlen(argv[0]);
+        while (*cmdtxt == ' ') cmdtxt++;
+    }
 
     cmd_retval_set(CMD_RETVAL_UNKNOWN);
 

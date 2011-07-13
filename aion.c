@@ -180,6 +180,19 @@ bool aion_player_chat_cache(char *charname, char *chat)
     return true;
 }
 
+bool aion_player_chat_get(char *charname, int msgnum, char *dst, size_t dst_sz)
+{
+    struct aion_player *player;
+
+    player = aion_player_alloc(charname);
+    if (player == NULL)
+    {
+        return false;
+    }
+
+    return tb_strlast(&player->apl_txtbuf, msgnum, dst, dst_sz);
+}
+
 struct aion_player* aion_group_find(char *charname)
 {
     struct aion_player *curplayer;

@@ -1,6 +1,10 @@
 #ifndef UTIL_H_INCLUDED
 #define UTIL_H_INCLUDED
 
+/* XXX:  Move this to some sort of regex module */
+#include <regex.h>
+extern void util_re_strlcpy(char *outstr, const char *instr, ssize_t outsz, regmatch_t rem);
+
 extern size_t util_strlcpy(char *dst, const char *src, size_t dst_size);
 extern size_t util_strlcat(char *dst, const char *src, size_t dst_size);
 
