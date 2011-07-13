@@ -192,7 +192,7 @@ int parse_process(uint32_t rp_id, const char* matchstr, regmatch_t *rematch, uin
     char damage[16];
     char target[REGEX_NAME_SZ];
     char skill[REGEX_NAME_SZ];
-    char chat[256];
+    char chat[1024];
 
     switch (rp_id)
     {

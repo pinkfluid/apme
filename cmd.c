@@ -332,7 +332,7 @@ void cmd_exec(char *txt)
         if (aion_player_chat_get(cmdplayer, msgnum, cmdchat, sizeof(cmdchat)))
         {
             cmdtxt = cmdchat;
-            printf("LAST CHAT: %s\n", cmdchat);
+            printf("LAST CHAT: '%s'\n", cmdchat);
         }
         else
         {
