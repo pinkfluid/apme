@@ -188,3 +188,13 @@ size_t util_strlcat(char *dst, const char *src, size_t dst_size)
     return dst_len + src_len;
 }
 
+void util_chomp(char *str)
+{
+    char *pstr;
+
+    pstr = str + strlen(str) - 1;
+    while ((str <= pstr) && (*pstr == '\n' || *pstr == '\r') )
+    {
+        *pstr-- = '\0';
+    }
+}

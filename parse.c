@@ -367,8 +367,6 @@ int main(int argc, char* argv[])
 
         for (;;)
         {
-            char *chopptr;
-
             cmd_poll();
 
             if (fgets(buf, sizeof(buf), f) == NULL)
@@ -377,13 +375,7 @@ int main(int argc, char* argv[])
                 continue;
             }
 
-            chopptr = buf + strlen(buf) - 1;
-            /* Chop off new-line characters */
-
-            while ((buf <= chopptr) && (*chopptr == '\n' || *chopptr == '\r') )
-            {
-                *chopptr-- = '\0';
-            }
+            util_chomp(buf);
 
             for (ii = 0; ii < sizeof(rp_aion) / sizeof(rp_aion[0]); ii++)
             {

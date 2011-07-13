@@ -9,5 +9,6 @@ extern bool clipboard_get_text(char *text, size_t text_sz);
 
 extern char* aion_get_install_path(void);
 
+extern void util_chomp(char *str);
 
 #endif // UTIL_H_INCLUDED
