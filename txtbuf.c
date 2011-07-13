@@ -3,13 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 
-struct txtbuf
-{
-    size_t  tb_size;
-    size_t  tb_head;
-    size_t  tb_tail;
-    char    *tb_text;
-};
+#include "txtbuf.h"
 
 void tb_init(struct txtbuf *tb, char *txt, size_t txt_sz)
 {
