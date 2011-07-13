@@ -36,7 +36,6 @@
 #define RP_GROUP_DISBAND            310
 #define RP_GROUP_SELF_ROLL_DICE     311
 #define RP_GROUP_PLAYER_ROLL_DICE   312
-
 #define RP_CHAT_GENERAL             400
 
 struct regex_parse
@@ -182,6 +181,7 @@ void parse_action_group_self_roll_dice(void)
 
 void parse_action_chat_general(char *name, char *txt)
 {
+    aion_player_chat_cache(name, txt);
 //    printf("CHAT: %s -> %s\n", name, txt);
 }
 

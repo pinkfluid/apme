@@ -8,6 +8,7 @@ extern bool aion_group_leave(char *charname);
 extern void aion_group_disband(void);
 extern bool aion_group_apvalue_update(char *charname, uint32_t apval);
 extern bool aion_group_apvalue_set(char *charname, uint32_t apval);
+extern bool aion_player_chat_cache(char *charname, char *chat);
 
 #define LANG_ELYOS      1
 #define LANG_ASMODIAN   2
