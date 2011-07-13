@@ -188,10 +188,6 @@ bool cmd_func_translate(char *argv[], char *txt, int langid)
 {
     char tr_txt[1024];
 
-    /* Skip the command, and whitespaces */
-    txt += strlen(argv[0]);
-    while (*txt == ' ') txt++;
-
     util_strlcpy(tr_txt, txt, sizeof(tr_txt));
 
     aion_translate(tr_txt, langid);
@@ -220,8 +216,9 @@ bool cmd_func_asmo(int argc, char *argv[], char *txt)
  */ 
 void cmd_exec(char *txt)
 {
-    char cmd[CMD_SIZE];
-    char *pcmd;
+    char cmdbuf[CMD_SIZE];
+    char *pcmdbuf;
+    char *cmdtxt;
     int  argc;
     char *argv[CMD_ARGC_MAX];
     int ii;
@@ -230,24 +227,30 @@ void cmd_exec(char *txt)
     if (txt[0] != CMD_CHAR) return;
     txt++;
 
+
     /*
      * Extract the arguments, but copy txt first since
      * strsep() modifies the buffer 
      */
-    util_strlcpy(cmd, txt, sizeof(cmd));
+    util_strlcpy(cmdbuf, txt, sizeof(cmdbuf));
     
-    pcmd = cmd;
+    pcmdbuf = cmdbuf;
     /* Build out an argc/argv like list of parameters */
     for (argc = 0; argc < CMD_ARGC_MAX; argc++)
     {
         do
         {
-            argv[argc] = strsep(&pcmd, CMD_DELIM);
+            argv[argc] = strsep(&pcmdbuf, CMD_DELIM);
         }
         while ((argv[argc] != NULL) && argv[argc][0] == '\0');
 
         if (argv[argc] == NULL) break;
     }
+
+    /* For cmdtxt, skip the command name and whitespaces */
+    cmdtxt = txt;
+    cmdtxt += strlen(argv[0]);
+    while (*cmdtxt == ' ') cmdtxt++;
 
     cmd_retval_set(CMD_RETVAL_UNKNOWN);
 
@@ -255,7 +258,7 @@ void cmd_exec(char *txt)
     {
         if (strcasecmp(cmd_list[ii].cmd_command, argv[0]) == 0)
         {
-            if (!cmd_list[ii].cmd_func(argc, argv, txt))
+            if (!cmd_list[ii].cmd_func(argc, argv, cmdtxt))
             {
                 cmd_retval_set(CMD_RETVAL_ERROR);
             }
