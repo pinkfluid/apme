@@ -34,10 +34,13 @@
 #define RP_GROUP_PLAYER_KICK        306
 #define RP_GROUP_PLAYER_OFFLINE     307
 #define RP_GROUP_DISBAND            310
-#define RP_GROUP_SELF_ROLL_DICE     311
-#define RP_GROUP_PLAYER_ROLL_DICE   312
+
 #define RP_CHAT_GENERAL             400
 #define RP_CHAT_SELF                401
+
+#define RP_ROLL_DICE_SELF           500
+#define RP_ROLL_DICE_PLAYER         501
+#define RP_ROLL_DICE_PASS           502
 
 struct regex_parse
 {
@@ -48,14 +51,7 @@ struct regex_parse
 
 struct regex_parse rp_aion[] =
 {
-    {
-        .rp_id  = RP_ITEM_LOOT_SELF,
-        .rp_exp = "You have acquired \\[item:" REGEX_ITEM "\\]",
-    },
-    {
-        .rp_id  = RP_ITEM_LOOT_PLAYER,
-        .rp_exp = REGEX_NAME " has acquired \\[item:" REGEX_ITEM "\\]",
-    },
+    /* Put damage meter at the beginning, because Aion generates a lot of text with this, so it's best they match first */
     {
         .rp_id  = RP_DAMAGE_INFLICT,
         .rp_exp = ": " REGEX_NAME " inflicted ([0-9.]+) damage on ([A-Za-z ]+) by using ([A-Za-z ]+)\\.",
@@ -63,6 +59,14 @@ struct regex_parse rp_aion[] =
     {
         .rp_id  = RP_DAMAGE_CRITICAL,
         .rp_exp = ": Critical Hit! You inflicted ([0-9.]+) critical damage on ([A-Za-z ]+)\\.",
+    },
+    {
+        .rp_id  = RP_ITEM_LOOT_SELF,
+        .rp_exp = "You have acquired \\[item:" REGEX_ITEM "\\]",
+    },
+    {
+        .rp_id  = RP_ITEM_LOOT_PLAYER,
+        .rp_exp = REGEX_NAME " has acquired \\[item:" REGEX_ITEM "\\]",
     },
     {
         .rp_id  = RP_GROUP_SELF_JOIN,
@@ -89,14 +93,6 @@ struct regex_parse rp_aion[] =
         .rp_exp = ": " REGEX_NAME " has been kicked out of your group\\.",
     },
     {
-        .rp_id  = RP_GROUP_SELF_ROLL_DICE,
-        .rp_exp = ": You rolled the dice and got a [0-9]+ \\(max\\. [0-9]+\\)\\.",
-    },
-    {
-        .rp_id  = RP_GROUP_PLAYER_ROLL_DICE,
-        .rp_exp = ": " REGEX_NAME " rolled the dice and got [0-9]+ \\(max\\. [0-9]+\\)\\.",
-    },
-    {
         .rp_id  = RP_GROUP_PLAYER_OFFLINE,
         .rp_exp = ": " REGEX_NAME " has been offline for too long and is automatically excluded from the group\\.",
     },
@@ -111,7 +107,19 @@ struct regex_parse rp_aion[] =
     {
         .rp_id  = RP_CHAT_SELF,
         .rp_exp = ": " REGEX_NAME ": (.*)$",
-    }
+    },
+    {
+        .rp_id  = RP_ROLL_DICE_SELF,
+        .rp_exp = ": You rolled the dice and got a [0-9]+ \\(max\\. [0-9]+\\)\\.",
+    },
+    {
+        .rp_id  = RP_ROLL_DICE_PLAYER,
+        .rp_exp = ": " REGEX_NAME " rolled the dice and got [0-9]+ \\(max\\. [0-9]+\\)\\.",
+    },
+    {
+        .rp_id  = RP_ROLL_DICE_PASS,
+        .rp_exp = ": " REGEX_NAME " gave up rolling the dice.",
+    },
 };
 
 void parse_action_loot_item(char *player, uint32_t itemid)
@@ -174,21 +182,32 @@ void parse_action_group_player_leave(char *who)
     aion_group_leave(who);
 }
 
-void parse_action_group_player_roll_dice(char *who)
-{
-    aion_group_join(who);
-}
-
-void parse_action_group_self_roll_dice(void)
-{
-    //printf("ROLL: You rolled.\n");
-}
-
 void parse_action_chat_general(char *name, char *txt)
 {
     aion_player_chat_cache(name, txt);
 //    printf("CHAT: %s -> %s\n", name, txt);
 }
+
+void parse_action_roll_dice_self(void)
+{
+    //printf("ROLL: You rolled.\n");
+}
+
+void parse_action_roll_dice_player(char *who)
+{
+    /*
+     * Roll dices can be detected only for group members. So parsing rolling or passing
+     * of a dice is a good way of detecting group members.
+     */
+    aion_group_join(who);
+}
+
+void parse_action_roll_dice_pass(char *who)
+{
+    /* See parse_action_roll_dice_player() */
+    aion_group_join(who);
+}
+
 
 int parse_process(uint32_t rp_id, const char* matchstr, regmatch_t *rematch, uint32_t rematch_num)
 {
@@ -251,15 +270,6 @@ int parse_process(uint32_t rp_id, const char* matchstr, regmatch_t *rematch, uin
             parse_action_group_player_leave(name);
             break;
 
-        case RP_GROUP_SELF_ROLL_DICE:
-            parse_action_group_self_roll_dice();
-            break;
-
-        case RP_GROUP_PLAYER_ROLL_DICE:
-            util_re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
-            parse_action_group_player_roll_dice(name);
-            break;
-
         case RP_CHAT_GENERAL:
             util_re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
             util_re_strlcpy(chat, matchstr, sizeof(chat), rematch[2]);
@@ -273,6 +283,21 @@ int parse_process(uint32_t rp_id, const char* matchstr, regmatch_t *rematch, uin
             /* XXX: Chat self is not reliable, since it records stuff like NPC messages and Tips */
             //parse_action_chat_general(AION_NAME_DEFAULT, chat);
             break;
+
+        case RP_ROLL_DICE_SELF:
+            parse_action_roll_dice_self();
+            break;
+
+        case RP_ROLL_DICE_PLAYER:
+            util_re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
+            parse_action_roll_dice_player(name);
+            break;
+
+        case RP_ROLL_DICE_PASS:
+            util_re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
+            parse_action_roll_dice_pass(name);
+            break;
+
 
         default:
             printf("Unknown RP ID %u\n", rp_id);
