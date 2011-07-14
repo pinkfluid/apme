@@ -37,6 +37,7 @@
 #define RP_GROUP_SELF_ROLL_DICE     311
 #define RP_GROUP_PLAYER_ROLL_DICE   312
 #define RP_CHAT_GENERAL             400
+#define RP_CHAT_SELF                401
 
 struct regex_parse
 {
@@ -106,6 +107,10 @@ struct regex_parse rp_aion[] =
     {
         .rp_id  = RP_CHAT_GENERAL,
         .rp_exp = ": \\[charname:" REGEX_NAME ";.*\\]: (.*)$",
+    },
+    {
+        .rp_id  = RP_CHAT_SELF,
+        .rp_exp = ": " REGEX_NAME ": (.*)$",
     }
 };
 
@@ -262,6 +267,11 @@ int parse_process(uint32_t rp_id, const char* matchstr, regmatch_t *rematch, uin
             parse_action_chat_general(name, chat);
             break;
 
+        case RP_CHAT_SELF:
+            util_re_strlcpy(chat, matchstr, sizeof(chat), rematch[2]);
+            parse_action_chat_general("You", chat);
+            break;
+
         default:
             printf("Unknown RP ID %u\n", rp_id);
             break;
@@ -293,6 +303,8 @@ int main(int argc, char* argv[])
             return 0;
         }
     }
+
+    aion_player_chat_cache("You", "[item:186000063;ver2;;;]x1 ");
 
     {
         FILE *f;

@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 
 #include "items.h"
 
@@ -82,7 +83,7 @@ struct item itemdb[] =
     },
     {
         .item_id    = 186000052,
-        .item_name  = "Greter Ancient Crown",
+        .item_name  = "Greater Ancient Crown",
         .item_ap    = 7200,
     },
     {
@@ -113,6 +114,21 @@ struct item* item_find(uint32_t itemid)
     for (ii = 0; ii < sizeof(itemdb)/sizeof(itemdb[0]); ii++)
     {
         if (itemdb[ii].item_id == itemid)
+        {
+            return &itemdb[ii];
+        }
+    }
+
+    return NULL;
+}
+
+struct item* item_find_name(char *item_name)
+{
+    int ii;
+
+    for (ii = 0; ii < sizeof(itemdb)/sizeof(itemdb[0]); ii++)
+    {
+        if (strcasecmp(itemdb[ii].item_name, item_name) == 0)
         {
             return &itemdb[ii];
         }

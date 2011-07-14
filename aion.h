@@ -18,6 +18,7 @@ extern bool aion_player_chat_get(char *charname, int msgnum, char *dst, size_t d
 #define LANG_BALAUR     5
 
 extern void aion_translate(char *txt, uint32_t language);
+extern void aion_rtranslate(char *txt, uint32_t language);
 
 extern bool aion_group_get_stats(char *stats, size_t stats_sz);
 extern bool aion_group_get_aprollrights(char *stats, size_t stats_sz);

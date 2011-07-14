@@ -47,6 +47,17 @@ void util_re_strlcpy(char *outstr, const char *instr, ssize_t outsz, regmatch_t 
     outstr[sz] = '\0';
 }
 
+size_t util_re_strlen(regmatch_t rem)
+{
+    if ((rem.rm_so < 0) ||
+        (rem.rm_eo < 0))
+    {
+        return 0;
+    }
+
+    return (rem.rm_eo - rem.rm_so);
+}
+
 
 bool clipboard_set_text(char *text)
 {

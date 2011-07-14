@@ -139,6 +139,11 @@ struct aion_player* aion_player_alloc(char *charname)
 {
     struct aion_player *curplayer;
 
+    if (aion_player_is_self(charname))
+    {
+        return &aion_player_self;
+    }
+
     /* Scan the list of cached players, if we find it there, return it */
     LIST_FOREACH(curplayer, &aion_players_cached, apl_cached)
     {
@@ -413,6 +418,28 @@ void aion_translate(char *txt, uint32_t langid)
         else
         {
             index = 0;
+        }
+
+        txt++;
+    }
+}
+
+void aion_rtranslate(char *txt, uint32_t langid)
+{
+    char carry = 0;
+
+    while (*txt != '\0')
+    {
+        int c = tolower((int)*txt);
+
+        if (isalpha(c))
+        {
+            *txt  = (((c + carry) ^ langid) % 26) + 'a';
+            carry = (((c + carry) ^ langid) / 26) + 1;
+        }
+        else
+        {
+            carry = 0;
         }
 
         txt++;

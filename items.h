@@ -11,5 +11,6 @@ struct item
 };
 
 extern struct item* item_find(uint32_t itemid);
+extern struct item* item_find_name(char *item_name);
 
 #endif // ITEM_H_INCLUDED

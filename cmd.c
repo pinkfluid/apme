@@ -7,6 +7,7 @@
 
 #include "util.h"
 #include "aion.h"
+#include "items.h"
 
 #define CMD_COMMAND_CHAR    '?'
 #define CMD_CHATHIST_CHAR   '!'
@@ -31,7 +32,10 @@ static cmd_func_t cmd_func_group_join;
 static cmd_func_t cmd_func_group_leave;
 static cmd_func_t cmd_func_elyos;
 static cmd_func_t cmd_func_asmo;
+static cmd_func_t cmd_func_relyos;
+static cmd_func_t cmd_func_rasmo;
 static cmd_func_t cmd_func_echo;
+static cmd_func_t cmd_func_apcalc;
 
 struct cmd_entry
 {
@@ -75,8 +79,20 @@ struct cmd_entry cmd_list[] =
         .cmd_func       = cmd_func_asmo,
     },
     {
+        .cmd_command    = "relyos",
+        .cmd_func       = cmd_func_relyos,
+    },
+    {
+        .cmd_command    = "rasmo",
+        .cmd_func       = cmd_func_rasmo,
+    },
+    {
         .cmd_command    = "echo",
         .cmd_func       = cmd_func_echo,
+    },
+    {
+        .cmd_command    = "apcalc",
+        .cmd_func       = cmd_func_apcalc,
     },
 };
 
@@ -218,6 +234,32 @@ bool cmd_func_asmo(int argc, char *argv[], char *txt)
     return cmd_func_translate(argv, txt, LANG_ASMODIAN);
 }
 
+bool cmd_func_rtranslate(char *argv[], char *txt, int langid)
+{
+    char tr_txt[1024];
+
+    util_strlcpy(tr_txt, txt, sizeof(tr_txt));
+
+    aion_rtranslate(tr_txt, langid);
+
+    cmd_retval_set(tr_txt);
+
+    return true;
+}
+
+bool cmd_func_relyos(int argc, char *argv[], char *txt)
+{
+    (void)argc;
+
+    return cmd_func_rtranslate(argv, txt, LANG_ASMODIAN);
+}
+
+bool cmd_func_rasmo(int argc, char *argv[], char *txt)
+{
+    (void)argc;
+
+    return cmd_func_rtranslate(argv, txt, LANG_ELYOS);
+}
 bool cmd_func_echo(int argc, char *argv[], char *txt)
 {
     (void)argc;
@@ -227,6 +269,133 @@ bool cmd_func_echo(int argc, char *argv[], char *txt)
     return true;
 }
 
+bool cmd_func_apcalc(int argc, char *argv[], char *txt)
+{
+    static regex_t  cmd_apcalc_re1;
+    static regex_t  cmd_apcalc_re2;
+    static bool     cmd_apcalc_first = true;
+
+    int             retval;
+    regmatch_t      rematch[4];  /* We wont match more than 2 items */
+    struct item     *relic_item;
+    uint32_t        relic_num;
+
+    uint32_t        ap_total = 0;
+
+
+    /* Initialize the item regex */
+    if (cmd_apcalc_first)
+    {
+        retval = regcomp(&cmd_apcalc_re1, "([0-9]*)x?\\[item:([0-9]+);.*\\]x?([0-9]*)", REG_EXTENDED);
+        if (retval != 0)
+        {
+            printf("Error initializing apcalc\n");
+            return false;
+        }
+
+        retval = regcomp(&cmd_apcalc_re2, "([0-9]*)x?<([A-Za-z ]+)>x?([0-9]*)", REG_EXTENDED);
+        if (retval != 0)
+        {
+            printf("Error initializing apcalc\n");
+            return false;
+        }
+        cmd_apcalc_first = false;
+    }
+
+    for (;;)
+    {
+        char relic_numstr[16];
+        char relic_idstr[64];
+
+        relic_numstr[0] = '\0';
+        relic_idstr[0] = '\0';
+        relic_num = 1;
+
+        retval = -1;
+        relic_item = NULL;
+
+        if (retval != 0)
+        {
+            retval = regexec(&cmd_apcalc_re1,
+                             txt,
+                             sizeof(rematch) / sizeof(rematch[0]),
+                             rematch,
+                             0);
+            if (retval == 0)
+            {
+                uint32_t relic_id;
+
+                util_re_strlcpy(relic_idstr, txt, sizeof(relic_idstr), rematch[2]);
+
+
+                if (relic_idstr[0] != '\0')
+                {
+                    relic_id = strtoul(relic_idstr, NULL, 0);
+                }
+
+                relic_id = strtoul(relic_idstr, NULL, 0);
+
+                relic_item = item_find(relic_id);
+            }
+        }
+
+        if (retval != 0)
+        {
+            retval = regexec(&cmd_apcalc_re2,
+                             txt,
+                             sizeof(rematch) / sizeof(rematch[0]),
+                             rematch,
+                             0);
+
+            if (retval == 0)
+            {
+                util_re_strlcpy(relic_idstr, txt, sizeof(relic_idstr), rematch[2]);
+
+                relic_item = item_find_name(relic_idstr);
+            }
+        }
+
+        /* No more matchers found, bail out */
+        if (retval != 0)
+        {
+            break;
+        }
+
+        if (util_re_strlen(rematch[1]) != 0)
+        {
+            util_re_strlcpy(relic_numstr, txt, sizeof(relic_numstr), rematch[1]);
+        }
+
+        if (util_re_strlen(rematch[3]) != 0)
+        {
+            util_re_strlcpy(relic_numstr, txt, sizeof(relic_numstr), rematch[3]);
+        }
+
+        printf("%s x '%s' = %p\n", relic_numstr, relic_idstr, relic_item);
+
+        txt += util_re_strlen(rematch[0]);
+
+        if (relic_numstr[0] != '\0')
+        {
+            relic_num = strtoul(relic_numstr, NULL, 0);
+        }
+
+
+        if (relic_item == NULL)continue;
+        if (relic_num == 0) continue;
+
+        ap_total += relic_item->item_ap * relic_num;
+    }
+
+    printf("AP TOTAL: %u\n", ap_total);
+    cmd_retval_printf("%uAP", ap_total);
+
+    return true;
+}
+
+/*
+ * Parse chat history format
+ */
 bool cmd_chat_hist(int argc, char *argv[], char *player, size_t player_sz, int *msgnum)
 {
     /* Regex for matching the !Player-X format  */
@@ -269,7 +438,7 @@ bool cmd_chat_hist(int argc, char *argv[], char *player, size_t player_sz, int *
         return false;
     }
 
-    if ((rematch[1].rm_so == -1) || (rematch[1].rm_eo == -1))
+    if (!RE_MATCH(rematch[1]))
     {
         util_re_strlcpy(player, argv[1], player_sz, rematch[2]);
         util_re_strlcpy(strmsg, argv[1], sizeof(strmsg), rematch[3]);
