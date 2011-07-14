@@ -268,8 +268,10 @@ int parse_process(uint32_t rp_id, const char* matchstr, regmatch_t *rematch, uin
             break;
 
         case RP_CHAT_SELF:
+            util_re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
             util_re_strlcpy(chat, matchstr, sizeof(chat), rematch[2]);
-            parse_action_chat_general("You", chat);
+            /* XXX: Chat self is not reliable, since it records stuff like NPC messages and Tips */
+            //parse_action_chat_general("You", chat);
             break;
 
         default:
@@ -303,8 +305,6 @@ int main(int argc, char* argv[])
             return 0;
         }
     }
-
-    aion_player_chat_cache("You", "[item:186000063;ver2;;;]x1 ");
 
     {
         FILE *f;
@@ -350,8 +350,12 @@ int main(int argc, char* argv[])
 
             if (fgets(buf, sizeof(buf), f) == NULL)
             {
+#ifdef SYS_WINDOWS
                 usleep(300);
                 continue;
+#else
+                break;
+#endif
             }
 
             util_chomp(buf);

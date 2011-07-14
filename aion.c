@@ -148,7 +148,11 @@ struct aion_player* aion_player_alloc(char *charname)
     LIST_FOREACH(curplayer, &aion_players_cached, apl_cached)
     {
         if (strcasecmp(curplayer->apl_name, charname) != 0) continue;
-        /* Found player -- return it */
+
+        /* Found player -- move it to the head of the list and return it */
+        LIST_REMOVE(curplayer, apl_cached);
+        LIST_INSERT_HEAD(&aion_players_cached, curplayer, apl_cached);
+
         return curplayer;
     }
 
@@ -455,6 +459,7 @@ void aion_group_dump(void)
     {
         printf(" * %s: AP = %u\n", curplayer->apl_name, curplayer->apl_apvalue);
     }
+
     printf("------- Cached \n");
     LIST_FOREACH(curplayer, &aion_players_cached, apl_cached)
     {
