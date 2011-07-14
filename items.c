@@ -41,7 +41,7 @@ struct item itemdb[] =
     },
     {
         .item_id    = 186000060,
-        .item_name  = "Greter Ancient Seal",
+        .item_name  = "Greater Ancient Seal",
         .item_ap    = 1800,
     },
     {
@@ -62,7 +62,7 @@ struct item itemdb[] =
     },
     {
         .item_id    = 186000056,
-        .item_name  = "Greter Ancient Goblet",
+        .item_name  = "Greater Ancient Goblet",
         .item_ap    = 3600,
     },
     {

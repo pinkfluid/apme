@@ -28,4 +28,4 @@ aptrack: $(OBJ)
 
 .PHONY: clean
 clean:
-	rm -f $(OBJ) parse parse.exe
+	rm -f $(OBJ) aptrack aptrack.exe

@@ -300,7 +300,7 @@ bool cmd_func_apcalc(int argc, char *argv[], char *txt)
     /* Initialize the item regex */
     if (cmd_apcalc_first)
     {
-        retval = regcomp(&cmd_apcalc_re1, "([0-9]*)x?\\[item:([0-9]+);.*\\]x?([0-9]*)", REG_EXTENDED);
+        retval = regcomp(&cmd_apcalc_re1, "([0-9]*)x?\\[item:([0-9]+)[a-zA-Z0-9;]*\\]x?([0-9]*)", REG_EXTENDED);
         if (retval != 0)
         {
             printf("Error initializing apcalc\n");

@@ -115,7 +115,6 @@ bool clipboard_get_text(char *text, size_t text_sz)
     hsrc = GetClipboardData(CF_TEXT);
     if (hsrc == NULL)
     {
-        printf("Nothing in clipboard\n");
         // Nothing to retrieve
         goto error;
     }
