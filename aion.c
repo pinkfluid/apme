@@ -13,14 +13,12 @@
 #include "util.h"
 #include "txtbuf.h"
 
-#define AION_CHAT_SZ    1024
-
 struct aion_player
 {
     LIST_ENTRY(aion_player)     apl_cached;             /* Cached linked list element           */
     LIST_ENTRY(aion_player)     apl_group;              /* Group linked list element            */
 
-    char                        *apl_name;              /* Aion player name                     */
+    char                        apl_name[AION_NAME_SZ]; /* Aion player name                     */
     uint32_t                    apl_apvalue;            /* Accumulated AP value                 */
     struct txtbuf               apl_txtbuf;             /* Text buffer, linked to chat buffer   */
     char                        apl_chat[AION_CHAT_SZ]; /* Chat buffer                          */
@@ -107,7 +105,8 @@ bool aion_init(void)
     LIST_INIT(&aion_players_cached);
     LIST_INIT(&aion_group);
 
-    aion_player_self.apl_name       = NULL;
+    /* Default name */
+    util_strlcpy(aion_player_self.apl_name, AION_NAME_DEFAULT, sizeof(aion_player_self.apl_name));
     aion_player_self.apl_apvalue    = 0;
 
     /* Initialize the chat buffer, just in case */
@@ -124,15 +123,15 @@ bool aion_init(void)
 bool aion_player_is_self(char *charname)
 {
     if (charname == NULL) return true;
-    if (strcasecmp(charname, "You") == 0) return true;
-
-    if ((aion_player_self.apl_name != NULL) &&
-        (strcasecmp(aion_player_self.apl_name, charname) == 0))
-    {
-        return true;
-    }
+    if (strcasecmp(charname, AION_NAME_DEFAULT) == 0) return true;
+    if (strcasecmp(aion_player_self.apl_name, charname) == 0) return true;
 
     return false;
+}
+
+void aion_player_name_set(char *charname)
+{
+    util_strlcpy(aion_player_self.apl_name, charname, sizeof(aion_player_self.apl_name));
 }
 
 struct aion_player* aion_player_alloc(char *charname)
@@ -159,7 +158,7 @@ struct aion_player* aion_player_alloc(char *charname)
     curplayer = malloc(sizeof(struct aion_player));
     assert(curplayer != NULL);
 
-    curplayer->apl_name     = strdup(charname);
+    util_strlcpy(curplayer->apl_name, charname, sizeof(curplayer->apl_name));
     curplayer->apl_apvalue  = 0;
 
     /* Initialize the chat buffers */
@@ -337,7 +336,7 @@ bool aion_group_get_stats(char *stats, size_t stats_sz)
     char curstat[64];
     struct aion_player *player;
 
-    snprintf(curstat, sizeof(curstat), "| %s (AP %u) ", "You", aion_player_self.apl_apvalue); 
+    snprintf(curstat, sizeof(curstat), "| %s (AP %u) ", aion_player_self.apl_name, aion_player_self.apl_apvalue); 
     util_strlcpy(stats, curstat, stats_sz);
 
     LIST_FOREACH(player, &aion_group, apl_group)
@@ -370,7 +369,7 @@ bool aion_group_get_aprollrights(char *stats, size_t stats_sz)
     /* Do we have the lowest AP? */
     if (aion_player_self.apl_apvalue <= lowest_ap)
     {
-        snprintf(curstats, sizeof(curstats), "%s ", "You");
+        snprintf(curstats, sizeof(curstats), "%s ", aion_player_self.apl_name);
         util_strlcat(stats, curstats, stats_sz);
     }
 
@@ -463,7 +462,7 @@ void aion_group_dump(void)
     printf("------- Cached \n");
     LIST_FOREACH(curplayer, &aion_players_cached, apl_cached)
     {
-        char chat[1024];
+        char chat[AION_CHAT_SZ];
 
         if (!tb_strlast(&curplayer->apl_txtbuf, 0, chat, sizeof(chat)))
         {

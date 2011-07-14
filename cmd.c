@@ -14,7 +14,7 @@
 #define CMD_SIZE            64
 #define CMD_ARGC_MAX        32
 #define CMD_DELIM           " ,"
-#define CMD_TEXT_SZ         1024
+#define CMD_TEXT_SZ         AION_CHAT_SZ
 
 #define CMD_RETVAL_OK       "OK"
 #define CMD_RETVAL_ERROR    "Error"
@@ -25,6 +25,7 @@ static char cmd_retval[CMD_TEXT_SZ];
 typedef bool cmd_func_t(int argc, char *argv[], char *txt);
 
 static cmd_func_t cmd_func_hello;
+static cmd_func_t cmd_func_nameset;
 static cmd_func_t cmd_func_ap_stats;
 static cmd_func_t cmd_func_ap_roll;
 static cmd_func_t cmd_func_ap_set;
@@ -49,6 +50,10 @@ struct cmd_entry cmd_list[] =
     {
         .cmd_command    = "hello",
         .cmd_func       = cmd_func_hello,
+    },
+    {
+        .cmd_command    = "name",
+        .cmd_func       = cmd_func_nameset,
     },
     {
         .cmd_command    = "apstat",
@@ -96,8 +101,6 @@ struct cmd_entry cmd_list[] =
     },
 };
 
-
-
 void cmd_retval_printf(char *fmt, ...)
 {
     va_list vargs;
@@ -114,7 +117,18 @@ void cmd_retval_set(char *txt)
 
 bool cmd_func_hello(int argc, char *argv[], char *txt)
 {
-    cmd_retval_printf("Hello world: argc %d", argc);
+    cmd_retval_printf("Hello, how are you?", argc);
+
+    return true;
+}
+
+bool cmd_func_nameset(int argc, char *argv[], char *txt)
+{
+    if (argc < 2) return false;
+
+    aion_player_name_set(argv[1]);
+
+    cmd_retval_printf("You are now known as %s.", argv[1]);
 
     return true;
 }
@@ -209,7 +223,7 @@ bool cmd_func_group_leave(int argc, char *argv[], char *txt)
 
 bool cmd_func_translate(char *argv[], char *txt, int langid)
 {
-    char tr_txt[1024];
+    char tr_txt[CMD_TEXT_SZ];
 
     util_strlcpy(tr_txt, txt, sizeof(tr_txt));
 
@@ -236,7 +250,7 @@ bool cmd_func_asmo(int argc, char *argv[], char *txt)
 
 bool cmd_func_rtranslate(char *argv[], char *txt, int langid)
 {
-    char tr_txt[1024];
+    char tr_txt[CMD_TEXT_SZ];
 
     util_strlcpy(tr_txt, txt, sizeof(tr_txt));
 
@@ -537,7 +551,7 @@ void cmd_exec(char *txt)
  */
 void cmd_poll(void)
 {
-    char txt[1024];
+    char txt[CMD_TEXT_SZ];
 
     if (clipboard_get_text(txt, sizeof(txt)))
     {

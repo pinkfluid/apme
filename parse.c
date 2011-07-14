@@ -15,7 +15,7 @@
 #include "aion.h"
 #include "cmd.h"
 
-#define REGEX_NAME_SZ   64
+#define REGEX_NAME_SZ   AION_NAME_SZ
 #define REGEX_NAME      "([0-9a-zA-Z_]+)"
 #define REGEX_ITEM_SZ   16
 #define REGEX_ITEM      "([0-9]+)"
@@ -197,13 +197,13 @@ int parse_process(uint32_t rp_id, const char* matchstr, regmatch_t *rematch, uin
     char damage[16];
     char target[REGEX_NAME_SZ];
     char skill[REGEX_NAME_SZ];
-    char chat[1024];
+    char chat[AION_CHAT_SZ];
 
     switch (rp_id)
     {
         case RP_ITEM_LOOT_SELF:
             util_re_strlcpy(item, matchstr, sizeof(item), rematch[1]);
-            parse_action_loot_item("You", strtoul(item, NULL, 10));
+            parse_action_loot_item(AION_NAME_DEFAULT, strtoul(item, NULL, 10));
             break;
 
         case RP_ITEM_LOOT_PLAYER:
@@ -226,7 +226,7 @@ int parse_process(uint32_t rp_id, const char* matchstr, regmatch_t *rematch, uin
             util_re_strlcpy(damage, matchstr, sizeof(damage), rematch[1]);
             util_re_strlcpy(target, matchstr, sizeof(target), rematch[2]);
 
-            parse_action_damage_inflict("You", target, damage, "Critical");
+            parse_action_damage_inflict(AION_NAME_DEFAULT, target, damage, "Critical");
             break;
 
         case RP_GROUP_SELF_JOIN:
@@ -271,7 +271,7 @@ int parse_process(uint32_t rp_id, const char* matchstr, regmatch_t *rematch, uin
             util_re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
             util_re_strlcpy(chat, matchstr, sizeof(chat), rematch[2]);
             /* XXX: Chat self is not reliable, since it records stuff like NPC messages and Tips */
-            //parse_action_chat_general("You", chat);
+            //parse_action_chat_general(AION_NAME_DEFAULT, chat);
             break;
 
         default:
@@ -309,7 +309,7 @@ int main(int argc, char* argv[])
     {
         FILE *f;
         regmatch_t rematch[16];
-        char buf[1024];
+        char buf[AION_CHAT_SZ];
 
 #ifdef SYS_WINDOWS
         char *install_path = NULL;
