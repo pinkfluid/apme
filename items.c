@@ -91,19 +91,6 @@ struct item itemdb[] =
         .item_name  = "Major Ancient Crown",
         .item_ap    = 9600,
     },
-#if 0
-    /* TEST :) */
-    {
-        .item_id    = 152000202,
-        .item_name  = "Titanium Ore",
-        .item_ap    = 1,
-    },
-    {
-        .item_id    =  152000203,
-        .item_name  = "Greater Titanium Ore",
-        .item_ap    = 10,
-    }
-#endif
 };
 
 

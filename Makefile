@@ -1,6 +1,7 @@
 SRC:=parse.c util.c items.c aion.c cmd.c txtbuf.c
 
 CFLAGS:=-Wall -O2 
+LDFLAGS:=
 
 #####################
 
@@ -20,9 +21,10 @@ endif
 
 OBJ:=$(patsubst %.c,%.o,$(SRC))
 
-all: parse
+all: aptrack 
 
-parse: $(OBJ)
+aptrack: $(OBJ)
+	$(CC) $(LDFLAGS) $(OBJ) -o $@
 
 .PHONY: clean
 clean:
