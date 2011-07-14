@@ -430,7 +430,7 @@ void aion_rtranslate(char *txt, uint32_t langid)
 
     while (*txt != '\0')
     {
-        int c = tolower((int)*txt);
+        int c = *txt;
 
         if (isalpha(c))
         {
