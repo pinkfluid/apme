@@ -8,6 +8,7 @@
 #include "util.h"
 #include "aion.h"
 #include "items.h"
+#include "console.h"
 
 #define CMD_COMMAND_CHAR    '?'
 #define CMD_CHATHIST_CHAR   '!'
@@ -37,6 +38,7 @@ static cmd_func_t cmd_func_relyos;
 static cmd_func_t cmd_func_rasmo;
 static cmd_func_t cmd_func_echo;
 static cmd_func_t cmd_func_apcalc;
+static cmd_func_t cmd_func_debug;
 
 struct cmd_entry
 {
@@ -98,6 +100,10 @@ struct cmd_entry cmd_list[] =
     {
         .cmd_command    = "apcalc",
         .cmd_func       = cmd_func_apcalc,
+    },
+    {
+        .cmd_command    = "debug",
+        .cmd_func       = cmd_func_debug,
     },
 };
 
@@ -303,14 +309,14 @@ bool cmd_func_apcalc(int argc, char *argv[], char *txt)
         retval = regcomp(&cmd_apcalc_re1, "([0-9]*)x?\\[item:([0-9]+)[a-zA-Z0-9;]*\\]x?([0-9]*)", REG_EXTENDED);
         if (retval != 0)
         {
-            printf("Error initializing apcalc\n");
+            con_printf("Error initializing apcalc\n");
             return false;
         }
 
         retval = regcomp(&cmd_apcalc_re2, "([0-9]*)x?<([A-Za-z ]+)>x?([0-9]*)", REG_EXTENDED);
         if (retval != 0)
         {
-            printf("Error initializing apcalc\n");
+            con_printf("Error initializing apcalc\n");
             return false;
         }
         cmd_apcalc_first = false;
@@ -385,7 +391,7 @@ bool cmd_func_apcalc(int argc, char *argv[], char *txt)
             util_re_strlcpy(relic_numstr, txt, sizeof(relic_numstr), rematch[3]);
         }
 
-        printf("%s x '%s' = %p\n", relic_numstr, relic_idstr, relic_item);
+        con_printf("%s x '%s' = %p\n", relic_numstr, relic_idstr, relic_item);
 
         txt += util_re_strlen(rematch[0]);
 
@@ -401,8 +407,17 @@ bool cmd_func_apcalc(int argc, char *argv[], char *txt)
         ap_total += relic_item->item_ap * relic_num;
     }
 
-    printf("AP TOTAL: %u\n", ap_total);
+    con_printf("AP TOTAL: %u\n", ap_total);
     cmd_retval_printf("%uAP", ap_total);
+
+    return true;
+}
+
+bool cmd_func_debug(int argc, char *argv[], char *txt)
+{
+    con_dump();
+
+    cmd_retval_set(CMD_RETVAL_OK);
 
     return true;
 }
@@ -427,7 +442,7 @@ bool cmd_chat_hist(int argc, char *argv[], char *player, size_t player_sz, int *
         retval = regcomp(&cmd_chathist_re, "^!([A-Za-z0-9_]+)$|^!([A-Za-z0-9_]+)-([0-9]+)$", REG_EXTENDED);
         if (retval != 0)
         {
-            printf("Error initializing CMD subsystem\n");
+            con_printf("Error initializing CMD subsystem\n");
             return false;
         }
 
@@ -515,7 +530,7 @@ void cmd_exec(char *txt)
         if (aion_player_chat_get(cmdplayer, msgnum, cmdchat, sizeof(cmdchat)))
         {
             cmdtxt = cmdchat;
-            printf("LAST CHAT: '%s'\n", cmdchat);
+            con_printf("LAST CHAT: '%s'\n", cmdchat);
         }
         else
         {

@@ -14,6 +14,7 @@
 #include "util.h"
 #include "aion.h"
 #include "cmd.h"
+#include "console.h"
 
 #define REGEX_NAME_SZ   AION_NAME_SZ
 #define REGEX_NAME      "([0-9a-zA-Z_]+)"
@@ -143,17 +144,17 @@ void parse_action_loot_item(char *player, uint32_t itemid)
             clipboard_set_text(aprolls);
         }
 
-        printf("LOOT: %s -> %s (%u AP)\n", player, item->item_name, item->item_ap);
+        con_printf("LOOT: %s -> %s (%u AP)\n", player, item->item_name, item->item_ap);
     }
     else
     {
-        printf("LOOT: %s -> %u\n", player, itemid);
+        con_printf("LOOT: %s -> %u\n", player, itemid);
     }
 }
 
 void parse_action_damage_inflict(char *player, char *target, char *damage, char *skill)
 {
-    //printf("DMG: %s -> %s: %s (%s)\n", player, target, damage, skill);
+    //con_printf("DMG: %s -> %s: %s (%s)\n", player, target, damage, skill);
 }
 
 void parse_action_group_self_join(void)
@@ -172,25 +173,25 @@ void parse_action_group_self_leave(void)
 
 void parse_action_group_player_join(char *who)
 {
-    printf("GROUP: %s joined the group.\n", who);
+    con_printf("GROUP: %s joined the group.\n", who);
     aion_group_join(who);
 }
 
 void parse_action_group_player_leave(char *who)
 {
-    printf("GROUP: %s left the group.\n", who);
+    con_printf("GROUP: %s left the group.\n", who);
     aion_group_leave(who);
 }
 
 void parse_action_chat_general(char *name, char *txt)
 {
     aion_player_chat_cache(name, txt);
-//    printf("CHAT: %s -> %s\n", name, txt);
+//    con_printf("CHAT: %s -> %s\n", name, txt);
 }
 
 void parse_action_roll_dice_self(void)
 {
-    //printf("ROLL: You rolled.\n");
+    //con_printf("ROLL: You rolled.\n");
 }
 
 void parse_action_roll_dice_player(char *who)
@@ -300,7 +301,7 @@ int parse_process(uint32_t rp_id, const char* matchstr, regmatch_t *rematch, uin
 
 
         default:
-            printf("Unknown RP ID %u\n", rp_id);
+            con_printf("Unknown RP ID %u\n", rp_id);
             break;
     }
 
@@ -312,9 +313,11 @@ int main(int argc, char* argv[])
     int retval;
     int ii;
 
+    con_init();
+
     if (!aion_init())
     {
-        printf("Unable to initialize the Aion subsystem.\n");
+        con_printf("Unable to initialize the Aion subsystem.\n");
         return 0;
     }
 
@@ -326,7 +329,7 @@ int main(int argc, char* argv[])
             char errstr[64];
 
             regerror(retval, &rp_aion[ii].rp_comp, errstr, sizeof(errstr));
-            printf("Error parsing regex: %s (%s)\n", rp_aion[ii].rp_exp, errstr);
+            con_printf("Error parsing regex: %s (%s)\n", rp_aion[ii].rp_exp, errstr);
             return 0;
         }
     }
@@ -342,7 +345,7 @@ int main(int argc, char* argv[])
         install_path = aion_get_install_path();
         if (install_path == NULL)
         {
-            printf("Unable to find Aion install path.\n");
+            con_printf("Unable to find Aion install path.\n");
             return 1;
         }
 
@@ -350,11 +353,11 @@ int main(int argc, char* argv[])
         util_strlcat(buf, install_path, sizeof(buf));
         util_strlcat(buf, "\\Chat.log", sizeof(buf));
 
-        printf("Opening chat file '%s'\n", buf);
+        con_printf("Opening chat file '%s'\n", buf);
         f = fopen(buf, "r");
         if (f == NULL)
         {
-            printf("Error opening file\n");
+            con_printf("Error opening file\n");
             return 1;
         }
 
@@ -364,7 +367,7 @@ int main(int argc, char* argv[])
         f = fopen("./Chat.log", "r");
         if (f == NULL)
         {
-            printf("Unable to open ./Chat.log");
+            con_printf("Unable to open ./Chat.log");
             return 1;
         }
 #endif

@@ -1,6 +1,6 @@
-SRC:=parse.c util.c items.c aion.c cmd.c txtbuf.c
+SRC:=parse.c util.c items.c aion.c cmd.c txtbuf.c console.c
 
-CFLAGS:=-Wall -O2 
+CFLAGS:=-Wall -O2
 LDFLAGS:=
 
 #####################

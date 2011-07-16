@@ -1,6 +1,8 @@
 #ifndef TXTBUF_H_INCLUDED
 #define TXTBUF_H_INCLUDED
 
+#include <stdbool.h>
+
 struct txtbuf
 {
     size_t  tb_size;

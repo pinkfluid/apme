@@ -12,6 +12,7 @@
 #include "aion.h"
 #include "util.h"
 #include "txtbuf.h"
+#include "console.h"
 
 struct aion_player
 {
@@ -179,7 +180,7 @@ bool aion_player_chat_cache(char *charname, char *chat)
     player = aion_player_alloc(charname);
     if (player == NULL)
     {
-        printf("Error caching chat\n");
+        con_printf("Error caching chat\n");
         return false;
     }
 
@@ -240,7 +241,7 @@ bool aion_group_join(char *charname)
     player = aion_player_alloc(charname);
     if (player == NULL)
     {
-        printf("ERROR: Unable to allocate player\n");
+        con_printf("ERROR: Unable to allocate player\n");
         return false;
     }
 
@@ -305,7 +306,7 @@ bool aion_group_apvalue_update(char *charname, uint32_t apval)
     player = aion_group_find(charname);
     if (player == NULL)
     {
-        printf("ERROR: Player %s is not in the group.\n", charname);
+        con_printf("ERROR: Player %s is not in the group.\n", charname);
         return false;
     }
 
@@ -322,7 +323,7 @@ bool aion_group_apvalue_set(char *charname, uint32_t apval)
 
     if (player == NULL)
     {
-        printf("ERROR: Player %s is not in the group.\n", charname);
+        con_printf("ERROR: Player %s is not in the group.\n", charname);
         return false;
     }
 
@@ -402,7 +403,7 @@ void aion_translate(char *txt, uint32_t langid)
             break;
 
         default:
-            printf("Unknown language\n");
+            con_printf("Unknown language\n");
             return;
     }
 
@@ -453,13 +454,13 @@ void aion_group_dump(void)
 {
     struct aion_player *curplayer;
 
-    printf("======= Current group:\n");
+    con_printf("======= Current group:\n");
     LIST_FOREACH(curplayer, &aion_group, apl_group)
     {
-        printf(" * %s: AP = %u\n", curplayer->apl_name, curplayer->apl_apvalue);
+        con_printf(" * %s: AP = %u\n", curplayer->apl_name, curplayer->apl_apvalue);
     }
 
-    printf("------- Cached \n");
+    con_printf("------- Cached \n");
     LIST_FOREACH(curplayer, &aion_players_cached, apl_cached)
     {
         char chat[AION_CHAT_SZ];
@@ -469,8 +470,8 @@ void aion_group_dump(void)
             chat[0] = '\0';
         }
 
-        printf(" * %s: AP = %u, lastmsg = %s\n", curplayer->apl_name, curplayer->apl_apvalue, chat);
+        con_printf(" * %s: AP = %u, lastmsg = %s\n", curplayer->apl_name, curplayer->apl_apvalue, chat);
     }
 
-    printf("======\n");
+    con_printf("======\n");
 }

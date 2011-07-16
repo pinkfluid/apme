@@ -10,6 +10,7 @@
 #endif
 
 #include "util.h"
+#include "console.h"
 
 /*
  * Copy a string from a matched regular expression
@@ -78,7 +79,7 @@ bool clipboard_set_text(char *text)
     retval = OpenClipboard(NULL);
     if (!retval)
     {
-        printf("Error opening clipboard\n");
+        con_printf("Error opening clipboard\n");
         return false;
     }
 
@@ -87,7 +88,7 @@ bool clipboard_set_text(char *text)
     retval = SetClipboardData(CF_TEXT, hdst);
     if (!retval)
     {
-        printf("Error pasting to clipboard\n");
+        con_printf("Error pasting to clipboard\n");
         return false;
     }
 
@@ -108,7 +109,7 @@ bool clipboard_get_text(char *text, size_t text_sz)
     // Set clipboard data
     if (!OpenClipboard(NULL))
     {
-        printf("Error opening clipboard\n");
+        con_printf("Error opening clipboard\n");
         return false;
     }
 
@@ -122,7 +123,7 @@ bool clipboard_get_text(char *text, size_t text_sz)
     src = GlobalLock(hsrc);
     if (src == NULL)
     {
-        printf("Error locking clipboard data\n");
+        con_printf("Error locking clipboard data\n");
         goto error;
     }
 
