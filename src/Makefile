@@ -1,6 +1,8 @@
 SRC:=parse.c util.c items.c aion.c cmd.c txtbuf.c console.c
 
-CFLAGS:=-Wall -O2
+EXTERN_DIR:=../extern
+
+CFLAGS:=-Wall -O2 -I$(EXTERN_DIR)
 LDFLAGS:=
 
 #####################
@@ -8,7 +10,7 @@ LDFLAGS:=
 UNAME:=$(shell uname -s)
 
 ifneq ($(findstring CYGWIN, $(UNAME)),)
-    CFLAGS+=-DSYS_WINDOWS
+    CFLAGS+=-DSYS_WINDOWS 
 endif
 
 ifneq ($(findstring DragonFly, $(UNAME)),)

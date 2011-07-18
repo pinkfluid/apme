@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <ctype.h>
 
-#include "bsd/queue.h"
+#include "bsdqueue/queue.h"
 
 #include "aion.h"
 #include "util.h"
