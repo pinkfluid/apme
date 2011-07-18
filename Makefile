@@ -1,7 +1,12 @@
 
-SUB_DIRS:=src
+SUB_DIRS:=extern src
 
-all: subdirs
+all: sub-all 
 
-subdirs: $(SUB_DIRS)
+clean: sub-clean
+
+sub-all: $(SUB_DIRS)
 	for DIR in $(SUB_DIRS); do $(MAKE) -C $$DIR; done
+
+sub-clean:
+	for DIR in $(SUB_DIRS); do $(MAKE) -C $$DIR clean; done
