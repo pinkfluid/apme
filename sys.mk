@@ -28,3 +28,6 @@ ifneq ($(findstring Linux, $(UNAME)),)
     CFLAGS+=-DSYS_UNIX -DOS_LINUX
 endif
 
+
+EXTERN_DIR:=$(TOP_DIR)/extern
+EXTERN_BUILD:=$(EXTERN_DIR)/build
