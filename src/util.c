@@ -238,6 +238,33 @@ size_t util_strlcat(char *dst, const char *src, size_t dst_size)
     return dst_len + src_len;
 }
 
+/*
+ * There's no strsep() on MinGW, so we have to implement our own
+ */
+char* util_strsep(char **pinputstr, const char *delim)
+{
+    char *pstr;
+    char *pend;
+
+    if (*pinputstr == NULL) return NULL;
+
+    pstr = pend = *pinputstr;
+
+    pend += strcspn(pstr, delim);
+
+    if (*pend == '\0')
+    {
+        *pinputstr = NULL;
+    }
+    else
+    {
+        *pend++ = '\0';
+        *pinputstr = pend;
+    }
+
+    return pstr;
+}
+
 void util_chomp(char *str)
 {
     char *pstr;
@@ -248,3 +275,4 @@ void util_chomp(char *str)
         *pstr-- = '\0';
     }
 }
+

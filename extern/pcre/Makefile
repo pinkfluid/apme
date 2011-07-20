@@ -23,8 +23,8 @@ PCRE_INSTALL:=$(foreach file,$(PCRE_FILES), "$(notdir $(file))")
 
 all: install
 
-dist-clean:
-	rm -f $(PCRE_INSTALL) "$(PCRE_ARCHIVE)" "$(PCRE_FETCH_DONE)" "$(PCRE_INSTALL_DONE)" 
+dist-clean: clean
+	rm -f $(PCRE_INSTALL) "$(PCRE_INSTALL_DONE)" 
 
 clean:
 	rm -rf "$(PCRE_BUILD)"

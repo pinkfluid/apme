@@ -506,7 +506,7 @@ void cmd_exec(char *txt)
 
     /*
      * Extract the arguments, but copy txt first since
-     * strsep() modifies the buffer 
+     * util_strsep() modifies the buffer 
      */
     util_strlcpy(cmdbuf, txt, sizeof(cmdbuf));
     
@@ -516,7 +516,7 @@ void cmd_exec(char *txt)
     {
         do
         {
-            argv[argc] = strsep(&pcmdbuf, CMD_DELIM);
+            argv[argc] = util_strsep(&pcmdbuf, CMD_DELIM);
         }
         while ((argv[argc] != NULL) && argv[argc][0] == '\0');
 
