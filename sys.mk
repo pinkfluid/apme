@@ -22,10 +22,10 @@ ifneq ($(findstring CYGWIN, $(UNAME)),)
 endif
 
 ifneq ($(findstring MINGW, $(UNAME)),)
-    CFLAGS+=-DSYS_WINDOWS -DOS_MINGW 
-# MinDW doesn't have a default compiler so we have to force it to GCC
+# MinGW doesn't have a default compiler so we have to force it to GCC
     CC:=gcc
     LD:=gcc
+    CFLAGS+=-DSYS_WINDOWS -DOS_MINGW 
     BUILTIN_PCRE:=true
 endif
 
@@ -35,7 +35,6 @@ endif
 
 ifneq ($(findstring Linux, $(UNAME)),)
     CFLAGS+=-DSYS_UNIX -DOS_LINUX
-    BUILTIN_PCRE:=true
 endif
 
 include $(EXTERN_DIR)/pcre/sys_pcre.mk

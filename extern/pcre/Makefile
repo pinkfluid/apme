@@ -2,19 +2,19 @@ include ../../sys.mk
 
 # Parameters
 PCRE_VER:=8.12
-PCRE_DIR:=pcre-$(PCRE_VER)
-PCRE_ARCHIVE:=$(EXTERN_BUILD)/$(PCRE_DIR).tar.gz
-PCRE_URL:=http://noom.ath.cx/mitja/$(PCRE_DIR).tar.gz
+PCRE_ARCHDIR:=pcre-$(PCRE_VER)
+PCRE_ARCHIVE:=$(EXTERN_BUILD)/$(PCRE_ARCHDIR).tar.gz
+PCRE_URL:=http://noom.ath.cx/mitja/$(PCRE_ARCHDIR).tar.gz
 PCRE_FILES:=pcre-config .libs/libpcre.a .libs/libpcreposix.a pcre.h pcreposix.h
 
 # Do not touch this
-PCRE_BUILD:=$(EXTERN_BUILD)/$(PCRE_DIR)
+PCRE_BUILD:=$(EXTERN_BUILD)/$(PCRE_ARCHDIR)
 
 PCRE_FETCH_DONE:=$(EXTERN_BUILD)/.pcre_fetch_done
 PCRE_EXTRACT_DONE:=$(PCRE_BUILD)/.pcre_extract_done
 PCRE_CONFIG_DONE:=$(PCRE_BUILD)/.pcre_config_done
 PCRE_BUILD_DONE:=$(PCRE_BUILD)/.pcre_build_done
-PCRE_INSTALL_DONE:=$(CURDIR)/.pcre_install_done
+PCRE_INSTALL_DONE:=$(PCRE_DIR)/.pcre_install_done
 
 PCRE_SRC:=$(foreach file,$(PCRE_FILES), $(PCRE_BUILD)/$(file))
 PCRE_INSTALL:=$(foreach file,$(PCRE_FILES), "$(notdir $(file))")
@@ -72,5 +72,5 @@ $(PCRE_BUILD_DONE): $(PCRE_CONFIG_DONE)
 # Nifty trick, if file exists, add it to dependencies, otherwise ignore it 
 $(PCRE_INSTALL_DONE): $(if $(wildcard $(PCRE_BUILD_DONE)), $(PCRE_BUILD_DONE), )
 	@$(MAKE) build
-	@cp -v $(PCRE_SRC) .
+	@cp -v $(PCRE_SRC) "$(PCRE_DIR)/"
 	@touch "$(PCRE_INSTALL_DONE)"

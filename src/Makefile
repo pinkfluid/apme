@@ -1,15 +1,14 @@
 include ../sys.mk
 
-CFLAGS+=$(PCRE_CFLAGS)
-LDFLAGS+=$(PCRE_LDFLAGS)
-
 SRC:=parse.c util.c items.c aion.c cmd.c txtbuf.c console.c
-
-OBJ:=$(patsubst %.c,%.o,$(SRC))
 
 all: aptrack
 
-aptrack: $(OBJ)
+$(eval $(PCRE_INCLUDE))
+
+OBJ:=$(patsubst %.c,%.o,$(SRC))
+
+aptrack: $(PCRE_DEP) $(OBJ)
 	$(CC) $(OBJ) -o $@ $(LDFLAGS)
 
 .PHONY: clean
