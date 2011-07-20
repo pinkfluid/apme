@@ -19,14 +19,24 @@ PCRE_INSTALL_DONE:=$(CURDIR)/.pcre_install_done
 PCRE_SRC:=$(foreach file,$(PCRE_FILES), $(PCRE_BUILD)/$(file))
 PCRE_INSTALL:=$(foreach file,$(PCRE_FILES), "$(notdir $(file))")
 
-.PHONY: all clean dist-clean fetch build extract configure install
+.PHONY: all clean dist-clean build-clean fetch build extract configure install
+
+ifeq ($(BUILTIN_PCRE),)
+all: 
+	@echo Will use system PCRE.
+clean:
+
+else
 
 all: install
+clean: build-clean
+
+endif
 
 dist-clean: clean
 	rm -f $(PCRE_INSTALL) "$(PCRE_INSTALL_DONE)" 
 
-clean:
+build-clean:
 	rm -rf "$(PCRE_BUILD)"
 
 fetch: $(PCRE_FETCH_DONE)

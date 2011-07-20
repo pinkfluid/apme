@@ -7,12 +7,11 @@ TOP_DIR:=$(abspath $(TOP_DIR_SHORT))
 CFLAGS:=
 LDFLAGS:=
 
-include $(TOP_DIR)/config.mk
-export TOP_DIR
-
 EXTERN_DIR:=$(TOP_DIR)/extern
 EXTERN_DIR_SHORT:=$(TOP_DIR_SHORT)/extern
 EXTERN_BUILD:=$(EXTERN_DIR)/build
+
+include $(TOP_DIR)/config.mk
 
 # Get the OS version
 UNAME:=$(shell uname -s)
@@ -36,22 +35,10 @@ endif
 
 ifneq ($(findstring Linux, $(UNAME)),)
     CFLAGS+=-DSYS_UNIX -DOS_LINUX
+    BUILTIN_PCRE:=true
 endif
 
-ifneq ($(BUILTIN_PCRE),)
-    PCRE_CONFIG:=$(EXTERN_DIR)/pcre/pcre-config
-    # If pcre-config exists, use that to extract flags
-    ifneq ($(wildcard $PCRE_CONFIG), )
-        PCRE_CFLAGS:=$(shell $(PCRE_CONFIG) --cflags-posix)
-        PCRE_LDFLAGS:=$(shell $(PCRE_CONFIG) --libs-posix)
-    else
-        PCRE_CFLAGS:=-DPCRE_STATIC -I$(EXTERN_DIR)/pcre
-        PCRE_LDFLAGS:=-L$(EXTERN_DIR)/pcre -lpcreposix -lpcre
-    endif
-else
-    PCRE_CFLAGS:=
-    PCRE_LDFLAGS:=-lpcreposix -lpcre
-endif 
+include $(EXTERN_DIR)/pcre/sys_pcre.mk
 
 CFLAGS+=-I$(EXTERN_DIR)
 

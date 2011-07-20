@@ -8,7 +8,7 @@
 #include <assert.h>
 #include <unistd.h>
 
-#include <pcre/pcreposix.h>
+#include <pcreposix.h>
 
 #include "items.h"
 #include "util.h"

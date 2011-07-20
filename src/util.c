@@ -8,7 +8,7 @@
 #include <windows.h>
 #endif
 
-#include <pcre/pcreposix.h>
+#include <pcreposix.h>
 
 #include "util.h"
 #include "console.h"

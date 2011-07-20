@@ -2,7 +2,7 @@
 #define UTIL_H_INCLUDED
 
 /* XXX:  Move this to some sort of regex module */
-#include <pcre/pcreposix.h>
+#include <pcreposix.h>
 #define RE_MATCH(x)  (((x).rm_so != -1) && ((x).rm_eo != -1))
 extern void util_re_strlcpy(char *outstr, const char *instr, ssize_t outsz, regmatch_t rem);
 extern size_t util_re_strlen(regmatch_t rem);
