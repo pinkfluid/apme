@@ -3,11 +3,12 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
-#include <regex.h>
 
 #ifdef SYS_WINDOWS
 #include <windows.h>
 #endif
+
+#include <pcre/pcreposix.h>
 
 #include "util.h"
 #include "console.h"

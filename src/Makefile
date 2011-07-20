@@ -1,6 +1,7 @@
 include ../sys.mk
 
-CFLAGS+=-I${TOP_DIR}/extern
+CFLAGS+=$(PCRE_CFLAGS)
+LDFLAGS+=$(PCRE_LDFLAGS)
 
 SRC:=parse.c util.c items.c aion.c cmd.c txtbuf.c console.c
 
@@ -9,7 +10,7 @@ OBJ:=$(patsubst %.c,%.o,$(SRC))
 all: aptrack
 
 aptrack: $(OBJ)
-	$(CC) $(LDFLAGS) $(OBJ) -o $@
+	$(CC) $(OBJ) -o $@ $(LDFLAGS)
 
 .PHONY: clean
 clean:

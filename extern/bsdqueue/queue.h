@@ -33,7 +33,9 @@
 #ifndef _SYS_QUEUE_H_
 #define	_SYS_QUEUE_H_
 
+#ifndef OS_MINGW
 #include <sys/cdefs.h>
+#endif
 
 /*
  * This file defines four types of data structures: singly-linked lists,

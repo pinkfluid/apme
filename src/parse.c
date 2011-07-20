@@ -4,11 +4,11 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <regex.h>
 #include <string.h>
 #include <assert.h>
-
 #include <unistd.h>
+
+#include <pcre/pcreposix.h>
 
 #include "items.h"
 #include "util.h"

@@ -5,7 +5,7 @@ PCRE_VER:=8.12
 PCRE_DIR:=pcre-$(PCRE_VER)
 PCRE_ARCHIVE:=$(EXTERN_BUILD)/$(PCRE_DIR).tar.gz
 PCRE_URL:=http://noom.ath.cx/mitja/$(PCRE_DIR).tar.gz
-PCRE_FILES:=.libs/libpcre.a .libs/libpcreposix.a pcre.h pcreposix.h
+PCRE_FILES:=pcre-config .libs/libpcre.a .libs/libpcreposix.a pcre.h pcreposix.h
 
 # Do not touch this
 PCRE_BUILD:=$(EXTERN_BUILD)/$(PCRE_DIR)
@@ -23,11 +23,11 @@ PCRE_INSTALL:=$(foreach file,$(PCRE_FILES), "$(notdir $(file))")
 
 all: install
 
+dist-clean:
+	rm -f $(PCRE_INSTALL) "$(PCRE_ARCHIVE)" "$(PCRE_FETCH_DONE)" "$(PCRE_INSTALL_DONE)" 
+
 clean:
 	rm -rf "$(PCRE_BUILD)"
-
-dist-clean: clean
-	rm -f $(PCRE_INSTALL) "$(PCRE_FETCH_DONE)" "$(PCRE_INSTALL_DONE)" "$(PCRE_ARCHIVE)"
 
 fetch: $(PCRE_FETCH_DONE)
 extract: $(PCRE_EXTRACT_DONE)
@@ -47,8 +47,12 @@ $(PCRE_EXTRACT_DONE): $(PCRE_FETCH_DONE)
 	cd "$(EXTERN_BUILD)" ; tar xzvf "$(PCRE_ARCHIVE)"
 	@touch "$(PCRE_EXTRACT_DONE)"
 
+# We need to use --libdir and --include dir with configure so pcre-config
+# returns the correct filenames
+# Also use --disable-shared so pcre-config returns the static linking 
+# options
 $(PCRE_CONFIG_DONE): $(PCRE_EXTRACT_DONE)
-	cd "$(PCRE_BUILD)" ; ./configure
+	cd "$(PCRE_BUILD)" ; ./configure --libdir=$(EXTERN_DIR)/pcre --includedir=$(EXTERN_DIR)/pcre --disable-shared
 	@touch "$(PCRE_CONFIG_DONE)"
 
 $(PCRE_BUILD_DONE): $(PCRE_CONFIG_DONE)
