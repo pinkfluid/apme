@@ -42,6 +42,7 @@
 #define RP_ROLL_DICE_SELF           500
 #define RP_ROLL_DICE_PLAYER         501
 #define RP_ROLL_DICE_PASS           502
+#define RP_ROLL_DICE_HIGHEST        503
 
 struct regex_parse
 {
@@ -105,10 +106,13 @@ struct regex_parse rp_aion[] =
         .rp_id  = RP_CHAT_GENERAL,
         .rp_exp = ": \\[charname:" REGEX_NAME ";.*\\]: (.*)$",
     },
+#if 0
+    /* XXX Chat self is not reliable, disabling for the moment. */
     {
         .rp_id  = RP_CHAT_SELF,
         .rp_exp = ": " REGEX_NAME ": (.*)$",
     },
+#endif
     {
         .rp_id  = RP_ROLL_DICE_SELF,
         .rp_exp = ": You rolled the dice and got a [0-9]+ \\(max\\. [0-9]+\\)\\.",
@@ -119,7 +123,11 @@ struct regex_parse rp_aion[] =
     },
     {
         .rp_id  = RP_ROLL_DICE_PASS,
-        .rp_exp = ": " REGEX_NAME " gave up rolling the dice.",
+        .rp_exp = ": " REGEX_NAME " gave up rolling the dice",
+    },
+    {
+        .rp_id  = RP_ROLL_DICE_HIGHEST,
+        .rp_exp = ": " REGEX_NAME " rolled the highest",
     },
 };
 
@@ -129,6 +137,8 @@ void parse_action_loot_item(char *player, uint32_t itemid)
    
     /* If we see a player's loot, he is in the group. */
     aion_group_join(player);
+    /* Mark the inventory as not full anymore */
+    aion_group_invfull_set(player, false);
 
     item = item_find(itemid);
     if (item != NULL)
@@ -209,6 +219,14 @@ void parse_action_roll_dice_pass(char *who)
     aion_group_join(who);
 }
 
+void parse_action_roll_dice_highest(char *who)
+{
+    /*
+     * Mark this user as having full inventory. If the user doesn't have a full inv
+     * This flag will be cleared as soon as an item is looted.
+     */
+    aion_group_invfull_set(who, true);
+}
 
 int parse_process(uint32_t rp_id, const char* matchstr, regmatch_t *rematch, uint32_t rematch_num)
 {
@@ -299,6 +317,10 @@ int parse_process(uint32_t rp_id, const char* matchstr, regmatch_t *rematch, uin
             parse_action_roll_dice_pass(name);
             break;
 
+        case RP_ROLL_DICE_HIGHEST:
+            util_re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
+            parse_action_roll_dice_highest(name);
+            break;
 
         default:
             con_printf("Unknown RP ID %u\n", rp_id);

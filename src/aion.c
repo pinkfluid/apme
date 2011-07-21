@@ -23,6 +23,7 @@ struct aion_player
     uint32_t                    apl_apvalue;            /* Accumulated AP value                 */
     struct txtbuf               apl_txtbuf;             /* Text buffer, linked to chat buffer   */
     char                        apl_chat[AION_CHAT_SZ]; /* Chat buffer                          */
+    bool                        apl_invfull;            /* Is inventory full?                   */
 };
 
 LIST_HEAD(aion_player_list, aion_player);
@@ -161,6 +162,7 @@ struct aion_player* aion_player_alloc(char *charname)
 
     util_strlcpy(curplayer->apl_name, charname, sizeof(curplayer->apl_name));
     curplayer->apl_apvalue  = 0;
+    curplayer->apl_invfull  = false;
 
     /* Initialize the chat buffers */
     memset(curplayer->apl_chat, 0, AION_CHAT_SZ);
@@ -234,7 +236,6 @@ bool aion_group_join(char *charname)
     if (player != NULL)
     {
         aion_group_dump();
-
         return true;
     }
 
@@ -332,6 +333,48 @@ bool aion_group_apvalue_set(char *charname, uint32_t apval)
     return true;
 }
 
+/*
+ * Find what's the lowest AP in the group
+ */
+uint32_t aion_group_apvalue_lowest(void)
+{
+    struct aion_player *player;
+    uint32_t lowest_ap;
+
+    lowest_ap = aion_player_self.apl_apvalue;
+
+    LIST_FOREACH(player, &aion_group, apl_group)
+    {
+        /* Skip players that have full inventory :P */
+        if (player->apl_invfull) continue;
+
+        if (player->apl_apvalue < lowest_ap)
+        {
+            lowest_ap = player->apl_apvalue;
+        }
+    }
+
+    return lowest_ap;
+}
+
+bool aion_group_invfull_set(char *charname, bool isfull)
+{
+    struct aion_player *player;
+
+    player = aion_group_find(charname);
+    if (player == NULL)
+    {
+        printf("Unable to find player\n");
+        return false;
+    }
+
+    player->apl_invfull = isfull;
+
+    printf("Player: invfull = %s\n", isfull ? "true" : "false");
+
+    return true;
+}
+
 bool aion_group_get_stats(char *stats, size_t stats_sz)
 {
     char curstat[64];
@@ -352,20 +395,15 @@ bool aion_group_get_stats(char *stats, size_t stats_sz)
 bool aion_group_get_aprollrights(char *stats, size_t stats_sz)
 {
     char curstats[64];
+    char inv_full_str[256];
     uint32_t lowest_ap;
     struct aion_player *player;
+    bool inv_full_stats;
 
-    lowest_ap = aion_player_self.apl_apvalue;
+    util_strlcpy(stats, "Roll rights: ", stats_sz);
+    util_strlcpy(inv_full_str, " | Full inventory: ", sizeof(inv_full_str));
 
-    LIST_FOREACH(player, &aion_group, apl_group)
-    {
-        if (player->apl_apvalue < lowest_ap)
-        {
-            lowest_ap = player->apl_apvalue;
-        }
-    }
-
-    snprintf(stats, stats_sz, "Roll rights: ");
+    lowest_ap = aion_group_apvalue_lowest();
 
     /* Do we have the lowest AP? */
     if (aion_player_self.apl_apvalue <= lowest_ap)
@@ -374,12 +412,31 @@ bool aion_group_get_aprollrights(char *stats, size_t stats_sz)
         util_strlcat(stats, curstats, stats_sz);
     }
 
+    inv_full_stats = false;
+
     LIST_FOREACH(player, &aion_group, apl_group)
     {
+        if (player->apl_invfull)
+        {
+            inv_full_stats = true;
+            util_strlcat(inv_full_str, player->apl_name, sizeof(inv_full_str));
+            util_strlcat(inv_full_str, " ", sizeof(inv_full_str));
+            /* Players with full inventory do not get to loot :P */
+            continue;
+        }
+
         if (player->apl_apvalue > lowest_ap) continue;
 
-        snprintf(curstats, sizeof(curstats), "%s ", player->apl_name);
+        util_strlcpy(curstats, player->apl_name, sizeof(curstats));
+        util_strlcat(curstats, " ", sizeof(curstats));
+
         util_strlcat(stats, curstats, stats_sz);
+    }
+
+    /* If somebody has inventory full, display that in the stats */
+    if (inv_full_stats)
+    {
+        util_strlcat(stats, inv_full_str, stats_sz);
     }
 
     return true;
