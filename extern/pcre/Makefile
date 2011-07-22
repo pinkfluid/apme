@@ -33,7 +33,7 @@ clean: build-clean
 
 endif
 
-dist-clean: clean
+dist-clean: build-clean 
 	rm -f $(PCRE_INSTALL) "$(PCRE_INSTALL_DONE)" 
 
 build-clean:

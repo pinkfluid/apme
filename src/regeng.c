@@ -7,13 +7,14 @@
 #include <pcreposix.h>
 
 #include "regeng.h"
+#include "console.h"
 
 /*
  * Copy a string from a matched regular expression
  */
-void re_strlcpy(char *outstr, const char *instr, ssize_t outsz, regmatch_t rem)
+void re_strlcpy(char *outstr, const char *instr, size_t outsz, regmatch_t rem)
 {
-    ssize_t sz = rem.rm_eo - rem.rm_so;
+    size_t sz = rem.rm_eo - rem.rm_so;
 
     /* We cannot copy 0 bytes */
     if ((outsz == 0) || (outstr == NULL))
@@ -57,4 +58,43 @@ size_t re_strlen(regmatch_t rem)
 /*
  * Initialize a regeng structure
  */
+
+bool re_init(struct regeng *re_array)
+{
+    char errstr[64];
+    struct regeng *reptr;
+
+    for (reptr = re_array; RE_REGENG_VALID(reptr); reptr++)
+    {
+        int retval;
+
+        retval = regcomp(&reptr->re_comp, reptr->re_exp, REG_EXTENDED);
+        if (retval == 0) continue;
+
+        regerror(retval, &reptr->re_comp, errstr, sizeof(errstr));
+        con_printf("Error parsing regex: %s (%s)\n", reptr->re_exp, errstr);
+
+        return false;
+    }
+
+    return true;
+}
+
+
+bool re_parse(re_callback_t re_callback, struct regeng *re_array, char *str)
+{
+    struct regeng *reptr;
+    regmatch_t rematch[RE_REMATCH_MAX];
+
+    for (reptr = re_array; RE_REGENG_VALID(reptr); reptr++)
+    {
+        if (regexec(&reptr->re_comp, str, RE_REMATCH_MAX, rematch, 0) == 0)
+        {
+            re_callback(reptr->re_id, str, rematch, RE_REMATCH_MAX);
+            return true;
+        }
+    }
+
+    return true;
+}
 

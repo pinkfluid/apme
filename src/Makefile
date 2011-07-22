@@ -1,6 +1,6 @@
 include ../sys.mk
 
-SRC:=chatlog.c regeng.c util.c items.c aion.c cmd.c txtbuf.c console.c
+SRC:=main.c chatlog.c regeng.c util.c items.c aion.c cmd.c txtbuf.c console.c
 
 all: aptrack
 

@@ -1,9 +1,11 @@
 #ifndef AION_H_INCLUDED
 #define AION_H_INCLUDED
 
-#define AION_CHAT_SZ        1024
-#define AION_NAME_SZ        64
+#include "chatlog.h"
+
 #define AION_NAME_DEFAULT   "You"
+#define AION_CHAT_SZ        CHATLOG_CHAT_SZ
+#define AION_NAME_SZ        CHATLOG_NAME_SZ
 
 extern bool aion_init(void);
 extern bool aion_player_is_self(char *charname);
