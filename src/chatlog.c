@@ -1,5 +1,3 @@
-/* Thanks to Charisse for testing :) */
-
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -10,124 +8,118 @@
 
 #include <pcreposix.h>
 
+#include "regeng.h"
 #include "items.h"
 #include "util.h"
 #include "aion.h"
 #include "cmd.h"
 #include "console.h"
 
-#define REGEX_NAME_SZ   AION_NAME_SZ
-#define REGEX_NAME      "([0-9a-zA-Z_]+)"
-#define REGEX_ITEM_SZ   16
-#define REGEX_ITEM      "([0-9]+)"
+#define RE_NAME_SZ  AION_NAME_SZ
+#define RE_NAME     "([0-9a-zA-Z_]+)"
+#define RE_ITEM_SZ  16
+#define RE_ITEM     "([0-9]+)"
 
-#define RP_ITEM_LOOT_SELF           100
-#define RP_ITEM_LOOT_PLAYER         101
+#define RE_ITEM_LOOT_SELF           100
+#define RE_ITEM_LOOT_PLAYER         101
 
-#define RP_DAMAGE_INFLICT           200
-#define RP_DAMAGE_CRITICAL          201
+#define RE_DAMAGE_INFLICT           200
+#define RE_DAMAGE_CRITICAL          201
 
-#define RP_GROUP_SELF_JOIN          300
-#define RP_GROUP_SELF_LEAVE         301
-#define RP_GROUP_PLAYER_JOIN        303
-#define RP_GROUP_PLAYER_LEAVE       304
-#define RP_GROUP_PLAYER_DISCONNECT  305
-#define RP_GROUP_PLAYER_KICK        306
-#define RP_GROUP_PLAYER_OFFLINE     307
-#define RP_GROUP_DISBAND            310
+#define RE_GROUP_SELF_JOIN          300
+#define RE_GROUP_SELF_LEAVE         301
+#define RE_GROUP_PLAYER_JOIN        303
+#define RE_GROUP_PLAYER_LEAVE       304
+#define RE_GROUP_PLAYER_DISCONNECT  305
+#define RE_GROUP_PLAYER_KICK        306
+#define RE_GROUP_PLAYER_OFFLINE     307
+#define RE_GROUP_DISBAND            310
 
-#define RP_CHAT_GENERAL             400
-#define RP_CHAT_SELF                401
+#define RE_CHAT_GENERAL             400
+#define RE_CHAT_SELF                401
 
-#define RP_ROLL_DICE_SELF           500
-#define RP_ROLL_DICE_PLAYER         501
-#define RP_ROLL_DICE_PASS           502
-#define RP_ROLL_DICE_HIGHEST        503
+#define RE_ROLL_DICE_SELF           500
+#define RE_ROLL_DICE_PLAYER         501
+#define RE_ROLL_DICE_PASS           502
+#define RE_ROLL_DICE_HIGHEST        503
 
-struct regex_parse
-{
-    uint32_t    rp_id;
-    regex_t     rp_comp;
-    char        rp_exp[256];
-};
-
-struct regex_parse rp_aion[] =
+struct regeng re_aion[] =
 {
     /* Put damage meter at the beginning, because Aion generates a lot of text with this, so it's best they match first */
     {
-        .rp_id  = RP_DAMAGE_INFLICT,
-        .rp_exp = ": " REGEX_NAME " inflicted ([0-9.]+) damage on ([A-Za-z ]+) by using ([A-Za-z ]+)\\.",
+        .re_id  = RE_DAMAGE_INFLICT,
+        .re_exp = ": " RE_NAME " inflicted ([0-9.]+) damage on ([A-Za-z ]+) by using ([A-Za-z ]+)\\.",
     },
     {
-        .rp_id  = RP_DAMAGE_CRITICAL,
-        .rp_exp = ": Critical Hit! You inflicted ([0-9.]+) critical damage on ([A-Za-z ]+)\\.",
+        .re_id  = RE_DAMAGE_CRITICAL,
+        .re_exp = ": Critical Hit! You inflicted ([0-9.]+) critical damage on ([A-Za-z ]+)\\.",
     },
     {
-        .rp_id  = RP_ITEM_LOOT_SELF,
-        .rp_exp = "You have acquired \\[item:" REGEX_ITEM "\\]",
+        .re_id  = RE_ITEM_LOOT_SELF,
+        .re_exp = "You have acquired \\[item:" RE_ITEM "\\]",
     },
     {
-        .rp_id  = RP_ITEM_LOOT_PLAYER,
-        .rp_exp = REGEX_NAME " has acquired \\[item:" REGEX_ITEM "\\]",
+        .re_id  = RE_ITEM_LOOT_PLAYER,
+        .re_exp = RE_NAME " has acquired \\[item:" RE_ITEM "\\]",
     },
     {
-        .rp_id  = RP_GROUP_SELF_JOIN,
-        .rp_exp = "You have joined the group\\.",
+        .re_id  = RE_GROUP_SELF_JOIN,
+        .re_exp = "You have joined the group\\.",
     },
     {
-        .rp_id  = RP_GROUP_SELF_LEAVE,
-        .rp_exp = "You left the group\\.",
+        .re_id  = RE_GROUP_SELF_LEAVE,
+        .re_exp = "You left the group\\.",
     },
     {
-        .rp_id  = RP_GROUP_PLAYER_JOIN,
-        .rp_exp = ": " REGEX_NAME " has joined your group\\.",
+        .re_id  = RE_GROUP_PLAYER_JOIN,
+        .re_exp = ": " RE_NAME " has joined your group\\.",
     },
     {
-        .rp_id  = RP_GROUP_PLAYER_LEAVE,
-        .rp_exp = ": " REGEX_NAME " has left your group\\.",
+        .re_id  = RE_GROUP_PLAYER_LEAVE,
+        .re_exp = ": " RE_NAME " has left your group\\.",
     },
     {
-        .rp_id  = RP_GROUP_PLAYER_DISCONNECT,
-        .rp_exp = ": " REGEX_NAME " has been disconnected\\.",
+        .re_id  = RE_GROUP_PLAYER_DISCONNECT,
+        .re_exp = ": " RE_NAME " has been disconnected\\.",
     },
     {
-        .rp_id  = RP_GROUP_PLAYER_KICK,
-        .rp_exp = ": " REGEX_NAME " has been kicked out of your group\\.",
+        .re_id  = RE_GROUP_PLAYER_KICK,
+        .re_exp = ": " RE_NAME " has been kicked out of your group\\.",
     },
     {
-        .rp_id  = RP_GROUP_PLAYER_OFFLINE,
-        .rp_exp = ": " REGEX_NAME " has been offline for too long and is automatically excluded from the group\\.",
+        .re_id  = RE_GROUP_PLAYER_OFFLINE,
+        .re_exp = ": " RE_NAME " has been offline for too long and is automatically excluded from the group\\.",
     },
     {
-        .rp_id  = RP_GROUP_DISBAND,
-        .rp_exp = "The group has been disbanded\\.",
+        .re_id  = RE_GROUP_DISBAND,
+        .re_exp = "The group has been disbanded\\.",
     },
     {
-        .rp_id  = RP_CHAT_GENERAL,
-        .rp_exp = ": \\[charname:" REGEX_NAME ";.*\\]: (.*)$",
+        .re_id  = RE_CHAT_GENERAL,
+        .re_exp = ": \\[charname:" RE_NAME ";.*\\]: (.*)$",
     },
 #if 0
     /* XXX Chat self is not reliable, disabling for the moment. */
     {
-        .rp_id  = RP_CHAT_SELF,
-        .rp_exp = ": " REGEX_NAME ": (.*)$",
+        .re_id  = RE_CHAT_SELF,
+        .re_exp = ": " RE_NAME ": (.*)$",
     },
 #endif
     {
-        .rp_id  = RP_ROLL_DICE_SELF,
-        .rp_exp = ": You rolled the dice and got a [0-9]+ \\(max\\. [0-9]+\\)\\.",
+        .re_id  = RE_ROLL_DICE_SELF,
+        .re_exp = ": You rolled the dice and got a [0-9]+ \\(max\\. [0-9]+\\)\\.",
     },
     {
-        .rp_id  = RP_ROLL_DICE_PLAYER,
-        .rp_exp = ": " REGEX_NAME " rolled the dice and got [0-9]+ \\(max\\. [0-9]+\\)\\.",
+        .re_id  = RE_ROLL_DICE_PLAYER,
+        .re_exp = ": " RE_NAME " rolled the dice and got [0-9]+ \\(max\\. [0-9]+\\)\\.",
     },
     {
-        .rp_id  = RP_ROLL_DICE_PASS,
-        .rp_exp = ": " REGEX_NAME " gave up rolling the dice",
+        .re_id  = RE_ROLL_DICE_PASS,
+        .re_exp = ": " RE_NAME " gave up rolling the dice",
     },
     {
-        .rp_id  = RP_ROLL_DICE_HIGHEST,
-        .rp_exp = ": " REGEX_NAME " rolled the highest",
+        .re_id  = RE_ROLL_DICE_HIGHEST,
+        .re_exp = ": " RE_NAME " rolled the highest",
     },
 };
 
@@ -228,102 +220,102 @@ void parse_action_roll_dice_highest(char *who)
     aion_group_invfull_set(who, true);
 }
 
-int parse_process(uint32_t rp_id, const char* matchstr, regmatch_t *rematch, uint32_t rematch_num)
+int parse_process(uint32_t re_id, const char* matchstr, regmatch_t *rematch, uint32_t rematch_num)
 {
-    char item[REGEX_ITEM_SZ];
-    char name[REGEX_NAME_SZ];
+    char item[RE_ITEM_SZ];
+    char name[RE_NAME_SZ];
     char damage[16];
-    char target[REGEX_NAME_SZ];
-    char skill[REGEX_NAME_SZ];
+    char target[RE_NAME_SZ];
+    char skill[RE_NAME_SZ];
     char chat[AION_CHAT_SZ];
 
-    switch (rp_id)
+    switch (re_id)
     {
-        case RP_ITEM_LOOT_SELF:
-            util_re_strlcpy(item, matchstr, sizeof(item), rematch[1]);
+        case RE_ITEM_LOOT_SELF:
+            re_strlcpy(item, matchstr, sizeof(item), rematch[1]);
             parse_action_loot_item(AION_NAME_DEFAULT, strtoul(item, NULL, 10));
             break;
 
-        case RP_ITEM_LOOT_PLAYER:
-            util_re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
-            util_re_strlcpy(item, matchstr, sizeof(item), rematch[2]);
+        case RE_ITEM_LOOT_PLAYER:
+            re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
+            re_strlcpy(item, matchstr, sizeof(item), rematch[2]);
 
             parse_action_loot_item(name, strtoul(item, NULL, 10));
             break;
 
-        case RP_DAMAGE_INFLICT:
-            util_re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
-            util_re_strlcpy(damage, matchstr, sizeof(damage), rematch[2]);
-            util_re_strlcpy(target, matchstr, sizeof(target), rematch[3]);
-            util_re_strlcpy(skill, matchstr, sizeof(skill), rematch[4]);
+        case RE_DAMAGE_INFLICT:
+            re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
+            re_strlcpy(damage, matchstr, sizeof(damage), rematch[2]);
+            re_strlcpy(target, matchstr, sizeof(target), rematch[3]);
+            re_strlcpy(skill, matchstr, sizeof(skill), rematch[4]);
 
             parse_action_damage_inflict(name, target, damage, skill);
             break;
 
-        case RP_DAMAGE_CRITICAL:
-            util_re_strlcpy(damage, matchstr, sizeof(damage), rematch[1]);
-            util_re_strlcpy(target, matchstr, sizeof(target), rematch[2]);
+        case RE_DAMAGE_CRITICAL:
+            re_strlcpy(damage, matchstr, sizeof(damage), rematch[1]);
+            re_strlcpy(target, matchstr, sizeof(target), rematch[2]);
 
             parse_action_damage_inflict(AION_NAME_DEFAULT, target, damage, "Critical");
             break;
 
-        case RP_GROUP_SELF_JOIN:
+        case RE_GROUP_SELF_JOIN:
             parse_action_group_self_join();
             break;
 
-        case RP_GROUP_SELF_LEAVE:
-        case RP_GROUP_DISBAND:
+        case RE_GROUP_SELF_LEAVE:
+        case RE_GROUP_DISBAND:
             parse_action_group_self_leave();
             break;
 
-        case RP_GROUP_PLAYER_JOIN:
-            util_re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
+        case RE_GROUP_PLAYER_JOIN:
+            re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
             parse_action_group_player_join(name);
             break;
 
-        case RP_GROUP_PLAYER_DISCONNECT:
-        case RP_GROUP_PLAYER_LEAVE:
-        case RP_GROUP_PLAYER_KICK:
-        case RP_GROUP_PLAYER_OFFLINE:
-            util_re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
+        case RE_GROUP_PLAYER_DISCONNECT:
+        case RE_GROUP_PLAYER_LEAVE:
+        case RE_GROUP_PLAYER_KICK:
+        case RE_GROUP_PLAYER_OFFLINE:
+            re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
             parse_action_group_player_leave(name);
             break;
 
-        case RP_CHAT_GENERAL:
-            util_re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
-            util_re_strlcpy(chat, matchstr, sizeof(chat), rematch[2]);
+        case RE_CHAT_GENERAL:
+            re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
+            re_strlcpy(chat, matchstr, sizeof(chat), rematch[2]);
 
             parse_action_chat_general(name, chat);
             break;
 
-        case RP_CHAT_SELF:
-            util_re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
-            util_re_strlcpy(chat, matchstr, sizeof(chat), rematch[2]);
+        case RE_CHAT_SELF:
+            re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
+            re_strlcpy(chat, matchstr, sizeof(chat), rematch[2]);
             /* XXX: Chat self is not reliable, since it records stuff like NPC messages and Tips */
             //parse_action_chat_general(AION_NAME_DEFAULT, chat);
             break;
 
-        case RP_ROLL_DICE_SELF:
+        case RE_ROLL_DICE_SELF:
             parse_action_roll_dice_self();
             break;
 
-        case RP_ROLL_DICE_PLAYER:
-            util_re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
+        case RE_ROLL_DICE_PLAYER:
+            re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
             parse_action_roll_dice_player(name);
             break;
 
-        case RP_ROLL_DICE_PASS:
-            util_re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
+        case RE_ROLL_DICE_PASS:
+            re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
             parse_action_roll_dice_pass(name);
             break;
 
-        case RP_ROLL_DICE_HIGHEST:
-            util_re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
+        case RE_ROLL_DICE_HIGHEST:
+            re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
             parse_action_roll_dice_highest(name);
             break;
 
         default:
-            con_printf("Unknown RP ID %u\n", rp_id);
+            con_printf("Unknown RP ID %u\n", re_id);
             break;
     }
 
@@ -343,15 +335,15 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    for (ii = 0; ii < sizeof(rp_aion) / sizeof(rp_aion[0]); ii++)
+    for (ii = 0; ii < sizeof(re_aion) / sizeof(re_aion[0]); ii++)
     {
-        retval = regcomp(&rp_aion[ii].rp_comp, rp_aion[ii].rp_exp, REG_EXTENDED);
+        retval = regcomp(&re_aion[ii].re_comp, re_aion[ii].re_exp, REG_EXTENDED);
         if (retval != 0)
         {
             char errstr[64];
 
-            regerror(retval, &rp_aion[ii].rp_comp, errstr, sizeof(errstr));
-            con_printf("Error parsing regex: %s (%s)\n", rp_aion[ii].rp_exp, errstr);
+            regerror(retval, &re_aion[ii].re_comp, errstr, sizeof(errstr));
+            con_printf("Error parsing regex: %s (%s)\n", re_aion[ii].re_exp, errstr);
             return 0;
         }
     }
@@ -410,11 +402,11 @@ int main(int argc, char* argv[])
 
             util_chomp(buf);
 
-            for (ii = 0; ii < sizeof(rp_aion) / sizeof(rp_aion[0]); ii++)
+            for (ii = 0; ii < sizeof(re_aion) / sizeof(re_aion[0]); ii++)
             {
-                if (regexec(&rp_aion[ii].rp_comp, buf, 16, rematch, 0) == 0)
+                if (regexec(&re_aion[ii].re_comp, buf, 16, rematch, 0) == 0)
                 {
-                    parse_process(rp_aion[ii].rp_id, buf, rematch, 16);
+                    parse_process(re_aion[ii].re_id, buf, rematch, 16);
                 }
             }
         }

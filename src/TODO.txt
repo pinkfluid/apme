@@ -1,3 +1,5 @@
 - implement ?apreset
 - implement ?load/?save
+- implement ?help
+- Add parsing code for shouts
 - Fix the parsing exploit, use beginning of lines :P

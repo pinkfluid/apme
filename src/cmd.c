@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#include "regeng.h"
 #include "util.h"
 #include "aion.h"
 #include "items.h"
@@ -345,9 +346,7 @@ bool cmd_func_apcalc(int argc, char *argv[], char *txt)
             {
                 uint32_t relic_id;
 
-                util_re_strlcpy(relic_idstr, txt, sizeof(relic_idstr), rematch[2]);
-
-
+                re_strlcpy(relic_idstr, txt, sizeof(relic_idstr), rematch[2]);
                 if (relic_idstr[0] != '\0')
                 {
                     relic_id = strtoul(relic_idstr, NULL, 0);
@@ -366,11 +365,9 @@ bool cmd_func_apcalc(int argc, char *argv[], char *txt)
                              sizeof(rematch) / sizeof(rematch[0]),
                              rematch,
                              0);
-
             if (retval == 0)
             {
-                util_re_strlcpy(relic_idstr, txt, sizeof(relic_idstr), rematch[2]);
-
+                re_strlcpy(relic_idstr, txt, sizeof(relic_idstr), rematch[2]);
                 relic_item = item_find_name(relic_idstr);
             }
         }
@@ -381,19 +378,19 @@ bool cmd_func_apcalc(int argc, char *argv[], char *txt)
             break;
         }
 
-        if (util_re_strlen(rematch[1]) != 0)
+        if (re_strlen(rematch[1]) != 0)
         {
-            util_re_strlcpy(relic_numstr, txt, sizeof(relic_numstr), rematch[1]);
+            re_strlcpy(relic_numstr, txt, sizeof(relic_numstr), rematch[1]);
         }
 
-        if (util_re_strlen(rematch[3]) != 0)
+        if (re_strlen(rematch[3]) != 0)
         {
-            util_re_strlcpy(relic_numstr, txt, sizeof(relic_numstr), rematch[3]);
+            re_strlcpy(relic_numstr, txt, sizeof(relic_numstr), rematch[3]);
         }
 
         con_printf("%s x '%s' = %p\n", relic_numstr, relic_idstr, relic_item);
 
-        txt += util_re_strlen(rematch[0]);
+        txt += re_strlen(rematch[0]);
 
         if (relic_numstr[0] != '\0')
         {
@@ -469,14 +466,14 @@ bool cmd_chat_hist(int argc, char *argv[], char *player, size_t player_sz, int *
 
     if (!RE_MATCH(rematch[1]))
     {
-        util_re_strlcpy(player, argv[1], player_sz, rematch[2]);
-        util_re_strlcpy(strmsg, argv[1], sizeof(strmsg), rematch[3]);
+        re_strlcpy(player, argv[1], player_sz, rematch[2]);
+        re_strlcpy(strmsg, argv[1], sizeof(strmsg), rematch[3]);
 
         *msgnum = strtoul(strmsg, NULL, 0);
     }
     else
     {
-        util_re_strlcpy(player, argv[1], player_sz, rematch[1]);
+        re_strlcpy(player, argv[1], player_sz, rematch[1]);
         *msgnum = 0;
     }
 
