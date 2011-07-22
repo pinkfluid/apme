@@ -36,6 +36,7 @@ struct aion_player      aion_player_self;
 struct aion_player_list aion_players_cached;    /* Remembered players   */
 struct aion_player_list aion_group;             /* Current group        */
 
+static void aion_player_init(struct aion_player *player, char *name);
 static struct aion_player* aion_player_alloc(char *charname);
 static struct aion_player* aion_group_find(char *charname);
 static void aion_group_dump(void);
@@ -108,14 +109,23 @@ bool aion_init(void)
     LIST_INIT(&aion_group);
 
     /* Default name */
-    util_strlcpy(aion_player_self.apl_name, AION_NAME_DEFAULT, sizeof(aion_player_self.apl_name));
-    aion_player_self.apl_apvalue    = 0;
+    aion_player_init(&aion_player_self, AION_NAME_DEFAULT);
 
-    /* Initialize the chat buffer, just in case */
-    memset(aion_player_self.apl_chat, 0, AION_CHAT_SZ);
-    tb_init(&aion_player_self.apl_txtbuf, aion_player_self.apl_chat, AION_CHAT_SZ);
+    /* The player should always be in the current group */
+    aion_group_join(AION_NAME_DEFAULT);
 
     return true;
+}
+
+void aion_player_init(struct aion_player *player, char *charname)
+{
+    util_strlcpy(player->apl_name, charname, sizeof(player->apl_name));
+    player->apl_apvalue  = 0;
+    player->apl_invfull  = false;
+
+    /* Initialize the chat buffers */
+    memset(player->apl_chat, 0, AION_CHAT_SZ);
+    tb_init(&player->apl_txtbuf, player->apl_chat, AION_CHAT_SZ);
 }
 
 /*
@@ -160,13 +170,7 @@ struct aion_player* aion_player_alloc(char *charname)
     curplayer = malloc(sizeof(struct aion_player));
     assert(curplayer != NULL);
 
-    util_strlcpy(curplayer->apl_name, charname, sizeof(curplayer->apl_name));
-    curplayer->apl_apvalue  = 0;
-    curplayer->apl_invfull  = false;
-
-    /* Initialize the chat buffers */
-    memset(curplayer->apl_chat, 0, AION_CHAT_SZ);
-    tb_init(&curplayer->apl_txtbuf, curplayer->apl_chat, AION_CHAT_SZ);
+    aion_player_init(curplayer, charname);
 
     /* Add the player to the cached list */
     LIST_INSERT_HEAD(&aion_players_cached, curplayer, apl_cached);
@@ -208,12 +212,6 @@ struct aion_player* aion_group_find(char *charname)
 {
     struct aion_player *curplayer;
 
-    /* We're always in our group :) */
-    if (aion_player_is_self(charname))
-    {
-        return &aion_player_self;
-    }
-
     LIST_FOREACH(curplayer, &aion_group, apl_group)
     {
         if (strcasecmp(curplayer->apl_name, charname) != 0) continue;
@@ -245,6 +243,9 @@ bool aion_group_join(char *charname)
         con_printf("ERROR: Unable to allocate player\n");
         return false;
     }
+
+    /* Reset stats */
+    player->apl_invfull = false;
 
     /* Insert this player to the group list */
     LIST_INSERT_HEAD(&aion_group, player, apl_group);
@@ -290,10 +291,13 @@ void aion_group_disband(void)
     struct aion_player *curplayer;
     struct aion_player *nextplayer;
 
-
     LIST_FOREACH_MUTABLE(curplayer, &aion_group, apl_group, nextplayer)
     {
-        LIST_REMOVE(curplayer, apl_group);
+        /* Never remove us from the list */
+        if (curplayer != &aion_player_self)
+        {
+            LIST_REMOVE(curplayer, apl_group);
+        }
     }
 }
 
@@ -370,8 +374,6 @@ bool aion_group_invfull_set(char *charname, bool isfull)
 
     player->apl_invfull = isfull;
 
-    printf("Player: invfull = %s\n", isfull ? "true" : "false");
-
     return true;
 }
 
@@ -405,27 +407,22 @@ bool aion_group_get_aprollrights(char *stats, size_t stats_sz)
 
     lowest_ap = aion_group_apvalue_lowest();
 
-    /* Do we have the lowest AP? */
-    if (aion_player_self.apl_apvalue <= lowest_ap)
-    {
-        snprintf(curstats, sizeof(curstats), "%s ", aion_player_self.apl_name);
-        util_strlcat(stats, curstats, stats_sz);
-    }
-
     inv_full_stats = false;
 
     LIST_FOREACH(player, &aion_group, apl_group)
     {
         if (player->apl_invfull)
         {
+            /* Players with full inventory do not get to loot :P */
             inv_full_stats = true;
             util_strlcat(inv_full_str, player->apl_name, sizeof(inv_full_str));
             util_strlcat(inv_full_str, " ", sizeof(inv_full_str));
-            /* Players with full inventory do not get to loot :P */
             continue;
         }
-
-        if (player->apl_apvalue > lowest_ap) continue;
+        else if (player->apl_apvalue > lowest_ap)
+        {
+            continue;
+        }
 
         util_strlcpy(curstats, player->apl_name, sizeof(curstats));
         util_strlcat(curstats, " ", sizeof(curstats));
@@ -442,7 +439,31 @@ bool aion_group_get_aprollrights(char *stats, size_t stats_sz)
     return true;
 }
 
+void aion_group_dump(void)
+{
+    struct aion_player *curplayer;
 
+    con_printf("======= Current group:\n");
+    LIST_FOREACH(curplayer, &aion_group, apl_group)
+    {
+        con_printf(" * %s: AP = %u\n", curplayer->apl_name, curplayer->apl_apvalue);
+    }
+
+    con_printf("------- Cached \n");
+    LIST_FOREACH(curplayer, &aion_players_cached, apl_cached)
+    {
+        char chat[AION_CHAT_SZ];
+
+        if (!tb_strlast(&curplayer->apl_txtbuf, 0, chat, sizeof(chat)))
+        {
+            chat[0] = '\0';
+        }
+
+        con_printf(" * %s: AP = %u, lastmsg = %s\n", curplayer->apl_name, curplayer->apl_apvalue, chat);
+    }
+
+    con_printf("======\n");
+}
 
 void aion_translate(char *txt, uint32_t langid)
 {
@@ -507,28 +528,3 @@ void aion_rtranslate(char *txt, uint32_t langid)
     }
 }
 
-void aion_group_dump(void)
-{
-    struct aion_player *curplayer;
-
-    con_printf("======= Current group:\n");
-    LIST_FOREACH(curplayer, &aion_group, apl_group)
-    {
-        con_printf(" * %s: AP = %u\n", curplayer->apl_name, curplayer->apl_apvalue);
-    }
-
-    con_printf("------- Cached \n");
-    LIST_FOREACH(curplayer, &aion_players_cached, apl_cached)
-    {
-        char chat[AION_CHAT_SZ];
-
-        if (!tb_strlast(&curplayer->apl_txtbuf, 0, chat, sizeof(chat)))
-        {
-            chat[0] = '\0';
-        }
-
-        con_printf(" * %s: AP = %u, lastmsg = %s\n", curplayer->apl_name, curplayer->apl_apvalue, chat);
-    }
-
-    con_printf("======\n");
-}
