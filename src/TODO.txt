@@ -1,0 +1,3 @@
+- implement ?apreset
+- implement ?load/?save
+- Fix the parsing exploit, use beginning of lines :P
