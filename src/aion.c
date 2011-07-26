@@ -382,8 +382,7 @@ bool aion_group_get_stats(char *stats, size_t stats_sz)
     char curstat[64];
     struct aion_player *player;
 
-    snprintf(curstat, sizeof(curstat), "| %s (AP %u) ", aion_player_self.apl_name, aion_player_self.apl_apvalue); 
-    util_strlcpy(stats, curstat, stats_sz);
+    *stats = '\0';
 
     LIST_FOREACH(player, &aion_group, apl_group)
     {
