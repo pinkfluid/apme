@@ -21,6 +21,12 @@ void con_printf(char *fmt, ...)
 {
     va_list vargs;
 
+#if 0
+    va_start(vargs, fmt);
+    vprintf(fmt, vargs);
+    va_end(vargs);
+#endif
+
     va_start(vargs, fmt);
     vsnprintf(con_str, sizeof(con_str), fmt, vargs);
     va_end(vargs);

@@ -110,6 +110,8 @@ bool aion_init(void)
 
     /* Default name */
     aion_player_init(&aion_player_self, AION_NAME_DEFAULT);
+    /* Insert the player to the group list, he's not allowed to leave :P */
+    LIST_INSERT_HEAD(&aion_group, &aion_player_self, apl_group);
 
     /* The player should always be in the current group */
     aion_group_join(AION_NAME_DEFAULT);
@@ -212,11 +214,17 @@ struct aion_player* aion_group_find(char *charname)
 {
     struct aion_player *curplayer;
 
+    if (aion_player_is_self(charname))
+    {
+        return &aion_player_self;
+    }
+
     LIST_FOREACH(curplayer, &aion_group, apl_group)
     {
-        if (strcasecmp(curplayer->apl_name, charname) != 0) continue;
-
-        return curplayer;
+        if (strcasecmp(curplayer->apl_name, charname) == 0)
+        {
+            return curplayer;
+        }
     }
 
     return NULL;
