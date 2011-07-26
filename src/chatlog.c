@@ -161,6 +161,11 @@ void parse_action_loot_item(char *player, uint32_t itemid)
 
 void parse_action_damage_inflict(char *player, char *target, char *damage, char *skill)
 {
+    (void)player;
+    (void)target;
+    (void)damage;
+    (void)skill;
+
     //con_printf("DMG: %s -> %s: %s (%s)\n", player, target, damage, skill);
 }
 
@@ -233,6 +238,8 @@ void chatlog_parse(uint32_t re_id, const char* matchstr, regmatch_t *rematch, ui
     char target[CHATLOG_NAME_SZ];
     char skill[CHATLOG_NAME_SZ];
     char chat[CHATLOG_CHAT_SZ];
+
+    (void)rematch_num;
 
     switch (re_id)
     {

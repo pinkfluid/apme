@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <strings.h>
 
 #include "items.h"
 
@@ -96,7 +97,7 @@ struct item itemdb[] =
 
 struct item* item_find(uint32_t itemid)
 {
-    int ii;
+    size_t ii;
 
     for (ii = 0; ii < sizeof(itemdb)/sizeof(itemdb[0]); ii++)
     {
@@ -111,7 +112,7 @@ struct item* item_find(uint32_t itemid)
 
 struct item* item_find_name(char *item_name)
 {
-    int ii;
+    size_t ii;
 
     for (ii = 0; ii < sizeof(itemdb)/sizeof(itemdb[0]); ii++)
     {

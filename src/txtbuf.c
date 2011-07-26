@@ -11,7 +11,7 @@ void tb_init(struct txtbuf *tb, char *txt, size_t txt_sz)
     tb->tb_tail = 0;
     tb->tb_text = txt;
     tb->tb_size = txt_sz;
-};
+}
 
 inline size_t tb_len(struct txtbuf *tb)
 {

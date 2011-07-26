@@ -10,6 +10,9 @@
 
 int aptrack_main(int argc, char* argv[])
 {
+    (void)argc;
+    (void)argv;
+
     con_init();
 
     if (!aion_init())

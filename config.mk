@@ -2,7 +2,7 @@
 # Standard CFLAGS
 #
 # CFLAGS:=-g
-CFLAGS:=-Wall -O2
+CFLAGS:=-Wall -Wextra -O2 -std=c99 -pedantic -Werror
 
 #
 # Standard LDFLAGS

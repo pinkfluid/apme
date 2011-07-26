@@ -132,7 +132,7 @@ char* aion_get_install_path(void)
 {
 #ifdef SYS_WINDOWS
     static char aion_install_path[1024];
-    int ii;
+    size_t ii;
     bool retval;
 
     for (ii = 0; ii < sizeof(reg_aion_keys) / sizeof(reg_aion_keys[0]); ii++)
