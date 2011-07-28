@@ -350,7 +350,7 @@ bool chatlog_open(void)
     util_strlcat(chatlog_path, "\\", sizeof(chatlog_path));
     util_strlcat(chatlog_path, CHATLOG_FILENAME, sizeof(chatlog_path));
 #else
-    util_strlcpy(chatlog_path "./Chat.log");
+    util_strlcpy(chatlog_path, "./Chat.log", sizeof(chatlog_path));
 #endif
 
     chatlog_file = fopen(chatlog_path, "r");
