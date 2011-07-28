@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
+#include <strings.h>
 #include <assert.h>
 
 #include <stdio.h>
@@ -110,6 +111,8 @@ bool aion_init(void)
 
     /* Default name */
     aion_player_init(&aion_player_self, AION_NAME_DEFAULT);
+    /* Insert the player to the group list, he's not allowed to leave :P */
+    LIST_INSERT_HEAD(&aion_group, &aion_player_self, apl_group);
 
     /* The player should always be in the current group */
     aion_group_join(AION_NAME_DEFAULT);
@@ -212,11 +215,17 @@ struct aion_player* aion_group_find(char *charname)
 {
     struct aion_player *curplayer;
 
+    if (aion_player_is_self(charname))
+    {
+        return &aion_player_self;
+    }
+
     LIST_FOREACH(curplayer, &aion_group, apl_group)
     {
-        if (strcasecmp(curplayer->apl_name, charname) != 0) continue;
-
-        return curplayer;
+        if (strcasecmp(curplayer->apl_name, charname) == 0)
+        {
+            return curplayer;
+        }
     }
 
     return NULL;
@@ -382,8 +391,7 @@ bool aion_group_get_stats(char *stats, size_t stats_sz)
     char curstat[64];
     struct aion_player *player;
 
-    snprintf(curstat, sizeof(curstat), "| %s (AP %u) ", aion_player_self.apl_name, aion_player_self.apl_apvalue); 
-    util_strlcpy(stats, curstat, stats_sz);
+    *stats = '\0';
 
     LIST_FOREACH(player, &aion_group, apl_group)
     {

@@ -1,9 +1,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <string.h>
+#include <strings.h>
 
 #include "regeng.h"
 #include "util.h"
@@ -124,6 +125,9 @@ void cmd_retval_set(char *txt)
 
 bool cmd_func_hello(int argc, char *argv[], char *txt)
 {
+    (void)argv;
+    (void)txt;
+
     cmd_retval_printf("Hello, how are you?", argc);
 
     return true;
@@ -131,6 +135,8 @@ bool cmd_func_hello(int argc, char *argv[], char *txt)
 
 bool cmd_func_nameset(int argc, char *argv[], char *txt)
 {
+    (void)txt;
+
     if (argc < 2) return false;
 
     aion_player_name_set(argv[1]);
@@ -232,6 +238,8 @@ bool cmd_func_translate(char *argv[], char *txt, int langid)
 {
     char tr_txt[CMD_TEXT_SZ];
 
+    (void)argv;
+
     util_strlcpy(tr_txt, txt, sizeof(tr_txt));
 
     aion_translate(tr_txt, langid);
@@ -259,6 +267,8 @@ bool cmd_func_rtranslate(char *argv[], char *txt, int langid)
 {
     char tr_txt[CMD_TEXT_SZ];
 
+    (void)argv;
+
     util_strlcpy(tr_txt, txt, sizeof(tr_txt));
 
     aion_rtranslate(tr_txt, langid);
@@ -284,6 +294,7 @@ bool cmd_func_rasmo(int argc, char *argv[], char *txt)
 bool cmd_func_echo(int argc, char *argv[], char *txt)
 {
     (void)argc;
+    (void)argv;
 
     cmd_retval_set(txt);
 
@@ -303,6 +314,8 @@ bool cmd_func_apcalc(int argc, char *argv[], char *txt)
 
     uint32_t        ap_total = 0;
 
+    (void)argv;
+    (void)argc;
 
     /* Initialize the item regex */
     if (cmd_apcalc_first)
@@ -412,6 +425,10 @@ bool cmd_func_apcalc(int argc, char *argv[], char *txt)
 
 bool cmd_func_debug(int argc, char *argv[], char *txt)
 {
+    (void)argc;
+    (void)argv;
+    (void)txt;
+
     con_dump();
 
     cmd_retval_set(CMD_RETVAL_OK);
@@ -494,7 +511,7 @@ void cmd_exec(char *txt)
     char *cmdtxt;
     int  argc;
     char *argv[CMD_ARGC_MAX];
-    int ii;
+    size_t ii;
     int msgnum;
 
     /* Extract the command */
