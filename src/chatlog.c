@@ -33,8 +33,9 @@
 #define RE_GROUP_PLAYER_OFFLINE     307
 #define RE_GROUP_DISBAND            310
 
-#define RE_CHAT_GENERAL             400
-#define RE_CHAT_SELF                401
+#define RE_CHAT_SELF                400
+#define RE_CHAT_GENERAL             401
+#define RE_CHAT_SHOUT               402
 
 #define RE_ROLL_DICE_SELF           500
 #define RE_ROLL_DICE_PLAYER         501
@@ -100,6 +101,10 @@ struct regeng re_aion[] =
     {
         .re_id  = RE_CHAT_GENERAL,
         .re_exp = "^: \\[charname:" RE_NAME ";.*\\]: (.*)$",
+    },
+    {
+        .re_id  = RE_CHAT_SHOUT,
+        .re_exp = "^: \\[charname:" RE_NAME ";.*\\] Shouts: (.*)$",
     },
 #if 0
     /* XXX Chat self is not reliable, disabling for the moment. */
@@ -201,6 +206,11 @@ void parse_action_chat_general(char *name, char *txt)
 //    con_printf("CHAT: %s -> %s\n", name, txt);
 }
 
+void parse_action_chat_shout(char *name, char *txt)
+{
+    aion_player_chat_cache(name, txt);
+}
+
 void parse_action_roll_dice_self(void)
 {
     //con_printf("ROLL: You rolled.\n");
@@ -298,6 +308,13 @@ void chatlog_parse(uint32_t re_id, const char* matchstr, regmatch_t *rematch, ui
             re_strlcpy(chat, matchstr, sizeof(chat), rematch[2]);
 
             parse_action_chat_general(name, chat);
+            break;
+
+        case RE_CHAT_SHOUT:
+            re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
+            re_strlcpy(chat, matchstr, sizeof(chat), rematch[2]);
+
+            parse_action_chat_shout(name, chat);
             break;
 
         case RE_CHAT_SELF:
