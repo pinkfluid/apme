@@ -544,6 +544,13 @@ void cmd_exec(char *txt)
         if (aion_player_chat_get(cmdplayer, msgnum, cmdchat, sizeof(cmdchat)))
         {
             cmdtxt = cmdchat;
+            /*
+             * XXX: Security risk, remove all ? at the beginning, because
+             * with commands like ?echo and ?elyos/asmo we might execute 
+             * unwanted commands.
+             */
+            while (*cmdtxt == '?') cmdtxt++;
+
             con_printf("LAST CHAT: '%s'\n", cmdchat);
         }
         else
