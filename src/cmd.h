@@ -3,4 +3,4 @@
 
 extern void cmd_poll(void);
 
-#endif // CMD_H_INCLUDED
+#endif /* CMD_H_INCLUDED */

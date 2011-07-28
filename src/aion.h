@@ -32,4 +32,4 @@ extern void aion_rtranslate(char *txt, uint32_t language);
 extern bool aion_group_get_stats(char *stats, size_t stats_sz);
 extern bool aion_group_get_aprollrights(char *stats, size_t stats_sz);
 
-#endif // AION_H_INCLUDED
+#endif /* AION_H_INCLUDED */

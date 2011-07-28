@@ -43,6 +43,8 @@ bool clipboard_set_text(char *text)
     }
 
     CloseClipboard();
+#else
+    (void)text;
 #endif
 
     return true;
@@ -87,6 +89,9 @@ error:
     CloseClipboard();
     return status;
 #else
+    (void)text;
+    (void)text_sz;
+
     return true;
 #endif
 }
@@ -118,6 +123,11 @@ error:
     RegCloseKey(key_handle);
     return status;
 #else
+    (void)key;
+    (void)val;
+    (void)buf;
+    (void)buflen;
+
     return true;
 #endif
 }
