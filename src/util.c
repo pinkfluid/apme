@@ -138,10 +138,13 @@ char *reg_aion_keys[] =
     "SOFTWARE\\NCsoft\\Aion",       /* Aion US ?    */
 };
 
-char* aion_get_install_path(void)
+/*
+ * Retrieve the default Aion isntall path from the registry
+ */ 
+char* aion_get_default_install_path(void)
 {
 #ifdef SYS_WINDOWS
-    static char aion_install_path[1024];
+    static char default_install_path[1024];
     size_t ii;
     bool retval;
 
@@ -149,12 +152,15 @@ char* aion_get_install_path(void)
     {
         retval = reg_read_key(reg_aion_keys[ii],
                               "InstallPath",
-                              aion_install_path,
-                              sizeof(aion_install_path));
-        if (retval)
+                              default_install_path,
+                              sizeof(default_install_path));
+        if (!retval)
         {
-            return aion_install_path;
+            /* Try next key on error */
+            continue;
         }
+
+        return default_install_path;
     }
 #endif
 
