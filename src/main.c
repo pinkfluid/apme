@@ -2,11 +2,72 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
 
 #include "console.h"
 #include "aion.h"
 #include "cmd.h"
 #include "chatlog.h"
+#include "util.h"
+#include "help.h"
+
+bool aptrack_prompt(char *prompt, char *answer)
+{
+    char line[64];
+
+    fprintf(stdout, "\n%s > ", prompt); fflush(stdout);
+
+    fgets(line, sizeof(line), stdin);
+
+    util_chomp(line);
+
+    if (strcasecmp(answer, line) == 0) 
+    {
+        return true;
+    }
+
+    return false;
+}
+
+void aptrack_chatlog_check(void)
+{
+    bool chatlog_enabled;
+    bool enable_ok;
+
+    /* Check if the chatlog feature is enabled in AION */
+    if (!aion_chatlog_is_enabled(&chatlog_enabled))
+    {
+        printf("ERROR figuring out CHATLOG!\n");
+        return;
+    }
+
+    if (chatlog_enabled)
+    {
+        con_printf("Chatlog is enabled.\n");
+        aptrack_prompt("CHATLOG ENABLED", "");
+        return;
+    }
+
+    /* Do the warn dialog and enable chatlog stuff */
+    printf("%s\n", help_chatlog_warning);
+    enable_ok = aptrack_prompt("Type ACCEPT to enable the chatlog, or ENTER to continue",
+                               "accept");
+    if (!enable_ok)
+    {
+        aptrack_prompt("The CHATLOG was not enabled, press ENTER to continue", "");
+        return;
+    }
+
+    if (!aion_chatlog_enable())
+    {
+        printf(help_chatlog_enable_error);
+        aptrack_prompt("Press ENTER to continue", "");
+        return;
+    }
+
+    printf(help_chatlog_enabled);
+    aptrack_prompt("Press ENTER to continue", "");
+}
 
 int aptrack_main(int argc, char* argv[])
 {
@@ -14,6 +75,9 @@ int aptrack_main(int argc, char* argv[])
     (void)argv;
 
     con_init();
+
+    /* Do the chatlog enable/disable stuff, warn user... */
+    aptrack_chatlog_check();
 
     if (!aion_init())
     {

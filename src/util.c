@@ -132,41 +132,6 @@ error:
 #endif
 }
 
-char *reg_aion_keys[] =
-{
-    "SOFTWARE\\NCsoft\\AionEU",     /* Aion Europe  */
-    "SOFTWARE\\NCsoft\\Aion",       /* Aion US ?    */
-};
-
-/*
- * Retrieve the default Aion isntall path from the registry
- */ 
-char* aion_get_default_install_path(void)
-{
-#ifdef SYS_WINDOWS
-    static char default_install_path[1024];
-    size_t ii;
-    bool retval;
-
-    for (ii = 0; ii < sizeof(reg_aion_keys) / sizeof(reg_aion_keys[0]); ii++)
-    {
-        retval = reg_read_key(reg_aion_keys[ii],
-                              "InstallPath",
-                              default_install_path,
-                              sizeof(default_install_path));
-        if (!retval)
-        {
-            /* Try next key on error */
-            continue;
-        }
-
-        return default_install_path;
-    }
-#endif
-
-    return NULL;
-}
-
 /* 
  * Thansk to Ulrich Drepper, these two functions probably get the re-inventing-the-wheel-over-and-over-again award.
  */

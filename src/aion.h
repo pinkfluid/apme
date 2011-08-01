@@ -7,6 +7,10 @@
 #define AION_CHAT_SZ        CHATLOG_CHAT_SZ
 #define AION_NAME_SZ        CHATLOG_NAME_SZ
 
+#define AION_SYSOVR_FILE    "system.ovr"
+#define AION_SYSOVR_CHATLOG "g_chatlog"
+
+
 extern bool aion_init(void);
 extern bool aion_player_is_self(char *charname);
 extern bool aion_group_join(char *charname);
@@ -31,5 +35,9 @@ extern void aion_rtranslate(char *txt, uint32_t language);
 
 extern bool aion_group_get_stats(char *stats, size_t stats_sz);
 extern bool aion_group_get_aprollrights(char *stats, size_t stats_sz);
+
+extern char* aion_default_install_path(void);
+extern bool aion_chatlog_is_enabled(bool *isenabled);
+extern bool aion_chatlog_enable(void);
 
 #endif /* AION_H_INCLUDED */

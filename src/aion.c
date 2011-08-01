@@ -8,12 +8,15 @@
 #include <stdio.h>
 #include <ctype.h>
 
+#include <pcreposix.h>
+
 #include "bsdqueue/queue.h"
 
 #include "aion.h"
 #include "util.h"
 #include "txtbuf.h"
 #include "console.h"
+#include "regeng.h"
 
 struct aion_player
 {
@@ -41,6 +44,7 @@ static void aion_player_init(struct aion_player *player, char *name);
 static struct aion_player* aion_player_alloc(char *charname);
 static struct aion_player* aion_group_find(char *charname);
 static void aion_group_dump(void);
+static bool aion_get_sysovr_path(char *sysovr_path, size_t sysovr_pathsz);
 
 /*
  * Aion translation tables
@@ -377,7 +381,7 @@ bool aion_group_invfull_set(char *charname, bool isfull)
     player = aion_group_find(charname);
     if (player == NULL)
     {
-        printf("Unable to find player\n");
+        con_printf("invfull_set(): Unable to find player: %s\n", charname);
         return false;
     }
 
@@ -536,3 +540,151 @@ void aion_rtranslate(char *txt, uint32_t langid)
     }
 }
 
+/*
+ * Retrieve the default Aion isntall path from the registry
+ */ 
+char *aion_install_reg_keys[] =
+{
+    "SOFTWARE\\NCsoft\\AionEU",     /* Aion Europe  */
+    "SOFTWARE\\NCsoft\\Aion",       /* Aion US ?    */
+};
+
+char* aion_default_install_path(void)
+{
+#ifdef SYS_WINDOWS
+    static char default_install_path[1024];
+    size_t ii;
+    bool retval;
+
+    for (ii = 0; ii < sizeof(aion_install_reg_keys) / sizeof(aion_install_reg_keys[0]); ii++)
+    {
+        retval = reg_read_key(aion_install_reg_keys[ii],
+                              "InstallPath",
+                              default_install_path,
+                              sizeof(default_install_path));
+        if (!retval)
+        {
+            /* Try next key on error */
+            continue;
+        }
+
+        return default_install_path;
+    }
+#endif
+
+    return NULL;
+}
+
+#define RE_SYSTEM_OVR "^ *([a-zA-Z0-9_]+) *= *\"?([0-9]+)\"?"
+
+bool aion_get_sysovr_path(char *sysovr_path, size_t sysovr_pathsz)
+{
+    char *aion_install;
+
+    aion_install = aion_default_install_path();
+    if (aion_install == NULL)
+    {
+        con_printf("Error retrieving Aion install path.\n");
+        return false;
+    }
+
+    util_strlcpy(sysovr_path, aion_install, sysovr_pathsz);
+    util_strlcat(sysovr_path, "\\", sysovr_pathsz);
+    util_strlcat(sysovr_path, AION_SYSOVR_FILE, sysovr_pathsz);
+
+    return true;
+}
+
+bool aion_chatlog_is_enabled(bool *isenabled)
+{
+    char sysovr_path[1024];
+    char sysovr_line[1024];
+    regex_t re_sysovr;
+    FILE *sysovr_file;
+    int retval;
+
+    retval = regcomp(&re_sysovr, RE_SYSTEM_OVR, REG_EXTENDED);
+    if (retval != 0)
+    {
+        con_printf("Error compiling system.ovr regex: %s\n", RE_SYSTEM_OVR);
+        return false;
+    }
+
+    if (!aion_get_sysovr_path(sysovr_path, sizeof(sysovr_path)))
+    {
+        con_printf("Unable to retrieve the full path to SYSTEM.OVR\n");
+        return false;
+    }
+
+    con_printf("SYSTEM.OVR full path is '%s'\n", sysovr_path);
+
+    sysovr_file = fopen(sysovr_path, "r");
+    if (sysovr_file == NULL)
+    {
+        /* The system.ovr file does nto exist, chatlog not enabled */
+        con_printf("Unable to open system.ovr file\n");
+        *isenabled = false;
+        return true;
+    }
+
+    *isenabled = false;
+    /* Parse the system.ovr file */
+    while (fgets(sysovr_line, sizeof(sysovr_line), sysovr_file) != NULL)
+    {
+        regmatch_t rem[3];
+        char sysovr_cmd[64];
+        char sysovr_val[64];
+
+        /* Match config line */
+        retval = regexec(&re_sysovr, sysovr_line, sizeof(rem) / sizeof(rem[0]), rem, 0);
+        if (retval != 0)
+        {
+            /* No match */
+            continue;
+        }
+
+        re_strlcpy(sysovr_cmd, sysovr_line, sizeof(sysovr_cmd), rem[1]);
+        re_strlcpy(sysovr_val, sysovr_line, sizeof(sysovr_val), rem[2]);
+
+        con_printf("Sysovr match: %s = %s\n", sysovr_cmd, sysovr_val);
+
+        if (strcasecmp(sysovr_cmd, AION_SYSOVR_CHATLOG) == 0)
+        {
+            /* Check if chatlog is enabled */
+            if (atoi(sysovr_val) > 0)
+            {
+                *isenabled = true;
+            }
+            break;
+        }
+    }
+
+    return true;
+}
+
+bool aion_chatlog_enable(void)
+{
+    char sysovr_path[1024];
+    FILE *sysovr_file;
+
+    if (!aion_get_sysovr_path(sysovr_path, sizeof(sysovr_path)))
+    {
+        con_printf("Unable to retrieve the full path to SYSTEM.OVR\n");
+        return false;
+    }
+
+    /* Open the file in APPEND mode */
+    sysovr_file = fopen(sysovr_path, "a");
+    if (sysovr_file == NULL)
+    {
+        con_printf("Unable to open system.ovr file\n");
+        return false;
+    }
+
+    /* Write out the config */
+    fprintf(sysovr_file, "%s=\"1\"\n", AION_SYSOVR_CHATLOG);
+
+    fclose(sysovr_file);
+
+    return true;
+}

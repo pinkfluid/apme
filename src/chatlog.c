@@ -379,7 +379,7 @@ bool chatlog_open(void)
 
 #ifdef SYS_WINDOWS
     /* Try to open the cthatlog file */
-    chatlog_dir = aion_get_install_path();
+    chatlog_dir = aion_default_install_path();
     if (chatlog_dir == NULL)
     {
         con_printf("FATAL: Unable to find Aion install path.\n");
