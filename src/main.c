@@ -17,7 +17,11 @@ bool aptrack_prompt(char *prompt, char *answer)
 
     fprintf(stdout, "\n%s > ", prompt); fflush(stdout);
 
-    fgets(line, sizeof(line), stdin);
+    if (fgets(line, sizeof(line), stdin) == NULL)
+    {
+        line[0] = '\0';
+    }
+
     fprintf(stdout, "\n"); fflush(stdout);
 
     util_chomp(line);
@@ -26,7 +30,6 @@ bool aptrack_prompt(char *prompt, char *answer)
     {
         return true;
     }
-
 
     return false;
 }
@@ -61,12 +64,12 @@ void aptrack_chatlog_check(void)
 
     if (!aion_chatlog_enable())
     {
-        printf(help_chatlog_enable_error);
+        printf("%s\n", help_chatlog_enable_error);
         aptrack_prompt("Press ENTER to continue", "");
         return;
     }
 
-    printf(help_chatlog_enabled);
+    printf("%s\n", help_chatlog_enabled);
     aptrack_prompt("Press ENTER to continue", "");
 }
 

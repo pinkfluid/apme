@@ -570,9 +570,12 @@ char* aion_default_install_path(void)
 
         return default_install_path;
     }
-#endif
 
     return NULL;
+#else
+    /* On Linux, just return the current directory. Used for debugging mainly. */
+    return "./";
+#endif
 }
 
 #define RE_SYSTEM_OVR "^ *([a-zA-Z0-9_]+) *= *\"?([0-9]+)\"?"
@@ -682,6 +685,8 @@ bool aion_chatlog_enable(void)
     }
 
     /* Write out the config */
+    fprintf(sysovr_file, "\n");
+    fprintf(sysovr_file, "-- Added by APTRACKER, remove the line below to disable chat logging\n");
     fprintf(sysovr_file, "%s=\"1\"\n", AION_SYSOVR_CHATLOG);
 
     fclose(sysovr_file);
