@@ -18,6 +18,7 @@ bool aptrack_prompt(char *prompt, char *answer)
     fprintf(stdout, "\n%s > ", prompt); fflush(stdout);
 
     fgets(line, sizeof(line), stdin);
+    fprintf(stdout, "\n"); fflush(stdout);
 
     util_chomp(line);
 
@@ -25,6 +26,7 @@ bool aptrack_prompt(char *prompt, char *answer)
     {
         return true;
     }
+
 
     return false;
 }
@@ -37,14 +39,13 @@ void aptrack_chatlog_check(void)
     /* Check if the chatlog feature is enabled in AION */
     if (!aion_chatlog_is_enabled(&chatlog_enabled))
     {
-        printf("ERROR figuring out CHATLOG!\n");
+        aptrack_prompt("Unable to determine if the CHATLOG is enabled. Not all features might be available. Press RETURN to contunue.", "");
         return;
     }
 
     if (chatlog_enabled)
     {
-        con_printf("Chatlog is enabled.\n");
-        aptrack_prompt("CHATLOG ENABLED", "");
+        con_printf("CHATLOG is enabled.\n");
         return;
     }
 
@@ -54,7 +55,7 @@ void aptrack_chatlog_check(void)
                                "accept");
     if (!enable_ok)
     {
-        aptrack_prompt("The CHATLOG was not enabled, press ENTER to continue", "");
+        aptrack_prompt("The CHATLOG was not enabled by user request, press ENTER to continue", "");
         return;
     }
 
