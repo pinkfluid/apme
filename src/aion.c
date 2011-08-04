@@ -518,6 +518,54 @@ void aion_translate(char *txt, uint32_t langid)
     }
 }
 
+#if 0
+/* This seems to work, but produces different output than other translators,
+   so lets keep it like the others */
+void aion_translate_new(char *txt, uint32_t langid)
+{
+    int carry = 0;
+
+    printf("Trans: %s\n", txt);
+
+    while (*txt != '\0')
+    {
+        int c = tolower(*txt);
+
+        if (isalpha(c))
+        {
+            int output;
+
+            int input = c - 'a';
+
+            while (input < 128)
+            {
+                output = (input ^ langid) - carry;
+                if (isalpha(output))
+                {
+                    *txt = output;
+                    carry = (((output + carry) ^ langid) / 26) + 1;
+                    break;
+                }
+                input+=26;
+            }
+
+            if (input >= 128)
+            {
+                printf("BUH\n");
+            }
+        }
+        else
+        {
+            carry = 0;
+        }
+
+        txt++;
+    }
+
+    return;
+}
+#endif
+
 void aion_rtranslate(char *txt, uint32_t langid)
 {
     char carry = 0;
