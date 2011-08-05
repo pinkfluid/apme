@@ -477,6 +477,9 @@ void aion_group_dump(void)
     con_printf("======\n");
 }
 
+#define USE_NEW_TRANSLATE
+#ifndef USE_NEW_TRANSLATE
+
 void aion_translate(char *txt, uint32_t langid)
 {
     int index;
@@ -518,41 +521,55 @@ void aion_translate(char *txt, uint32_t langid)
     }
 }
 
-#if 0
+#else /* USE_NEW_TRANSLATE */
+
 /* This seems to work, but produces different output than other translators,
    so lets keep it like the others */
-void aion_translate_new(char *txt, uint32_t langid)
+void aion_translate(char *txt, uint32_t langid)
 {
     int carry = 0;
 
-    printf("Trans: %s\n", txt);
-
     while (*txt != '\0')
     {
-        int c = tolower(*txt);
-
-        if (isalpha(c))
+        if (isalpha(*txt))
         {
             int output;
 
-            int input = c - 'a';
+            int input = *txt;
+            int base = isupper(input) ? 'A' : 'a';
+
+            output = input - (base % 26) + 26;
+            output = (output ^ langid);
+            output -= carry;
+            output = ((output - base) % 26) + base;
+            /* Recalculate the carry value */
+            carry = (((output + carry) ^ langid) / 26) + 1;
+
+            *txt = output;
+#if 0
+            int input = c - ('a' % 26);
 
             while (input < 128)
             {
-                output = (input ^ langid) - carry;
-                if (isalpha(output))
+                output = (input ^ langid);
+                output = ((output - 'a') % 26) + 'a';
+                output -= carry;
+
+                if (isalpha(output) && (output >= 'a'))
                 {
                     *txt = output;
                     carry = (((output + carry) ^ langid) / 26) + 1;
                     break;
                 }
                 input+=26;
+                total++;
             }
 
             if (input >= 128)
             {
-                printf("BUH\n");
+                break;
             }
+#endif
         }
         else
         {
@@ -564,7 +581,7 @@ void aion_translate_new(char *txt, uint32_t langid)
 
     return;
 }
-#endif
+#endif /* USE_NEW_TRNASLATE */
 
 void aion_rtranslate(char *txt, uint32_t langid)
 {
@@ -572,12 +589,17 @@ void aion_rtranslate(char *txt, uint32_t langid)
 
     while (*txt != '\0')
     {
-        int c = *txt;
-
-        if (isalpha(c))
+        if (isalpha(*txt))
         {
-            *txt  = (((c + carry) ^ langid) % 26) + 'a';
-            carry = (((c + carry) ^ langid) / 26) + 1;
+            int output;
+
+            int input = *txt;
+            int base = isupper(input) ? 'A' : 'a';
+
+            output = (((input + carry) ^ langid) % 26) + base;
+            carry = (((input + carry) ^ langid) / 26) + 1;
+
+            *txt = output;
         }
         else
         {
