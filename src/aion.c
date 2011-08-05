@@ -533,26 +533,29 @@ void aion_translate(char *txt, uint32_t langid)
     {
         if (isalpha(*txt))
         {
+#if 0
             int output;
 
-            int input = *txt;
+            int input = tolower(*txt);
             int base = isupper(input) ? 'A' : 'a';
 
-            output = input - (base % 26) + 26;
+            output = (input - (base % 26) + 26);
             output = (output ^ langid);
-            output -= carry;
-            output = ((output - base) % 26) + base;
+            output -= carry ;
+            output = ((output + 26 - base) % 26) + base;
             /* Recalculate the carry value */
             carry = (((output + carry) ^ langid) / 26) + 1;
 
             *txt = output;
-#if 0
-            int input = c - ('a' % 26);
+#else
+            int output;
+            int input = tolower(*txt);
+
+            input = input - 'a' % 26;
 
             while (input < 128)
             {
                 output = (input ^ langid);
-                output = ((output - 'a') % 26) + 'a';
                 output -= carry;
 
                 if (isalpha(output) && (output >= 'a'))
@@ -562,7 +565,6 @@ void aion_translate(char *txt, uint32_t langid)
                     break;
                 }
                 input+=26;
-                total++;
             }
 
             if (input >= 128)
@@ -594,7 +596,8 @@ void aion_rtranslate(char *txt, uint32_t langid)
             int output;
 
             int input = *txt;
-            int base = isupper(input) ? 'A' : 'a';
+            int base = 'a';
+            //int base = isupper(input) ? 'A' : 'a';
 
             output = (((input + carry) ^ langid) % 26) + base;
             carry = (((input + carry) ^ langid) / 26) + 1;
