@@ -531,7 +531,8 @@ void aion_translate(char *txt, uint32_t langid)
 
     while (*txt != '\0')
     {
-        if (isalpha(*txt))
+        int input = *txt;
+        if (isalpha(input))
         {
 #if 0
             int output;
@@ -549,9 +550,8 @@ void aion_translate(char *txt, uint32_t langid)
             *txt = output;
 #else
             int output;
-            int input = tolower(*txt);
 
-            input = input - 'a' % 26;
+            input = tolower(input) - 'a' % 26;
 
             while (input < 128)
             {
@@ -591,11 +591,12 @@ void aion_rtranslate(char *txt, uint32_t langid)
 
     while (*txt != '\0')
     {
-        if (isalpha(*txt))
+        int input = *txt;
+
+        if (isalpha(input))
         {
             int output;
 
-            int input = *txt;
             int base = 'a';
             //int base = isupper(input) ? 'A' : 'a';
 
