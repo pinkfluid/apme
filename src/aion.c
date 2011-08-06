@@ -477,9 +477,7 @@ void aion_group_dump(void)
     con_printf("======\n");
 }
 
-#define USE_NEW_TRANSLATE
 #ifndef USE_NEW_TRANSLATE
-
 void aion_translate(char *txt, uint32_t langid)
 {
     int index;
@@ -523,55 +521,34 @@ void aion_translate(char *txt, uint32_t langid)
 
 #else /* USE_NEW_TRANSLATE */
 
-/* This seems to work, but produces different output than other translators,
-   so lets keep it like the others */
+/* This translator produces lots of capital text, so it's not that good */
 void aion_translate(char *txt, uint32_t langid)
 {
     int carry = 0;
 
     while (*txt != '\0')
     {
-        int input = *txt;
+        int input = tolower(*txt);
         if (isalpha(input))
         {
-#if 0
             int output;
+            int base = 'a';
 
-            int input = tolower(*txt);
-            int base = isupper(input) ? 'A' : 'a';
-
-            output = (input - (base % 26) + 26);
-            output = (output ^ langid);
-            output -= carry ;
-            output = ((output + 26 - base) % 26) + base;
-            /* Recalculate the carry value */
-            carry = (((output + carry) ^ langid) / 26) + 1;
-
-            *txt = output;
-#else
-            int output;
-
-            input = tolower(input) - 'a' % 26;
-
+            input = input - base;
             while (input < 128)
             {
                 output = (input ^ langid);
                 output -= carry;
 
-                if (isalpha(output) && (output >= 'a'))
+                if (isalpha(output))
                 {
                     *txt = output;
                     carry = (((output + carry) ^ langid) / 26) + 1;
                     break;
                 }
+
                 input+=26;
             }
-
-            if (input >= 128)
-            {
-                break;
-            }
-#endif
         }
         else
         {
@@ -597,10 +574,7 @@ void aion_rtranslate(char *txt, uint32_t langid)
         {
             int output;
 
-            int base = 'a';
-            //int base = isupper(input) ? 'A' : 'a';
-
-            output = (((input + carry) ^ langid) % 26) + base;
+            output = (((input + carry) ^ langid) % 26) + 'a';
             carry = (((input + carry) ^ langid) / 26) + 1;
 
             *txt = output;
