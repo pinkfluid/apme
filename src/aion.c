@@ -414,7 +414,7 @@ bool aion_group_get_aprollrights(char *stats, size_t stats_sz)
     struct aion_player *player;
     bool inv_full_stats;
 
-    util_strlcpy(stats, "Roll rights: ", stats_sz);
+    util_strlcpy(stats, "Loot rights: ", stats_sz);
     util_strlcpy(inv_full_str, " | Full inventory: ", sizeof(inv_full_str));
 
     lowest_ap = aion_group_apvalue_lowest();

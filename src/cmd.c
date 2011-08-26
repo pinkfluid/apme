@@ -11,6 +11,7 @@
 #include "aion.h"
 #include "items.h"
 #include "console.h"
+#include "help.h"
 
 #define CMD_COMMAND_CHAR    '?'
 #define CMD_CHATHIST_CHAR   '!'
@@ -27,6 +28,7 @@ static char cmd_retval[CMD_TEXT_SZ];
 
 typedef bool cmd_func_t(int argc, char *argv[], char *txt);
 
+static cmd_func_t cmd_func_help;
 static cmd_func_t cmd_func_hello;
 static cmd_func_t cmd_func_nameset;
 static cmd_func_t cmd_func_ap_stats;
@@ -51,6 +53,10 @@ struct cmd_entry
 
 struct cmd_entry cmd_list[] =
 {
+    {
+        .cmd_command    = "help",
+        .cmd_func       = cmd_func_help,
+    },
     {
         .cmd_command    = "hello",
         .cmd_func       = cmd_func_hello,
@@ -121,6 +127,19 @@ void cmd_retval_printf(char *fmt, ...)
 void cmd_retval_set(char *txt)
 {
     util_strlcpy(cmd_retval, txt, sizeof(cmd_retval));
+}
+
+bool cmd_func_help(int argc, char *argv[], char *txt)
+{
+    (void)txt;
+
+    char help[1024];
+
+    help_cmd(argc >= 2 ? argv[1] : NULL, help, sizeof(help));
+
+    cmd_retval_set(help);
+
+    return true;
 }
 
 bool cmd_func_hello(int argc, char *argv[], char *txt)
