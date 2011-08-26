@@ -406,7 +406,7 @@ bool aion_group_get_stats(char *stats, size_t stats_sz)
     return true;
 }
 
-bool aion_group_get_aprollrights(char *stats, size_t stats_sz)
+bool aion_group_get_aplootrights(char *stats, size_t stats_sz)
 {
     char curstats[64];
     char inv_full_str[256];

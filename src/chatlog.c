@@ -157,7 +157,7 @@ void parse_action_loot_item(char *player, uint32_t itemid)
             aion_group_apvalue_update(player, item->item_ap);
             
             /* automatically paste the new roll rights to the clipboard */
-            aion_group_get_aprollrights(aprolls, sizeof(aprolls));
+            aion_group_get_aplootrights(aprolls, sizeof(aprolls));
             clipboard_set_text(aprolls);
         }
 

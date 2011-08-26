@@ -32,7 +32,7 @@ static cmd_func_t cmd_func_help;
 static cmd_func_t cmd_func_hello;
 static cmd_func_t cmd_func_nameset;
 static cmd_func_t cmd_func_ap_stats;
-static cmd_func_t cmd_func_ap_roll;
+static cmd_func_t cmd_func_ap_loot;
 static cmd_func_t cmd_func_ap_set;
 static cmd_func_t cmd_func_group_join;
 static cmd_func_t cmd_func_group_leave;
@@ -70,8 +70,8 @@ struct cmd_entry cmd_list[] =
         .cmd_func       = cmd_func_ap_stats,
     },
     {
-        .cmd_command    = "aproll",
-        .cmd_func       = cmd_func_ap_roll,
+        .cmd_command    = "aploot",
+        .cmd_func       = cmd_func_ap_loot,
     },
     {
         .cmd_command    = "apset",
@@ -122,11 +122,17 @@ void cmd_retval_printf(char *fmt, ...)
     va_start(vargs, fmt);
     vsnprintf(cmd_retval, sizeof(cmd_retval), fmt, vargs);
     va_end(vargs);
+
+    /* Prevent recursions */
+    if (cmd_retval[0] == '?') cmd_retval[0] = ' ';
 }
 
 void cmd_retval_set(char *txt)
 {
     util_strlcpy(cmd_retval, txt, sizeof(cmd_retval));
+
+    /* Prevent recursions */
+    if (cmd_retval[0] == '?') cmd_retval[0] = ' ';
 }
 
 bool cmd_func_help(int argc, char *argv[], char *txt)
@@ -183,7 +189,7 @@ bool cmd_func_ap_stats(int argc, char *argv[], char *txt)
     return true;
 }
 
-bool cmd_func_ap_roll(int argc, char *argv[], char *txt)
+bool cmd_func_ap_loot(int argc, char *argv[], char *txt)
 {
     char buf[256];
 
@@ -191,7 +197,7 @@ bool cmd_func_ap_roll(int argc, char *argv[], char *txt)
     (void)argv;
     (void)txt;
 
-    if (!aion_group_get_aprollrights(buf, sizeof(buf)))
+    if (!aion_group_get_aplootrights(buf, sizeof(buf)))
     {
         return false;
     }

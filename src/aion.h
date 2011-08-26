@@ -34,7 +34,7 @@ extern void aion_translate(char *txt, uint32_t language);
 extern void aion_rtranslate(char *txt, uint32_t language);
 
 extern bool aion_group_get_stats(char *stats, size_t stats_sz);
-extern bool aion_group_get_aprollrights(char *stats, size_t stats_sz);
+extern bool aion_group_get_aplootrights(char *stats, size_t stats_sz);
 
 extern char* aion_default_install_path(void);
 extern bool aion_chatlog_is_enabled(bool *isenabled);
