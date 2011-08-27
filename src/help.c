@@ -58,8 +58,8 @@ struct help_entry help_commands[] =
         "Display current Abyss Points of the group acquired from relics."
     },
     {
-        "aproll",
-        "?aproll",
+        "aploot",
+        "?aploot",
         "Show current abyss relics loot rights."
     },
     {
@@ -75,7 +75,7 @@ struct help_entry help_commands[] =
     {
         "grdel",
         "?grdel <PLAYER>",
-        "Remove <PLAYER> from your group, in case it is not autodetected."
+        "Remove <PLAYER> from your group, in case it is not autodetected. ?grdel You -- disbands the group."
     },
     {
         "elyos",
