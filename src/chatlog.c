@@ -152,7 +152,7 @@ void parse_action_loot_item(char *player, uint32_t itemid)
     {
         if (item->item_ap != 0)
         {
-            char aprolls[256];
+            char aprolls[CHATLOG_CHAT_SZ];
 
             aion_group_apvalue_update(player, item->item_ap);
             
@@ -243,18 +243,23 @@ void parse_action_roll_dice_pass(char *who)
 
 void parse_action_roll_dice_highest(char *who)
 {
+    char aprolls[CHATLOG_CHAT_SZ];
     /*
      * Mark this user as having full inventory. If the user doesn't have a full inv
      * This flag will be cleared as soon as an item is looted.
      */
     aion_group_invfull_set(who, true);
+
+    /* Update the clipboard with the new status */
+    aion_group_get_aplootrights(aprolls, sizeof(aprolls));
+    clipboard_set_text(aprolls);
 }
 
 void chatlog_parse(uint32_t re_id, const char* matchstr, regmatch_t *rematch, uint32_t rematch_num)
 {
     char item[CHATLOG_ITEM_SZ];
     char name[CHATLOG_NAME_SZ];
-    char damage[16];
+    char damage[CHATLOG_NAME_SZ];
     char target[CHATLOG_NAME_SZ];
     char skill[CHATLOG_NAME_SZ];
     char chat[CHATLOG_CHAT_SZ];
