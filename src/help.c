@@ -109,8 +109,8 @@ struct help_entry help_commands[] =
     },
     {
         "chathist",
-        "chathist -- ?command !<PLAYER_NAME> or ?command !<PLAYER_NAME>-N",
-        "Execute ?command but replace '!<PLAYER_NAME>' with the last text <PLAYER_NAME> entered into chat. Add -1 for second last text..."
+        "chathist -- ?command ^<PLAYER_NAME> or ?command ^<PLAYER_NAME>-N",
+        "Execute ?command but replace '^<PLAYER_NAME>' with the last text <PLAYER_NAME> entered into chat. Add -1 for second last text, -2 for third last..."
     }
 };
 
