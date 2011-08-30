@@ -14,7 +14,7 @@
 #include "help.h"
 
 #define CMD_COMMAND_CHAR    '?'
-#define CMD_CHATHIST_CHAR   '!'
+#define CMD_CHATHIST_CHAR   '^'
 #define CMD_SIZE            64
 #define CMD_ARGC_MAX        32
 #define CMD_DELIM           " ,"
@@ -478,7 +478,7 @@ bool cmd_chat_hist(int argc, char *argv[], char *player, size_t player_sz, int *
     if (cmd_chathist_first)
     {
         /* Compile the regex for matching the !Player-X format  */
-        retval = regcomp(&cmd_chathist_re, "^!([A-Za-z0-9_]+)$|^!([A-Za-z0-9_]+)-([0-9]+)$", REG_EXTENDED);
+        retval = regcomp(&cmd_chathist_re, "^\\^([A-Za-z0-9_]+)$|^\\^([A-Za-z0-9_]+)-([0-9]+)$", REG_EXTENDED);
         if (retval != 0)
         {
             con_printf("Error initializing CMD subsystem\n");
@@ -492,7 +492,7 @@ bool cmd_chat_hist(int argc, char *argv[], char *player, size_t player_sz, int *
     /* This format always takes just two arguments */
     if (argc != 2) return false;
 
-    /* Must start with ! */
+    /* Must start with the history char "^" */
     if (argv[1][0] != CMD_CHATHIST_CHAR) return false;
 
     /* Use regular expressions to parse the syntax */
