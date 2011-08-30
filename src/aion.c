@@ -390,6 +390,20 @@ bool aion_group_invfull_set(char *charname, bool isfull)
     return true;
 }
 
+bool aion_group_invfull_get(char *charname)
+{
+    struct aion_player *player;
+
+    player = aion_group_find(charname);
+    if (player == NULL)
+    {
+        con_printf("invfull_get(): Unable to find player: %s\n", charname);
+        return false;
+    }
+
+    return player->apl_invfull;
+}
+
 bool aion_group_get_stats(char *stats, size_t stats_sz)
 {
     char curstat[64];
