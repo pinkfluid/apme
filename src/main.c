@@ -73,44 +73,52 @@ void aptrack_chatlog_check(void)
     aptrack_prompt("Press ENTER to continue", "");
 }
 
-int aptrack_main(int argc, char* argv[])
+void aptrack_periodic()
+{
+    cmd_poll();
+    chatlog_poll();
+}
+
+bool aptrack_init(int argc, char* argv[])
 {
     (void)argc;
     (void)argv;
 
     con_init();
 
-    /* Do the chatlog enable/disable stuff, warn user... */
-    aptrack_chatlog_check();
-
     if (!aion_init())
     {
         con_printf("Unable to initialize the Aion subsystem.\n");
-        return 1;
+        return false; 
     }
 
     if (!chatlog_init())
     {
         con_printf("Error initializing the Chatlog parser.\n");
-        return 1;
+        return false;
     }
 
-    for (;;)
-    {
-        cmd_poll();
-        chatlog_poll();
-        usleep(300);
-    }
-
-    return 0;
+    return true;
 }
 
 
 int main(int argc, char *argv[])
 {
-    int retval;
+    /* Do the chatlog enable/disable stuff, warn user... */
+    aptrack_chatlog_check();
 
-    retval = aptrack_main(argc, argv);
+    /* Initialize sub-systems */
+    if (!aptrack_init(argc, argv))
+    {
+        return 1;
+    }
+
+    /* Main processing loop */
+    for (;;)
+    {
+        aptrack_periodic();
+        usleep(300);
+    }
 
 #ifdef SYS_WINDOWS
     /* On windows, pause before exiting */
@@ -120,8 +128,8 @@ int main(int argc, char *argv[])
         fgets(buf, sizeof(buf), stdin);
     }
 #endif
-    
 
-    return retval;
+    /* And we disappear into the void */
+    return 0;
 }
 
