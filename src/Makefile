@@ -2,15 +2,15 @@ include ../sys.mk
 
 SRC:=main.c help.c chatlog.c regeng.c util.c items.c aion.c cmd.c txtbuf.c console.c
 
-all: aptrack
+all: APme 
 
 $(eval $(PCRE_INCLUDE))
 
 OBJ:=$(patsubst %.c,%.o,$(SRC))
 
-aptrack: $(PCRE_DEP) $(OBJ)
+APme: $(PCRE_DEP) $(OBJ)
 	$(CC) $(OBJ) -o $@ $(LDFLAGS)
 
 .PHONY: clean
 clean:
-	rm -f $(OBJ) aptrack aptrack.exe
+	rm -f $(OBJ) APme APme.exe
