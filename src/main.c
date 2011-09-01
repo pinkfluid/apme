@@ -10,6 +10,7 @@
 #include "chatlog.h"
 #include "util.h"
 #include "help.h"
+#include "event.h"
 
 bool aptrack_prompt(char *prompt, char *answer)
 {
@@ -73,6 +74,24 @@ void aptrack_chatlog_check(void)
     aptrack_prompt("Press ENTER to continue", "");
 }
 
+void aptrack_event_handler(enum event_type ev)
+{
+    switch (ev)
+    {
+        case EVENT_AION_GROUP_UPDATE:
+            break;
+
+        case EVENT_AION_AP_UPDATE:
+            break;
+
+        case EVENT_AION_INVENTORY_FULL:
+            break;
+
+        case EVENT_AION_LOOT_RIGHTS:
+            break;
+    }
+}
+
 int aptrack_main(int argc, char* argv[])
 {
     (void)argc;
@@ -94,6 +113,8 @@ int aptrack_main(int argc, char* argv[])
         con_printf("Error initializing the Chatlog parser.\n");
         return 1;
     }
+
+    event_register(aptrack_event_handler);
 
     for (;;)
     {

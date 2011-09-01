@@ -17,6 +17,7 @@
 #include "txtbuf.h"
 #include "console.h"
 #include "regeng.h"
+#include "event.h"
 
 struct aion_player
 {
@@ -246,6 +247,7 @@ bool aion_group_join(char *charname)
     player = aion_group_find(charname);
     if (player != NULL)
     {
+        event_signal(EVENT_AION_GROUP_UPDATE);
         aion_group_dump();
         return true;
     }
@@ -263,6 +265,7 @@ bool aion_group_join(char *charname)
     /* Insert this player to the group list */
     LIST_INSERT_HEAD(&aion_group, player, apl_group);
 
+    event_signal(EVENT_AION_GROUP_UPDATE);
     aion_group_dump();
 
     return true;
@@ -292,7 +295,9 @@ bool aion_group_leave(char *charname)
         LIST_REMOVE(player, apl_group);
     }
 
+    event_signal(EVENT_AION_GROUP_UPDATE);
     aion_group_dump();
+
     return true;
 }
 
@@ -330,6 +335,8 @@ bool aion_group_apvalue_update(char *charname, uint32_t apval)
 
     player->apl_apvalue += apval;
 
+    event_signal(EVENT_AION_AP_UPDATE);
+
     return true;
 }
 
@@ -346,6 +353,8 @@ bool aion_group_apvalue_set(char *charname, uint32_t apval)
     }
 
     player->apl_apvalue = apval;
+
+    event_signal(EVENT_AION_AP_UPDATE);
 
     return true;
 }
@@ -386,6 +395,8 @@ bool aion_group_invfull_set(char *charname, bool isfull)
     }
 
     player->apl_invfull = isfull;
+
+    event_signal(EVENT_AION_INVENTORY_FULL);
 
     return true;
 }
@@ -461,6 +472,8 @@ bool aion_group_get_aplootrights(char *stats, size_t stats_sz)
     {
         util_strlcat(stats, inv_full_str, stats_sz);
     }
+
+    event_signal(EVENT_AION_LOOT_RIGHTS);
 
     return true;
 }
