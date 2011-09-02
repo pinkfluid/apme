@@ -14,6 +14,7 @@
 #include "cmd.h"
 #include "console.h"
 #include "chatlog.h"
+#include "event.h"
 
 #define RE_NAME     "([0-9a-zA-Z_]+)"
 #define RE_ITEM     "([0-9]+)"
@@ -177,6 +178,7 @@ void parse_action_loot_item(char *player, uint32_t itemid)
     {
         aion_group_get_aplootrights(aprolls, sizeof(aprolls));
         clipboard_set_text(aprolls);
+        event_signal(EVENT_AION_LOOT_RIGHTS);
     }
 }
 
@@ -264,6 +266,7 @@ void parse_action_roll_dice_highest(char *who)
     /* Update the clipboard with the new status */
     aion_group_get_aplootrights(aprolls, sizeof(aprolls));
     clipboard_set_text(aprolls);
+    event_signal(EVENT_AION_LOOT_RIGHTS);
 }
 
 void chatlog_parse(uint32_t re_id, const char* matchstr, regmatch_t *rematch, uint32_t rematch_num)

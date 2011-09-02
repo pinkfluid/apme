@@ -40,6 +40,7 @@ static void aion_player_init(struct aion_player *player, char *name);
 static struct aion_player* aion_player_alloc(char *charname);
 static struct aion_player* aion_group_find(char *charname);
 static void aion_group_dump(void);
+static void aion_group_iter_fill(struct aion_group_iter *iter, struct aion_player *player);
 
 bool aion_init(void)
 {
@@ -84,6 +85,8 @@ bool aion_player_is_self(char *charname)
 void aion_player_name_set(char *charname)
 {
     util_strlcpy(aion_player_self.apl_name, charname, sizeof(aion_player_self.apl_name));
+
+    event_signal(EVENT_AION_GROUP_UPDATE);
 }
 
 struct aion_player* aion_player_alloc(char *charname)
@@ -405,9 +408,47 @@ bool aion_group_get_aplootrights(char *stats, size_t stats_sz)
         util_strlcat(stats, inv_full_str, stats_sz);
     }
 
-    event_signal(EVENT_AION_LOOT_RIGHTS);
-
     return true;
+}
+
+void aion_group_iter_fill(struct aion_group_iter *iter, struct aion_player *player)
+{
+    iter->__agi_curplayer  = player;
+    if (player == NULL) 
+    {
+        iter->agi_name      = "";
+        iter->agi_apvalue   = 0;
+        iter->agi_invfull   = false;
+    }
+    else
+    {
+        iter->agi_name      = player->apl_name;
+        iter->agi_apvalue   = player->apl_apvalue;
+        iter->agi_invfull   = player->apl_invfull;
+    }
+}
+
+void aion_group_first(struct aion_group_iter *iter)
+{
+    struct aion_player *player;
+
+    player = LIST_FIRST(&aion_group);
+    aion_group_iter_fill(iter, player);
+}
+
+void aion_group_next(struct aion_group_iter *iter)
+{
+    struct aion_player *player;
+
+    player = LIST_NEXT(iter->__agi_curplayer, apl_group);
+    aion_group_iter_fill(iter, player);
+}
+
+bool aion_group_end(struct aion_group_iter *iter)
+{
+    if (iter->__agi_curplayer == NULL) return true;
+
+    return false;
 }
 
 void aion_group_dump(void)

@@ -11,6 +11,7 @@
 #include "util.h"
 #include "help.h"
 #include "event.h"
+#include "version.h"
 
 bool aptrack_prompt(char *prompt, char *answer)
 {
@@ -74,20 +75,66 @@ void aptrack_chatlog_check(void)
     aptrack_prompt("Press ENTER to continue", "");
 }
 
+void aptrack_group_show(void)
+{
+    struct aion_group_iter iter;
+    char buf[256];
+
+    /* Reset screen */
+    printf("\x1b" "c");
+
+    printf("\x1b[33m");
+    printf("***** APme version %s (by Playme @ Telemachus)\n\n", APME_VERSION_STRING);
+    printf("\x1b[33;44m");
+    printf("=================== Current Group Status ===========\n\n");
+    printf("\x1b[m");
+    for (aion_group_first(&iter); !aion_group_end(&iter); aion_group_next(&iter))
+    {
+        /* Paint ourselves green */
+        if (aion_player_is_self(iter.agi_name))
+        {
+            printf("\x1b[32m");
+        }
+        else
+        {
+            printf("\x1b[m");
+        }
+
+        printf(" * %-16s (AP: %d) %s\n", iter.agi_name, iter.agi_apvalue, iter.agi_invfull ? " -- FULL INVENTORY" : "");
+    }
+    printf("\x1b[33;44m");
+    printf("\n====================================================\n");
+    printf("\x1b[m");
+    printf("\n");
+
+    (void)buf;
+    if (aion_group_get_aplootrights(buf, sizeof(buf)))
+    {
+        printf("\x1b[35m");
+        printf("Current AP Relic %s\n", buf);
+    }
+    printf("\x1b[m");
+    fflush(stdout);
+}
+
 void aptrack_event_handler(enum event_type ev)
 {
     switch (ev)
     {
         case EVENT_AION_GROUP_UPDATE:
+            aptrack_group_show();
             break;
 
         case EVENT_AION_AP_UPDATE:
+            aptrack_group_show();
             break;
 
         case EVENT_AION_INVENTORY_FULL:
+            aptrack_group_show();
             break;
 
         case EVENT_AION_LOOT_RIGHTS:
+            aptrack_group_show();
             break;
     }
 }
@@ -132,6 +179,9 @@ int main(int argc, char *argv[])
     {
         return 1;
     }
+
+    /* Show screen */
+    aptrack_group_show();
 
     /* Main processing loop */
     for (;;)

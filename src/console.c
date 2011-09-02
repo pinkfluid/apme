@@ -21,7 +21,7 @@ void con_printf(char *fmt, ...)
 {
     va_list vargs;
 
-#if 1
+#if 0
     va_start(vargs, fmt);
     vprintf(fmt, vargs);
     va_end(vargs);
