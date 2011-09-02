@@ -224,13 +224,14 @@ bool aion_group_leave(char *charname)
     {
         /* We left the group, remove all other players from it */
         aion_group_disband();
+        /* No need to send an event here, aion_group_disband() does that for us */
     }
     else
     {
+        event_signal(EVENT_AION_GROUP_UPDATE);
         LIST_REMOVE(player, apl_group);
     }
 
-    event_signal(EVENT_AION_GROUP_UPDATE);
     aion_group_dump();
 
     return true;
@@ -252,6 +253,8 @@ void aion_group_disband(void)
             LIST_REMOVE(curplayer, apl_group);
         }
     }
+
+    event_signal(EVENT_AION_GROUP_UPDATE);
 }
 
 /*
