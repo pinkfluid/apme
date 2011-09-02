@@ -44,6 +44,8 @@ const char *help_chatlog_enabled =
 const char *help_chatlog_enable_error =
 "Error enabling the CHATLOG feature. Restart the application to try again.\n";
 
+const char *help_mainscreen = 
+"Type \"?command <PARAMS>\", selecte the text and copy-paste.\nFor more info, please use the \"?help <TOPIC>\" command.\n";
 
 struct help_entry help_commands[] =
 {
@@ -111,7 +113,12 @@ struct help_entry help_commands[] =
         "chathist",
         "chathist -- ?command ^<PLAYER_NAME> or ?command ^<PLAYER_NAME>-N",
         "Execute ?command but replace '^<PLAYER_NAME>' with the last text <PLAYER_NAME> entered into chat. Add -1 for second last text, -2 for third last..."
-    }
+    },
+    {
+        "hello",
+        "?hello",
+        "Display the version number."
+    },
 };
 
 

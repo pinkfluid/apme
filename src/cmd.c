@@ -12,6 +12,7 @@
 #include "items.h"
 #include "console.h"
 #include "help.h"
+#include "version.h"
 
 #define CMD_COMMAND_CHAR    '?'
 #define CMD_CHATHIST_CHAR   '^'
@@ -150,10 +151,11 @@ bool cmd_func_help(int argc, char *argv[], char *txt)
 
 bool cmd_func_hello(int argc, char *argv[], char *txt)
 {
+    (void)argc;
     (void)argv;
     (void)txt;
 
-    cmd_retval_printf("Hello, how are you?", argc);
+    cmd_retval_printf("Hello, this is APme version %s.", APME_VERSION_STRING);
 
     return true;
 }
