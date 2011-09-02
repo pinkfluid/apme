@@ -107,7 +107,7 @@ struct help_entry help_commands[] =
     {
         "echo",
         "echo <TEXT>",
-        "Echoes <TEXT> back. Useful for inspecting chat history. For example ?echo !<PLAYER> or ?echo !<PLAYER>-1"
+        "Echoes <TEXT> back. Useful for inspecting chat history. For example ?echo ^<PLAYER> or ?echo ^<PLAYER>-1"
     },
     {
         "chathist",
