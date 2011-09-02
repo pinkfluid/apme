@@ -12,6 +12,7 @@
 #include "help.h"
 #include "event.h"
 #include "version.h"
+#include "term.h"
 
 bool aptrack_prompt(char *prompt, char *answer)
 {
@@ -75,68 +76,67 @@ void aptrack_chatlog_check(void)
     aptrack_prompt("Press ENTER to continue", "");
 }
 
-void aptrack_group_show(void)
+void aptrack_screen_update(void)
 {
     struct aion_group_iter iter;
     char buf[256];
 
     /* Reset screen */
-    printf("\x1b" "c");
+    term_clear();
 
-    printf("\x1b[33m");
+    term_setcolor(TERM_FG_YELLOW);
     printf("***** APme version %s (by Playme @ Telemachus)\n\n", APME_VERSION_STRING);
-    printf("\x1b[33;44m");
-    printf("=================== Current Group Status ===========\n\n");
-    printf("\x1b[m");
+
+    term_setcolor(TERM_FG_YELLOW);
+    term_setcolor(TERM_BG_BLUE);
+    printf("=================== Current Group Status ===========");
+    term_setcolor(TERM_COLOR_RESET);
+    printf("\n\n");
+
     for (aion_group_first(&iter); !aion_group_end(&iter); aion_group_next(&iter))
     {
         /* Paint ourselves green */
         if (aion_player_is_self(iter.agi_name))
         {
-            printf("\x1b[32m");
+            term_setcolor(TERM_FG_GREEN);
         }
         else
         {
-            printf("\x1b[m");
+            term_setcolor(TERM_COLOR_RESET);
         }
 
         printf(" * %-16s (AP: %d) %s\n", iter.agi_name, iter.agi_apvalue, iter.agi_invfull ? " -- FULL INVENTORY" : "");
     }
-    printf("\x1b[33;44m");
-    printf("\n====================================================\n");
-    printf("\x1b[m");
-    printf("\n");
 
-    (void)buf;
+    printf("\n");
+    term_setcolor(TERM_FG_YELLOW);
+    term_setcolor(TERM_BG_BLUE);
+    printf("====================================================");
+    term_setcolor(TERM_COLOR_RESET);
+    printf("\n\n");
+
     if (aion_group_get_aplootrights(buf, sizeof(buf)))
     {
-        printf("\x1b[35m");
+        term_setcolor(TERM_FG_MAGENTA);
         printf("Current AP Relic %s\n", buf);
     }
-    printf("\x1b[m");
+    term_setcolor(TERM_COLOR_RESET);
+
+    term_setcolor(TERM_FG_CYAN);
+    help_usage(buf, sizeof(buf));
+    printf("\n%s\n", help_mainscreen);
+    printf("%s\n", buf);
+    term_setcolor(TERM_COLOR_RESET);
+
     fflush(stdout);
 }
 
 void aptrack_event_handler(enum event_type ev)
 {
-    switch (ev)
-    {
-        case EVENT_AION_GROUP_UPDATE:
-            aptrack_group_show();
-            break;
-
-        case EVENT_AION_AP_UPDATE:
-            aptrack_group_show();
-            break;
-
-        case EVENT_AION_INVENTORY_FULL:
-            aptrack_group_show();
-            break;
-
-        case EVENT_AION_LOOT_RIGHTS:
-            aptrack_group_show();
-            break;
-    }
+    (void)ev;
+    
+    /* Just update the main screen on every event */
+    aptrack_screen_update();
 }
 
 bool aptrack_init(int argc, char* argv[])
@@ -181,7 +181,7 @@ int main(int argc, char *argv[])
     }
 
     /* Show screen */
-    aptrack_group_show();
+    aptrack_screen_update();
 
     /* Main processing loop */
     for (;;)
