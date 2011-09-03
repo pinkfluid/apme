@@ -228,8 +228,9 @@ bool aion_group_leave(char *charname)
     }
     else
     {
-        event_signal(EVENT_AION_GROUP_UPDATE);
         LIST_REMOVE(player, apl_group);
+        /* Update with the new status */
+        event_signal(EVENT_AION_GROUP_UPDATE);
     }
 
     aion_group_dump();
