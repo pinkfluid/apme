@@ -21,7 +21,7 @@ struct aion_language
     struct aion_table al_table[4];
 };
 
-/* Asmodian -> elyos language translation table */
+/* Elyos -> Asmodian language translation table */
 struct aion_language aion_lang_asmodian =
 {
     .al_table =
@@ -45,7 +45,7 @@ struct aion_language aion_lang_asmodian =
     }
 };
 
-/* Elyos -> Asmodian language translation table */
+/* Asmodian -> Elyos language translation table */
 struct aion_language aion_lang_elyos =
 {
     .al_table =
@@ -56,11 +56,11 @@ struct aion_language aion_lang_elyos =
         },
         {
             .at_alpha = "efcdijghmnklqropuvstyzabIJ",
-            .at_next  = "11111111111111111111112222",
+            .at_next  = "11111111111111111111112233",
         },
         {
             .at_alpha = "fgdejkhinolmrspqvwtuzGbcJa",
-            .at_next  = "11111111111111111111132222",
+            .at_next  = "11111111111111111111132232",
         },
         {
             .at_alpha = "ghefklijopmnstqrwxuvGHcdab",
