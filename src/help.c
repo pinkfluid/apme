@@ -77,36 +77,36 @@ struct help_entry help_commands[] =
     {
         "grdel",
         "?grdel <PLAYER>",
-        "Remove <PLAYER> from your group, in case it is not autodetected. ?grdel You -- disbands the group."
+        "Remove <PLAYER> from your group, in case it is not autodetected. Removing youreslf (?grdel You) disbands the group."
     },
     {
         "elyos",
-        "elyos <TEXT>",
+        "?elyos <TEXT>",
         "Translate <TEXT> to elyos/from asmodian."
     },
     {
         "asmo",
-        "asmo <TEXT>",
+        "?asmo <TEXT>",
         "Translate <TEXT> to asmodian/from elyos.",
     },
     {
         "relyos",
-        "relyos <TEXT>",
+        "?relyos <TEXT>",
         "Reverse of the ?elyos command.",
     },
     {
         "reylos",
-        "rasmo <TEXT>",
+        "?rasmo <TEXT>",
         "Revers of the ?asmo command.",
     },
     {
         "apcalc",
-        "apcalc <RELIC ID> or <RELIC_ID>xN",
+        "?apcalc <RELIC ID> or <RELIC_ID>xN",
         "Calculate value of relic, For example ?apcalc <Major Ancient Crown>x5"
     },
     {
         "echo",
-        "echo <TEXT>",
+        "?echo <TEXT>",
         "Echoes <TEXT> back. Useful for inspecting chat history. For example ?echo ^<PLAYER> or ?echo ^<PLAYER>-1"
     },
     {
