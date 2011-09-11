@@ -35,6 +35,7 @@ static cmd_func_t cmd_func_nameset;
 static cmd_func_t cmd_func_ap_stats;
 static cmd_func_t cmd_func_ap_loot;
 static cmd_func_t cmd_func_ap_set;
+static cmd_func_t cmd_func_ap_reset;
 static cmd_func_t cmd_func_group_join;
 static cmd_func_t cmd_func_group_leave;
 static cmd_func_t cmd_func_elyos;
@@ -77,6 +78,10 @@ struct cmd_entry cmd_list[] =
     {
         .cmd_command    = "apset",
         .cmd_func       = cmd_func_ap_set,
+    },
+    {
+        .cmd_command    = "apreset",
+        .cmd_func       = cmd_func_ap_reset,
     },
     {
         .cmd_command    = "gradd",
@@ -228,6 +233,17 @@ bool cmd_func_ap_set(int argc, char *argv[], char *txt)
     }
 
     cmd_retval_set(CMD_RETVAL_OK);
+    return true;
+}
+
+bool cmd_func_ap_reset(int argc, char *argv[], char *txt)
+{
+    (void)argc;
+    (void)argv;
+    (void)txt;
+
+    aion_apvalue_reset();
+
     return true;
 }
 

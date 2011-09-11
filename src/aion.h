@@ -17,6 +17,7 @@ extern bool aion_group_join(char *charname);
 extern bool aion_group_leave(char *charname);
 extern void aion_group_disband(void);
 
+extern void aion_apvalue_reset(void);
 extern bool aion_group_apvalue_update(char *charname, uint32_t apval);
 extern bool aion_group_apvalue_set(char *charname, uint32_t apval);
 extern uint32_t aion_group_get_apvalue_lowest(void);

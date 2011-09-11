@@ -292,10 +292,29 @@ bool aion_group_apvalue_set(char *charname, uint32_t apval)
     }
 
     player->apl_apvalue = apval;
+    player->apl_invfull = false;
 
     event_signal(EVENT_AION_AP_UPDATE);
 
     return true;
+}
+
+void aion_apvalue_reset(void)
+{
+    struct aion_player *player;
+
+    /* Reset statistics for ALL players */
+    LIST_FOREACH(player, &aion_players_cached, apl_cached)
+    {
+        player->apl_apvalue = 0;
+        player->apl_invfull = false;
+    }
+
+    /* The current player is not in the global cache list */
+    aion_player_self.apl_apvalue = 0;
+    aion_player_self.apl_invfull = false;
+
+    event_signal(EVENT_AION_AP_UPDATE);
 }
 
 /*
