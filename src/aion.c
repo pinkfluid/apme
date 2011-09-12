@@ -13,6 +13,7 @@
 #include "console.h"
 #include "regeng.h"
 #include "event.h"
+#include "items.h"
 
 struct aion_player
 {
@@ -81,6 +82,7 @@ bool aion_player_is_self(char *charname)
 
     return false;
 }
+
 
 void aion_player_name_set(char *charname)
 {
@@ -206,6 +208,7 @@ bool aion_group_join(char *charname)
     return true;
 }
 
+
 /*
  * Remove a character from the current group list
  */ 
@@ -256,6 +259,57 @@ void aion_group_disband(void)
     }
 
     event_signal(EVENT_AION_GROUP_UPDATE);
+}
+
+/*
+ * Update the AP value of group members 
+ */
+void aion_group_loot(char *charname, uint32_t itemid)
+{
+    struct aion_player *player;
+    struct item *item;
+
+    bool update_stats = false;
+   
+    /* If the player is not part of the group, do nothing */
+    player = aion_group_find(charname);
+    if (player == NULL)
+    {
+        return;
+    }
+
+    /* Check if this player's inventory is marked as full */
+    if (player->apl_invfull)
+    {
+        aion_group_invfull_set(charname, false);
+        update_stats = true;
+    }
+
+    item = item_find(itemid);
+    if (item != NULL)
+    {
+        if (item->item_ap != 0)
+        {
+            aion_group_apvalue_update(charname, item->item_ap);
+            update_stats = true;
+        }
+
+        con_printf("LOOT: %s -> %s (%u AP)\n", player, item->item_name, item->item_ap);
+    }
+    else
+    {
+        con_printf("LOOT: %s -> %u\n", player, itemid);
+    }
+
+    /* Update loot statistics */
+    if (update_stats)
+    {
+        char aprolls[CHATLOG_CHAT_SZ];
+
+        aion_group_get_aplootrights(aprolls, sizeof(aprolls));
+        clipboard_set_text(aprolls);
+        event_signal(EVENT_AION_LOOT_RIGHTS);
+    }
 }
 
 /*

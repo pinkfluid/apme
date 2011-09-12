@@ -16,6 +16,7 @@ extern bool aion_player_is_self(char *charname);
 extern bool aion_group_join(char *charname);
 extern bool aion_group_leave(char *charname);
 extern void aion_group_disband(void);
+extern void aion_group_loot(char *charname, uint32_t itemid);
 
 extern void aion_apvalue_reset(void);
 extern bool aion_group_apvalue_update(char *charname, uint32_t apval);

@@ -8,7 +8,6 @@
 #include <pcreposix.h>
 
 #include "regeng.h"
-#include "items.h"
 #include "util.h"
 #include "aion.h"
 #include "cmd.h"
@@ -141,45 +140,7 @@ struct regeng re_aion[] =
 
 void parse_action_loot_item(char *player, uint32_t itemid)
 {
-    char aprolls[CHATLOG_CHAT_SZ];
-    struct item *item;
-
-    bool update_stats = false;
-   
-    /* If we see a player's loot, he is in the group, so add him */
-    aion_group_join(player);
-
-    /* Check if this player's inventory is marked as full */
-    if (aion_group_invfull_get(player))
-    {
-        /* It is, clear the flag, and reset statistics */
-        aion_group_invfull_set(player, false);
-        update_stats = true;
-    }
-
-    item = item_find(itemid);
-    if (item != NULL)
-    {
-        if (item->item_ap != 0)
-        {
-            aion_group_apvalue_update(player, item->item_ap);
-            update_stats = true;
-        }
-
-        con_printf("LOOT: %s -> %s (%u AP)\n", player, item->item_name, item->item_ap);
-    }
-    else
-    {
-        con_printf("LOOT: %s -> %u\n", player, itemid);
-    }
-
-    /* Update loot statistics */
-    if (update_stats)
-    {
-        aion_group_get_aplootrights(aprolls, sizeof(aprolls));
-        clipboard_set_text(aprolls);
-        event_signal(EVENT_AION_LOOT_RIGHTS);
-    }
+    aion_group_loot(player, itemid);
 }
 
 void parse_action_damage_inflict(char *player, char *target, char *damage, char *skill)
