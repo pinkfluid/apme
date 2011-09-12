@@ -462,6 +462,9 @@ void aion_invfull_clear(void)
 
     /* The current player is not in the global cache list */
     aion_player_self.apl_invfull = false;
+
+    /* Refresh the group list on the main screen */
+    event_signal(EVENT_AION_GROUP_UPDATE);
 }
 
 
