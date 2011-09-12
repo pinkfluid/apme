@@ -44,6 +44,7 @@ static cmd_func_t cmd_func_relyos;
 static cmd_func_t cmd_func_rasmo;
 static cmd_func_t cmd_func_echo;
 static cmd_func_t cmd_func_apcalc;
+static cmd_func_t cmd_func_inv;
 static cmd_func_t cmd_func_debug;
 
 struct cmd_entry
@@ -116,6 +117,10 @@ struct cmd_entry cmd_list[] =
         .cmd_func       = cmd_func_apcalc,
     },
     {
+        .cmd_command    = "inv",
+        .cmd_func       = cmd_func_inv,
+    },
+    {
         .cmd_command    = "debug",
         .cmd_func       = cmd_func_debug,
     },
@@ -133,7 +138,7 @@ void cmd_retval_printf(char *fmt, ...)
     if (cmd_retval[0] == '?') cmd_retval[0] = ' ';
 }
 
-void cmd_retval_set(char *txt)
+void cmd_retval_set(const char *txt)
 {
     util_strlcpy(cmd_retval, txt, sizeof(cmd_retval));
 
@@ -462,6 +467,52 @@ bool cmd_func_apcalc(int argc, char *argv[], char *txt)
 
     con_printf("AP TOTAL: %u\n", ap_total);
     cmd_retval_printf("%uAP", ap_total);
+
+    return true;
+}
+
+/*
+ * The ?inv (inventory full) function and sub-commands:
+ *      - ?inv on
+ *      - ?inv off
+ *      - ?inv clear
+ */
+bool cmd_func_inv(int argc, char *argv[], char *txt)
+{
+    (void)txt;
+    /*
+     * The ?inv command has 3 subcommands, ON/OFF/CLEAR
+     * For simplicity, lets check the only first two 
+     * letters.
+     * If there's no subcommand, display the current policy.
+     */
+    if (argc < 2)
+    {
+        /* Nothing to do, status is autmatically displayed below */
+    }
+    else if (strncasecmp(argv[1], "ON", 2) == 0)
+    {
+        aion_invfull_excl_set(true);
+    }
+    else if (strncasecmp(argv[1], "OF", 2) == 0)
+    {
+        aion_invfull_excl_set(false);
+    }
+    else if (strncasecmp(argv[1], "CL", 2) == 0)
+    {
+        aion_invfull_clear();
+        return true;
+    }
+
+    /* Display status about current invfull policy */
+    if (aion_invfull_excl_get())
+    {
+        cmd_retval_set(help_invfull_on);
+    }
+    else
+    {
+        cmd_retval_set(help_invfull_off);
+    }
 
     return true;
 }

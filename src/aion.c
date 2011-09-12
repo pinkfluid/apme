@@ -37,6 +37,9 @@ struct aion_player      aion_player_self;
 struct aion_player_list aion_players_cached;    /* Remembered players   */
 struct aion_player_list aion_group;             /* Current group        */
 
+/* Exclude the player if it has full invenvtory from the AP fair system */
+static bool aion_invfull_exclude = false; /* Default OFF */
+
 static void aion_player_init(struct aion_player *player, char *name);
 static struct aion_player* aion_player_alloc(char *charname);
 static struct aion_player* aion_group_find(char *charname);
@@ -281,7 +284,7 @@ void aion_group_loot(char *charname, uint32_t itemid)
     /* Check if this player's inventory is marked as full */
     if (player->apl_invfull)
     {
-        aion_group_invfull_set(charname, false);
+        aion_invfull_set(charname, false);
         update_stats = true;
     }
 
@@ -395,7 +398,7 @@ uint32_t aion_group_apvalue_lowest(void)
     return lowest_ap;
 }
 
-bool aion_group_invfull_set(char *charname, bool isfull)
+bool aion_invfull_set(char *charname, bool isfull)
 {
     struct aion_player *player;
 
@@ -413,7 +416,7 @@ bool aion_group_invfull_set(char *charname, bool isfull)
     return true;
 }
 
-bool aion_group_invfull_get(char *charname)
+bool aion_invfull_get(char *charname)
 {
     struct aion_player *player;
 
@@ -426,6 +429,41 @@ bool aion_group_invfull_get(char *charname)
 
     return player->apl_invfull;
 }
+
+/*
+ * Enable or disable enforcment of "clean inventory"
+ */
+void aion_invfull_excl_set(bool enable)
+{
+    aion_invfull_exclude = enable;
+}
+
+/*
+ * Rerurn the status of the exclude policy:
+ *      - on = true
+ *      - off = false
+ */
+bool aion_invfull_excl_get(void)
+{
+    return aion_invfull_exclude;
+}
+
+/*
+ * Clear invfull status for all known players
+ */
+void aion_invfull_clear(void)
+{
+    struct aion_player *player;
+
+    LIST_FOREACH(player, &aion_players_cached, apl_cached)
+    {
+        player->apl_invfull = false;
+    }
+
+    /* The current player is not in the global cache list */
+    aion_player_self.apl_invfull = false;
+}
+
 
 bool aion_group_get_stats(char *stats, size_t stats_sz)
 {
@@ -460,15 +498,22 @@ bool aion_group_get_aplootrights(char *stats, size_t stats_sz)
 
     LIST_FOREACH(player, &aion_group, apl_group)
     {
+        /* Check if this player has full inventory */
         if (player->apl_invfull)
         {
-            /* Players with full inventory do not get to loot :P */
+            /* Display full inventory warning */
             inv_full_stats = true;
             util_strlcat(inv_full_str, player->apl_name, sizeof(inv_full_str));
             util_strlcat(inv_full_str, " ", sizeof(inv_full_str));
-            continue;
+
+            /* If the exclude policy is enabled, this player doesn't get loot :P */
+            if (aion_invfull_exclude)
+            {
+                continue;
+            }
         }
-        else if (player->apl_apvalue > lowest_ap)
+
+        if (player->apl_apvalue > lowest_ap)
         {
             continue;
         }

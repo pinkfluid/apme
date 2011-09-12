@@ -222,7 +222,7 @@ void parse_action_roll_dice_highest(char *who)
      * Mark this user as having full inventory. If the user doesn't have a full inv
      * This flag will be cleared as soon as an item is looted.
      */
-    aion_group_invfull_set(who, true);
+    aion_invfull_set(who, true);
 
     /* Update the clipboard with the new status */
     aion_group_get_aplootrights(aprolls, sizeof(aprolls));

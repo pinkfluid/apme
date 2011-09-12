@@ -47,6 +47,12 @@ const char *help_chatlog_enable_error =
 const char *help_mainscreen = 
 "Type \"?command <PARAMS>\", selecte the text and copy-paste.\nFor more info, please use the \"?help <TOPIC>\" command.\n";
 
+const char *help_invfull_on =
+"ON: Users with full inventory will be temporarily excluded from the AP fair loot system.";
+
+const char *help_invfull_off = 
+"OFF: Users with full inventory will be warned only.";
+
 struct help_entry help_commands[] =
 {
     {
@@ -115,9 +121,14 @@ struct help_entry help_commands[] =
         "Execute ?command but replace '^<PLAYER_NAME>' with the last text <PLAYER_NAME> entered into chat. Add -1 for second last text, -2 for third last..."
     },
     {
+        "inv",
+        "?inv on/off/clear",
+        "When a player's inventory is full: OFF display only warnings, ON temporarily exclude the player from fair AP loot. Use CLEAR to clear the inventory full status (if it was misdetected)",
+    },
+    {
         "hello",
         "?hello",
-        "Display the version number."
+        "Display the version number"
     },
 };
 

@@ -23,8 +23,11 @@ extern bool aion_group_apvalue_update(char *charname, uint32_t apval);
 extern bool aion_group_apvalue_set(char *charname, uint32_t apval);
 extern uint32_t aion_group_get_apvalue_lowest(void);
 
-extern bool aion_group_invfull_set(char *charname, bool isfull);
-extern bool aion_group_invfull_get(char *charname);
+extern bool aion_invfull_set(char *charname, bool isfull);
+extern bool aion_invfull_get(char *charname);
+extern void aion_invfull_excl_set(bool enable);
+extern bool aion_invfull_excl_get(void);
+extern void aion_invfull_clear(void);
 
 extern bool aion_player_chat_cache(char *charname, char *chat);
 extern bool aion_player_chat_get(char *charname, int msgnum, char *dst, size_t dst_sz);
