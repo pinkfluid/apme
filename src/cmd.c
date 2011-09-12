@@ -249,6 +249,8 @@ bool cmd_func_ap_reset(int argc, char *argv[], char *txt)
 
     aion_apvalue_reset();
 
+    cmd_retval_set(CMD_RETVAL_OK);
+
     return true;
 }
 
@@ -501,6 +503,9 @@ bool cmd_func_inv(int argc, char *argv[], char *txt)
     else if (strncasecmp(argv[1], "CL", 2) == 0)
     {
         aion_invfull_clear();
+
+        cmd_retval_set(CMD_RETVAL_OK);
+
         return true;
     }
 
