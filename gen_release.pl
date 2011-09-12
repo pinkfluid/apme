@@ -73,8 +73,8 @@ sub apme_exe_check()
     {
         if ($line =~ /cygwin/)
         {
-            print("WARNING!!! $apme_exe looks like a Cygwin binary. Continuing in 10 seconds.\n");
-#            sleep(10);
+            print("WARNING!!! $apme_exe looks like a Cygwin binary. Continuing in 5 seconds.\n");
+            sleep(5);
         }
     }
     close(LDD_APME_EXE);
