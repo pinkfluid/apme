@@ -1,1 +1,0 @@
-- Charisse <HELLo> for testing the first version of the loot parsing engine with Adamantium Ore
