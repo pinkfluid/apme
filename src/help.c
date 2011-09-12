@@ -71,6 +71,11 @@ struct help_entry help_commands[] =
         "Show current abyss relics loot rights."
     },
     {
+        "apreset",
+        "?apreset",
+        "For all players, reset their accumulated AP points to 0.",
+    },
+    {
         "apset",
         "?apset <PLAYER> <AP>",
         "Set the AP points of <PLAYER> to <AP>."
