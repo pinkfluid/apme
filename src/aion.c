@@ -274,6 +274,14 @@ void aion_group_loot(char *charname, uint32_t itemid)
 
     bool update_stats = false;
    
+    item = item_find(itemid);
+
+    /* If the player looted an AP item, add it to the group automatically */
+    if ((item != NULL) && (item->item_ap > 0))
+    {
+        aion_group_join(charname);
+    }
+
     /* If the player is not part of the group, do nothing */
     player = aion_group_find(charname);
     if (player == NULL)
@@ -288,10 +296,9 @@ void aion_group_loot(char *charname, uint32_t itemid)
         update_stats = true;
     }
 
-    item = item_find(itemid);
     if (item != NULL)
     {
-        if (item->item_ap != 0)
+        if (item->item_ap > 0)
         {
             aion_group_apvalue_update(charname, item->item_ap);
             update_stats = true;

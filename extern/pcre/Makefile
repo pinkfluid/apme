@@ -66,7 +66,7 @@ $(PCRE_CONFIG_DONE): $(PCRE_EXTRACT_DONE)
 	@touch "$(PCRE_CONFIG_DONE)"
 
 $(PCRE_BUILD_DONE): $(PCRE_CONFIG_DONE)
-	cd "$(PCRE_BUILD)" ; make
+	cd "$(PCRE_BUILD)" ; $(MAKE) 
 	@touch "$(PCRE_BUILD_DONE)"
 
 # Nifty trick, if file exists, add it to dependencies, otherwise ignore it 

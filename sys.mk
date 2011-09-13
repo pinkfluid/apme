@@ -31,6 +31,7 @@ endif
 
 ifneq ($(findstring DragonFly, $(UNAME)),)
     CFLAGS+=-DSYS_UNIX -DOS_DRAGONFLY
+    BUILTIN_PCRE:=true
 endif
 
 ifneq ($(findstring Linux, $(UNAME)),)
