@@ -3,8 +3,8 @@
 
 #define APME_VERSION_MAJOR      0
 #define APME_VERSION_MINOR      3
-#define APME_VERSION_REVISION   0
-#define APME_VERSION_NAME       "Krim"
+#define APME_VERSION_REVISION   99
+#define APME_VERSION_NAME       "Development"
 
 #define __APM_STR(x)            #x
 #define APM_STR(x)              __APM_STR(x)
