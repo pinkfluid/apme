@@ -536,23 +536,23 @@ bool cmd_func_debug(int argc, char *argv[], char *txt)
 }
 
 /*
- * Parse chat history format
+ * Parse chat history format, N^^^^^Player
  */
 bool cmd_chat_hist(int argc, char *argv[], char *player, size_t player_sz, int *msgnum)
 {
     /* Regex for matching the !Player-X format  */
-    static regex_t  cmd_chathist_re;
     static bool     cmd_chathist_first = true;
+    static regex_t  cmd_chathist_re;
 
-    int retval;
-    regmatch_t rematch[4];  /* We wont match more than 2 items */
-    char strmsg[16];
+    int        retval;
+    regmatch_t rematch[4];  /* We wont match more than 3 items */
+    char       buf[256];
 
 
     if (cmd_chathist_first)
     {
         /* Compile the regex for matching the !Player-X format  */
-        retval = regcomp(&cmd_chathist_re, "^\\^([A-Za-z0-9_]+)$|^\\^([A-Za-z0-9_]+)-([0-9]+)$", REG_EXTENDED);
+        retval = regcomp(&cmd_chathist_re, "^(\\d*)(\\^+)(\\w+)$", REG_EXTENDED);
         if (retval != 0)
         {
             con_printf("Error initializing CMD subsystem\n");
@@ -566,8 +566,8 @@ bool cmd_chat_hist(int argc, char *argv[], char *player, size_t player_sz, int *
     /* This format always takes just two arguments */
     if (argc != 2) return false;
 
-    /* Must start with the history char "^" */
-    if (argv[1][0] != CMD_CHATHIST_CHAR) return false;
+    /* Check if the first argument contains a ^ */
+    if (strchr(argv[1], '^') == NULL) return false;
 
     /* Use regular expressions to parse the syntax */
     retval = regexec(&cmd_chathist_re,
@@ -580,18 +580,30 @@ bool cmd_chat_hist(int argc, char *argv[], char *player, size_t player_sz, int *
         return false;
     }
 
-    if (!RE_MATCH(rematch[1]))
+    /* Calculate the message number */
+    *msgnum = 0;
+    
+    /* Parse the number before the first ^ */
+    re_strlcpy(buf, argv[1], sizeof(buf), rematch[1]);
+    if (strlen(buf) > 0)
     {
-        re_strlcpy(player, argv[1], player_sz, rematch[2]);
-        re_strlcpy(strmsg, argv[1], sizeof(strmsg), rematch[3]);
+        *msgnum += strtoul(buf, NULL, 0);
+    }
 
-        *msgnum = strtoul(strmsg, NULL, 0);
+    /* Count the number of ^ in this string */
+    re_strlcpy(buf, argv[1], sizeof(buf), rematch[2]);
+    if (strlen(buf) >= 1)
+    {
+        *msgnum += strlen(buf) - 1;
     }
     else
     {
-        re_strlcpy(player, argv[1], player_sz, rematch[1]);
-        *msgnum = 0;
+        /* Something went wrong, this should be at least 1 */
+        return false;
     }
+
+    /* Finally copy the player name */
+    re_strlcpy(player, argv[1], player_sz, rematch[3]);
 
     return true;
 }
