@@ -159,7 +159,7 @@ bool aion_chatlog_enable(void)
 
     /* Write out the config */
     fprintf(sysovr_file, "\n");
-    fprintf(sysovr_file, "-- Added by APTRACKER, remove the line below to disable chat logging\n");
+    fprintf(sysovr_file, "-- Added by APme, remove the line below to disable chat logging\n");
     fprintf(sysovr_file, "%s=\"1\"\n", AION_SYSOVR_CHATLOG);
 
     fclose(sysovr_file);
