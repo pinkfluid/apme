@@ -40,7 +40,7 @@ void con_dump(void)
 
     size_t slen = 0;
 
-    printf("===== [ CONSOLE TXTBUF: %d %d, total %d ] =============\n",
+    printf("===== [ CONSOLE TXTBUF: %ld %ld, total %ld ] =============\n",
            con_tb.tb_head,
            con_tb.tb_tail,
            con_tb.tb_tail - con_tb.tb_head);
@@ -51,7 +51,7 @@ void con_dump(void)
         slen += strlen(con_str);
     }
 
-    printf("===== [ CONSOLE TOTAL: Strlen=%d, numlines=%d ] =======\n", slen, ii);
+    printf("===== [ CONSOLE TOTAL: Strlen=%ld, numlines=%d ] =======\n", slen, ii);
 
     fflush(stdout);
 }

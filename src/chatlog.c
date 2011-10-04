@@ -230,7 +230,7 @@ void parse_action_roll_dice_highest(char *who)
     event_signal(EVENT_AION_LOOT_RIGHTS);
 }
 
-void chatlog_parse(uint32_t re_id, const char* matchstr, regmatch_t *rematch, uint32_t rematch_num)
+void chatlog_parse(uint32_t re_id, const char* matchstr, regmatch_t *rematch, size_t rematch_num)
 {
     char item[CHATLOG_ITEM_SZ];
     char name[CHATLOG_NAME_SZ];
