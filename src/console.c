@@ -41,9 +41,9 @@ void con_dump(void)
     size_t slen = 0;
 
     printf("===== [ CONSOLE TXTBUF: %ld %ld, total %ld ] =============\n",
-           con_tb.tb_head,
-           con_tb.tb_tail,
-           con_tb.tb_tail - con_tb.tb_head);
+           (long)con_tb.tb_head,
+           (long)con_tb.tb_tail,
+           (long)con_tb.tb_tail - (long)con_tb.tb_head);
 
     for (ii = 0; tb_strget(&con_tb, ii, con_str, sizeof(con_str)); ii++)
     {
@@ -51,7 +51,7 @@ void con_dump(void)
         slen += strlen(con_str);
     }
 
-    printf("===== [ CONSOLE TOTAL: Strlen=%ld, numlines=%d ] =======\n", slen, ii);
+    printf("===== [ CONSOLE TOTAL: Strlen=%ld, numlines=%d ] =======\n", (long)slen, ii);
 
     fflush(stdout);
 }
