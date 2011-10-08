@@ -484,7 +484,7 @@ bool aion_group_get_stats(char *stats, size_t stats_sz)
 
     LIST_FOREACH(player, &aion_group, apl_group)
     {
-        snprintf(curstat, sizeof(curstat), "| %s (AP %u) ", player->apl_name, player->apl_apvalue); 
+        snprintf(curstat, sizeof(curstat), "|%s %uAP", player->apl_name, player->apl_apvalue); 
         util_strlcat(stats, curstat, stats_sz);
     }
 
@@ -534,6 +534,7 @@ bool aion_group_get_aplootrights(char *stats, size_t stats_sz)
         util_strlcat(stats, curstats, stats_sz);
     }
 
+    con_printf("Stats_sz = %ld\n", (long)stats_sz);
     /* If somebody has inventory full, display that in the stats */
     if (inv_full_stats)
     {

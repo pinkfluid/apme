@@ -185,7 +185,7 @@ bool cmd_func_nameset(int argc, char *argv[], char *txt)
 
 bool cmd_func_ap_stats(int argc, char *argv[], char *txt)
 {
-    char buf[256];
+    char buf[AION_CHAT_SZ];
 
     (void)argc;
     (void)argv;
