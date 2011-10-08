@@ -10,6 +10,9 @@
 #include "util.h"
 #include "console.h"
 
+/* This is the number characters that Aion allowts to be paste */
+#define AION_CLIPBOARD_MAX 255
+
 bool clipboard_set_text(char *text)
 {
 #ifdef SYS_WINDOWS
@@ -17,6 +20,11 @@ bool clipboard_set_text(char *text)
     DWORD len = strlen(text);
     HGLOBAL hdst;
     LPWSTR dst;
+
+    if (len > AION_CLIPBOARD_MAX)
+    {
+        len = AION_CLIPBOARD_MAX;
+    }
 
     // Allocate string for cwd
     hdst = GlobalAlloc(GMEM_MOVEABLE | GMEM_DDESHARE, len + 1);
