@@ -17,6 +17,7 @@
 
 #define RE_NAME     "([0-9a-zA-Z_]+)"
 #define RE_ITEM     "([0-9]+)"
+#define RE_NUM_ROLL "[0-9\\.]+"
 
 #define RE_ITEM_LOOT_SELF           100
 #define RE_ITEM_LOOT_PLAYER         101
@@ -38,10 +39,12 @@
 #define RE_CHAT_WHISPER             402
 #define RE_CHAT_SHOUT               403
 
-#define RE_ROLL_DICE_SELF           500
-#define RE_ROLL_DICE_PLAYER         501
-#define RE_ROLL_DICE_PASS           502
-#define RE_ROLL_DICE_HIGHEST        503
+#define RE_ROLL_ITEM_SELF           500
+#define RE_ROLL_ITEM_PLAYER         501
+#define RE_ROLL_ITEM_PASS           502
+#define RE_ROLL_ITEM_HIGHEST        503
+#define RE_ROLL_DICE_SELF           504 /* When using the /roll command */
+#define RE_ROLL_DICE_PLAYER         505 /* When using the /roll command */
 
 static FILE* chatlog_file = NULL;
 
@@ -119,20 +122,31 @@ struct regeng re_aion[] =
     },
 #endif
     {
-        .re_id  = RE_ROLL_DICE_SELF,
-        .re_exp = "^: You rolled the dice and got a [0-9]+ \\(max\\. [0-9]+\\)\\.",
+        .re_id  = RE_ROLL_ITEM_SELF,
+        .re_exp = "^: You rolled the dice and got " RE_NUM_ROLL " \\(max\\. " RE_NUM_ROLL "\\)\\.",
     },
     {
-        .re_id  = RE_ROLL_DICE_PLAYER,
-        .re_exp = "^: " RE_NAME " rolled the dice and got [0-9]+ \\(max\\. [0-9]+\\)\\.",
+        .re_id  = RE_ROLL_ITEM_PLAYER,
+        .re_exp = "^: " RE_NAME " rolled the dice and got " RE_NUM_ROLL " \\(max\\. " RE_NUM_ROLL "\\)\\.",
     },
     {
-        .re_id  = RE_ROLL_DICE_PASS,
+        .re_id  = RE_ROLL_ITEM_PASS,
         .re_exp = "^: " RE_NAME " gave up rolling the dice",
     },
     {
-        .re_id  = RE_ROLL_DICE_HIGHEST,
+        .re_id  = RE_ROLL_ITEM_HIGHEST,
         .re_exp = "^: " RE_NAME " rolled the highest",
+    },
+    {
+        /* The onlly difference between this and RE_ROLL_ITEM_SELF is in the "got a" vs "got" text */
+        .re_id  = RE_ROLL_DICE_SELF,
+        .re_exp = "^: You rolled the dice and got a " RE_NUM_ROLL " \\(max\\. " RE_NUM_ROLL "\\)\\.",
+
+    },
+    {
+        /* The onlly difference between this and RE_ROLL_ITEM_PLAYER is in the "got a" vs "got" text */
+        .re_id  = RE_ROLL_DICE_PLAYER,
+        .re_exp = "^: " RE_NAME " rolled the dice and got a " RE_NUM_ROLL " \\(max\\. " RE_NUM_ROLL "\\)\\.",
     },
 
     RE_REGENG_END
@@ -195,12 +209,12 @@ void parse_action_chat_shout(char *name, char *txt)
     aion_player_chat_cache(name, txt);
 }
 
-void parse_action_roll_dice_self(void)
+void parse_action_roll_item_self(void)
 {
     //con_printf("ROLL: You rolled.\n");
 }
 
-void parse_action_roll_dice_player(char *who)
+void parse_action_roll_item_player(char *who)
 {
     /*
      * Roll dices can be detected only for group members. So parsing rolling or passing
@@ -209,13 +223,13 @@ void parse_action_roll_dice_player(char *who)
     aion_group_join(who);
 }
 
-void parse_action_roll_dice_pass(char *who)
+void parse_action_roll_item_pass(char *who)
 {
-    /* See parse_action_roll_dice_player() */
+    /* See parse_action_roll_item_player() */
     aion_group_join(who);
 }
 
-void parse_action_roll_dice_highest(char *who)
+void parse_action_roll_item_highest(char *who)
 {
     char aprolls[CHATLOG_CHAT_SZ];
     /*
@@ -321,23 +335,28 @@ void chatlog_parse(uint32_t re_id, const char* matchstr, regmatch_t *rematch, si
             //parse_action_chat_general(AION_NAME_DEFAULT, chat);
             break;
 
+        case RE_ROLL_ITEM_SELF:
+            parse_action_roll_item_self();
+            break;
+
+        case RE_ROLL_ITEM_PLAYER:
+            re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
+            parse_action_roll_item_player(name);
+            break;
+
+        case RE_ROLL_ITEM_PASS:
+            re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
+            parse_action_roll_item_pass(name);
+            break;
+
+        case RE_ROLL_ITEM_HIGHEST:
+            re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
+            parse_action_roll_item_highest(name);
+            break;
+
         case RE_ROLL_DICE_SELF:
-            parse_action_roll_dice_self();
-            break;
-
         case RE_ROLL_DICE_PLAYER:
-            re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
-            parse_action_roll_dice_player(name);
-            break;
-
-        case RE_ROLL_DICE_PASS:
-            re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
-            parse_action_roll_dice_pass(name);
-            break;
-
-        case RE_ROLL_DICE_HIGHEST:
-            re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
-            parse_action_roll_dice_highest(name);
+            /* Nothing to do here, these trigger if the user types /roll */
             break;
 
         default:
