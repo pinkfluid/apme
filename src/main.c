@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
@@ -163,6 +164,16 @@ bool aptrack_init(int argc, char* argv[])
     return true;
 }
 
+void aptrack_env(void)
+{
+    char *default_name = getenv("APME_NAME");
+
+    if (default_name != NULL)
+    {
+        aion_player_name_set(default_name);
+    }
+}
+
 void aptrack_periodic()
 {
     cmd_poll();
@@ -179,6 +190,9 @@ int main(int argc, char *argv[])
     {
         return 1;
     }
+
+    /* Get some stuff from the environment */
+    aptrack_env();
 
     /* Show screen */
     aptrack_screen_update();
