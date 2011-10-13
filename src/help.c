@@ -83,7 +83,7 @@ struct help_entry help_commands[] =
     {
         "aplimit",
         "?aplimit <AP>",
-        "Set the upper limit of AP per player. If the whole group is above the AP limit, loot is free for all. For example, to enable what commonly referred as the RR2400 system, use ?aplimit 2400"
+        "Set the upper AP limit per player. Players exceeding the AP limit will not be eligible for loot. Loot is FFA when the whole group reaches the limit. A value of 0 means no limit (default).",
     },
     {
         "gradd",
