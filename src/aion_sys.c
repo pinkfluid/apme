@@ -65,7 +65,12 @@ bool aion_get_sysovr_path(char *sysovr_path, size_t sysovr_pathsz)
     }
 
     util_strlcpy(sysovr_path, aion_install, sysovr_pathsz);
+#ifdef SYS_WINDOWS
     util_strlcat(sysovr_path, "\\", sysovr_pathsz);
+#else
+    util_strlcat(sysovr_path, "/", sysovr_pathsz);
+#endif
+
     util_strlcat(sysovr_path, AION_SYSOVR_FILE, sysovr_pathsz);
 
     return true;

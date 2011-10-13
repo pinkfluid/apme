@@ -11,5 +11,6 @@
 
 extern bool chatlog_init(void);
 extern bool chatlog_poll(void);
+extern bool chatlog_readfile(char *file);
 
 #endif

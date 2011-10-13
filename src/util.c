@@ -13,9 +13,9 @@
 /* This is the number characters that Aion allowts to be paste */
 #define AION_CLIPBOARD_MAX 255
 
+#ifdef SYS_WINDOWS
 bool clipboard_set_text(char *text)
 {
-#ifdef SYS_WINDOWS
     bool retval;
     DWORD len = strlen(text);
     HGLOBAL hdst;
@@ -51,16 +51,11 @@ bool clipboard_set_text(char *text)
     }
 
     CloseClipboard();
-#else
-    (void)text;
-#endif
-
     return true;
 }
 
 bool clipboard_get_text(char *text, size_t text_sz)
 {
-#ifdef SYS_WINDOWS
     HGLOBAL hsrc;
     char *src;
 
@@ -96,17 +91,11 @@ bool clipboard_get_text(char *text, size_t text_sz)
 error:
     CloseClipboard();
     return status;
-#else
-    (void)text;
-    (void)text_sz;
 
-    return true;
-#endif
 }
 
 bool reg_read_key(char *key, char *val, void *buf, size_t buflen)
 {
-#ifdef SYS_WINDOWS
     LONG retval;
     HKEY key_handle;
     bool status = false;
@@ -130,15 +119,60 @@ bool reg_read_key(char *key, char *val, void *buf, size_t buflen)
 error:
     RegCloseKey(key_handle);
     return status;
-#else
+}
+
+#else /* Unix */
+
+bool clipboard_set_text(char *text)
+{
+    FILE *clipboard;
+
+    /* On unix, just read from the clipboard.txt file :) */
+    clipboard = fopen("clipboard.txt", "w+");
+    if (clipboard != NULL)
+    {
+        fputs(text, clipboard);
+        fputs("\n", clipboard);
+        fclose(clipboard);
+    }
+
+    return true;
+}
+
+bool clipboard_get_text(char *text, size_t text_sz)
+{
+    FILE *clipboard;
+
+    *text = '\0';
+
+    /* On unix, just read from the clipboard.txt file :) */
+    clipboard = fopen("clipboard.txt", "r");
+    if (clipboard != NULL)
+    {
+        if (fgets(text, text_sz, clipboard) == NULL)
+        {
+            /* Ignore warning */
+        }
+
+        fclose(clipboard);
+    }
+
+    util_chomp(text);
+
+    return true;
+}
+
+bool reg_read_key(char *key, char *val, void *buf, size_t buflen)
+{
     (void)key;
     (void)val;
     (void)buf;
     (void)buflen;
 
     return true;
-#endif
 }
+
+#endif
 
 /* 
  * Thansk to Ulrich Drepper, these two functions probably get the re-inventing-the-wheel-over-and-over-again award.

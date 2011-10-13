@@ -434,10 +434,24 @@ bool chatlog_init()
     return true;
 }
 
+bool chatlog_readstr(char *chatstr)
+{
+    char *pchat; 
+    /* Skip the timestamp, check if we're at the ':' character */
+    pchat = chatstr + CHATLOG_PREFIX_LEN;
+
+    /* Clearly this is an invalid line */
+    if (*pchat != ':')
+    { 
+        return true;
+    }
+
+    return re_parse(chatlog_parse, re_aion, pchat);
+}
+
 bool chatlog_poll()
 {
     char chatstr[CHATLOG_CHAT_SZ];
-    char *pchat; 
 
     if (!chatlog_open())
     {
@@ -452,19 +466,35 @@ bool chatlog_poll()
     {
         /* Remove ending new-lines */
         util_chomp(chatstr);
-
-        /* Skip the timestamp, check if we're at the ':' character */
-        pchat = chatstr + CHATLOG_PREFIX_LEN;
-
-        /* Clearly this is an invalid line */
-        if (*pchat != ':')
-        { 
-            return true;
-        }
-
-        re_parse(chatlog_parse, re_aion, pchat);
+        chatlog_readstr(chatstr);
     } 
 
     return true;
 }
 
+bool chatlog_readfile(char *file)
+{
+    char chatstr[CHATLOG_CHAT_SZ];
+    FILE *chatfile;
+
+    chatfile = fopen(file, "r");
+    if (chatfile == NULL)
+    {
+        con_printf("CHATLOG: Error reading file %s\n", file);
+        return false;
+    }
+
+    /* Nothing to read? */
+    while (fgets(chatstr, sizeof(chatstr), chatfile) != NULL)
+    {
+        /* Remove ending new-lines */
+        util_chomp(chatstr);
+
+        /* Parse chatlog */
+        chatlog_readstr(chatstr);
+    } 
+
+    fclose(chatfile);
+
+    return true;
+}

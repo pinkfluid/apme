@@ -45,7 +45,8 @@ static cmd_func_t cmd_func_rasmo;
 static cmd_func_t cmd_func_echo;
 static cmd_func_t cmd_func_apcalc;
 static cmd_func_t cmd_func_inv;
-static cmd_func_t cmd_func_debug;
+static cmd_func_t cmd_func_dbgdump;
+static cmd_func_t cmd_func_dbgparse;
 
 struct cmd_entry
 {
@@ -121,9 +122,13 @@ struct cmd_entry cmd_list[] =
         .cmd_func       = cmd_func_inv,
     },
     {
-        .cmd_command    = "debug",
-        .cmd_func       = cmd_func_debug,
+        .cmd_command    = "dbgdump",
+        .cmd_func       = cmd_func_dbgdump,
     },
+    {
+        .cmd_command    = "dbgparse",
+        .cmd_func       = cmd_func_dbgparse,
+    }
 };
 
 void cmd_retval_printf(char *fmt, ...)
@@ -522,7 +527,7 @@ bool cmd_func_inv(int argc, char *argv[], char *txt)
     return true;
 }
 
-bool cmd_func_debug(int argc, char *argv[], char *txt)
+bool cmd_func_dbgdump(int argc, char *argv[], char *txt)
 {
     (void)argc;
     (void)argv;
@@ -532,6 +537,25 @@ bool cmd_func_debug(int argc, char *argv[], char *txt)
 
     cmd_retval_set(CMD_RETVAL_OK);
 
+    return true;
+}
+
+bool cmd_func_dbgparse(int argc, char *argv[], char *txt)
+{
+    (void)txt;
+
+    if (argc < 2)
+    {
+        return false;
+    }
+
+    if (!chatlog_readfile(argv[1]))
+    {
+        return false;
+    }
+
+    /* Nothing for now */
+    cmd_retval_set(CMD_RETVAL_OK);
     return true;
 }
 
