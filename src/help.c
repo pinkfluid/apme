@@ -81,6 +81,11 @@ struct help_entry help_commands[] =
         "Set the AP points of <PLAYER> to <AP>."
     },
     {
+        "aplimit",
+        "?aplimit <AP>",
+        "Set the upper limit of AP per player. If the whole group is above the AP limit, loot is free for all. For example, to enable what commonly referred as the RR2400 system, use ?aplimit 2400"
+    },
+    {
         "gradd",
         "?gradd <PLAYER>",
         "Add <PLAYER> to your group, in case it is not autodetected."

@@ -36,6 +36,7 @@ static cmd_func_t cmd_func_ap_stats;
 static cmd_func_t cmd_func_ap_loot;
 static cmd_func_t cmd_func_ap_set;
 static cmd_func_t cmd_func_ap_reset;
+static cmd_func_t cmd_func_ap_limit;
 static cmd_func_t cmd_func_group_join;
 static cmd_func_t cmd_func_group_leave;
 static cmd_func_t cmd_func_elyos;
@@ -84,6 +85,10 @@ struct cmd_entry cmd_list[] =
     {
         .cmd_command    = "apreset",
         .cmd_func       = cmd_func_ap_reset,
+    },
+    {
+        .cmd_command    = "aplimit",
+        .cmd_func       = cmd_func_ap_limit,
     },
     {
         .cmd_command    = "gradd",
@@ -253,6 +258,26 @@ bool cmd_func_ap_reset(int argc, char *argv[], char *txt)
     (void)txt;
 
     aion_apvalue_reset();
+
+    cmd_retval_set(CMD_RETVAL_OK);
+
+    return true;
+}
+
+bool cmd_func_ap_limit(int argc, char *argv[], char *txt)
+{
+    uint32_t apvalue;
+
+    (void)txt;
+
+    if (argc < 2)
+    {
+        return false;
+    }
+
+    apvalue = strtoul(argv[1], NULL, 0);
+
+    aion_aplimit_set(apvalue);
 
     cmd_retval_set(CMD_RETVAL_OK);
 

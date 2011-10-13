@@ -40,6 +40,8 @@ struct aion_player_list aion_group;             /* Current group        */
 /* Exclude the player if it has full invenvtory from the AP fair system */
 static bool aion_invfull_exclude = false; /* Default OFF */
 
+static uint32_t aion_ap_limit = 0;   /* Current maximum AP limit */
+
 static void aion_player_init(struct aion_player *player, char *name);
 static struct aion_player* aion_player_alloc(char *charname);
 static struct aion_player* aion_group_find(char *charname);
@@ -474,6 +476,21 @@ void aion_invfull_clear(void)
     event_signal(EVENT_AION_GROUP_UPDATE);
 }
 
+/*
+ * Set the upper AP limit a player can have -- some players just prefer
+ * some randomness in their loots
+ */
+void aion_aplimit_set(uint32_t aplimit)
+{
+    aion_ap_limit = aplimit;
+
+    event_signal(EVENT_AION_GROUP_UPDATE);
+}
+
+uint32_t aion_aplimit_get(void)
+{
+    return aion_ap_limit;
+}
 
 bool aion_group_get_stats(char *stats, size_t stats_sz)
 {
@@ -498,13 +515,24 @@ bool aion_group_get_aplootrights(char *stats, size_t stats_sz)
     uint32_t lowest_ap;
     struct aion_player *player;
     bool inv_full_stats;
+    bool have_stats;
 
-    util_strlcpy(stats, "Loot rights: ", stats_sz);
+    /* The AP limit value changes the format slightly */
+    if (aion_ap_limit > 0)
+    {
+        snprintf(stats, stats_sz, "Loot rights (<%dAP): ", aion_ap_limit);
+    }
+    else
+    {
+        util_strlcpy(stats, "Loot rights: ", stats_sz);
+    }
+
     util_strlcpy(inv_full_str, " | Full inventory: ", sizeof(inv_full_str));
 
     lowest_ap = aion_group_apvalue_lowest();
 
     inv_full_stats = false;
+    have_stats = false;
 
     LIST_FOREACH(player, &aion_group, apl_group)
     {
@@ -528,10 +556,30 @@ bool aion_group_get_aplootrights(char *stats, size_t stats_sz)
             continue;
         }
 
+        if ((aion_ap_limit > 0) &&
+            (aion_ap_limit <= player->apl_apvalue))
+        {
+            con_printf("Player %s has %dAP and is above the limit of %d.\n",
+                       player->apl_name,
+                       player->apl_apvalue,
+                       aion_ap_limit);
+            continue;
+        }
+
         util_strlcpy(curstats, player->apl_name, sizeof(curstats));
         util_strlcat(curstats, " ", sizeof(curstats));
 
         util_strlcat(stats, curstats, stats_sz);
+        have_stats = true;
+    }
+
+    if (!have_stats)
+    {
+        /*
+         * We didn't produce a single stat since all players seem to be above
+         * the AP limit
+         */
+        util_strlcat(stats, "Free for All", stats_sz);
     }
 
     con_printf("Stats_sz = %ld\n", (long)stats_sz);
