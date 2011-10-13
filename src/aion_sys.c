@@ -29,6 +29,16 @@ char* aion_default_install_path(void)
     size_t ii;
     bool retval;
 
+    char *envpath;
+
+    /* Check the APME_AION_PATH varible, if not set, try to figure out stuff from the registry */
+    envpath = getenv("APME_AION_PATH");
+    if (envpath != NULL)
+    {
+        util_strlcpy(default_install_path, envpath, sizeof(default_install_path));
+        return default_install_path;
+    }
+
     for (ii = 0; ii < sizeof(aion_install_reg_keys) / sizeof(aion_install_reg_keys[0]); ii++)
     {
         retval = reg_read_key(aion_install_reg_keys[ii],
