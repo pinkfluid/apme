@@ -171,13 +171,20 @@ sub apme_package()
     system("sha256sum '$zip_file' > '$zip_file.sha256'");
 }
 
-&apme_exe_check();
+if ($ARGV[0] eq "--notes")
+{
+    printf("Generating release notes...\n");
+    &apme_release_notes();
+    exit(0);
+}
 
-my ($ver_major, $ver_minor, $ver_revision, $ver_name) = &apme_version();
-printf("APme version %d.%d.%d (%s)\n", $ver_major, $ver_minor, $ver_revision, $ver_name);
+&apme_exe_check();
 
 printf("Generating release notes...\n");
 &apme_release_notes();
+
+my ($ver_major, $ver_minor, $ver_revision, $ver_name) = &apme_version();
+printf("APme version %d.%d.%d (%s)\n", $ver_major, $ver_minor, $ver_revision, $ver_name);
 
 printf("Packaging...\n");
 &apme_package();
