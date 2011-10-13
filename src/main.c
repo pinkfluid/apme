@@ -57,8 +57,8 @@ void aptrack_chatlog_check(void)
 
     /* Do the warn dialog and enable chatlog stuff */
     printf("%s\n", help_chatlog_warning);
-    enable_ok = aptrack_prompt("Type ACCEPT to enable the chatlog, or ENTER to continue",
-                               "accept");
+    enable_ok = aptrack_prompt("Press ENTER to enable the chatlog or type NO to abort.",
+                               "");
     if (!enable_ok)
     {
         aptrack_prompt("The CHATLOG was not enabled by user request, press ENTER to continue", "");
