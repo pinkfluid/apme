@@ -2,9 +2,9 @@
 #define VERSION_H_INCLUDED
 
 #define APME_VERSION_MAJOR      0
-#define APME_VERSION_MINOR      3
-#define APME_VERSION_REVISION   99
-#define APME_VERSION_NAME       "Development"
+#define APME_VERSION_MINOR      4
+#define APME_VERSION_REVISION   0
+#define APME_VERSION_NAME       "Rogla"
 
 #define __APM_STR(x)            #x
 #define APM_STR(x)              __APM_STR(x)
