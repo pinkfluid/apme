@@ -10,9 +10,13 @@
 #define AION_SYSOVR_FILE    "system.ovr"
 #define AION_SYSOVR_CHATLOG "g_chatlog"
 
-extern bool aion_init(void);
-extern bool aion_player_is_self(char *charname);
+/* This is the number characters that Aion allowts to be paste */
+#define AION_CLIPBOARD_MAX 255
 
+extern bool aion_init(void);
+extern bool aion_clipboard_set(char *text);
+
+extern bool aion_player_is_self(char *charname);
 extern bool aion_group_join(char *charname);
 extern bool aion_group_leave(char *charname);
 extern void aion_group_disband(void);

@@ -739,7 +739,7 @@ void cmd_exec(char *txt)
         }
     }
 
-    clipboard_set_text(cmd_retval);
+    aion_clipboard_set(cmd_retval);
 }
 
 /*

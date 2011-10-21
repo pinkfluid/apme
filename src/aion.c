@@ -64,6 +64,17 @@ bool aion_init(void)
     return true;
 }
 
+/* Main means of posting results back to the game client */
+bool aion_clipboard_set(char *text)
+{
+    char clip[AION_CLIPBOARD_MAX];
+
+    /* Clip the string */
+    util_strlcpy(clip, text, sizeof(clip));
+
+    return clipboard_set_text(clip);
+}
+
 void aion_player_init(struct aion_player *player, char *charname)
 {
     util_strlcpy(player->apl_name, charname, sizeof(player->apl_name));
@@ -87,7 +98,6 @@ bool aion_player_is_self(char *charname)
 
     return false;
 }
-
 
 void aion_player_name_set(char *charname)
 {
@@ -319,7 +329,7 @@ void aion_group_loot(char *charname, uint32_t itemid)
         char aprolls[CHATLOG_CHAT_SZ];
 
         aion_group_get_aplootrights(aprolls, sizeof(aprolls));
-        clipboard_set_text(aprolls);
+        aion_clipboard_set(aprolls);
         event_signal(EVENT_AION_LOOT_RIGHTS);
     }
 }

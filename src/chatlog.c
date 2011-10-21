@@ -240,7 +240,7 @@ void parse_action_roll_item_highest(char *who)
 
     /* Update the clipboard with the new status */
     aion_group_get_aplootrights(aprolls, sizeof(aprolls));
-    clipboard_set_text(aprolls);
+    aion_clipboard_set(aprolls);
     event_signal(EVENT_AION_LOOT_RIGHTS);
 }
 
