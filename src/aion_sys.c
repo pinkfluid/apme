@@ -16,10 +16,29 @@ static bool aion_get_sysovr_path(char *sysovr_path, size_t sysovr_pathsz);
 /*
  * Retrieve the default Aion isntall path from the registry
  */ 
-char *aion_install_reg_keys[] =
+struct aion_reg_keys
 {
-    "SOFTWARE\\NCsoft\\AionEU",     /* Aion Europe  */
-    "SOFTWARE\\NCsoft\\Aion",       /* Aion US ?    */
+    char *ark_path;
+    char *ark_key;
+};
+
+struct aion_reg_keys aion_install_reg_keys[] =
+{
+    {
+        /* Pay2Win Aion from GameForge */
+        "SOFTWARE\\AION Free-To-Play",
+        "Path",
+    },
+    {
+        /* Aion Europe  */
+        "SOFTWARE\\NCsoft\\AionEU",
+        "InstallPath",
+    },
+    {   
+        /* Aion US ?    */
+        "SOFTWARE\\NCsoft\\Aion",
+        "InstallPath",
+    },
 };
 
 char* aion_default_install_path(void)
@@ -41,8 +60,8 @@ char* aion_default_install_path(void)
 
     for (ii = 0; ii < sizeof(aion_install_reg_keys) / sizeof(aion_install_reg_keys[0]); ii++)
     {
-        retval = reg_read_key(aion_install_reg_keys[ii],
-                              "InstallPath",
+        retval = reg_read_key(aion_install_reg_keys[ii].ark_path,
+                              aion_install_reg_keys[ii].ark_key,
                               default_install_path,
                               sizeof(default_install_path));
         if (!retval)
