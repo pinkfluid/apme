@@ -3,7 +3,7 @@
 
 #define APME_VERSION_MAJOR      0
 #define APME_VERSION_MINOR      4
-#define APME_VERSION_REVISION   0
+#define APME_VERSION_REVISION   1
 #define APME_VERSION_NAME       "Rogla"
 
 #define __APM_STR(x)            #x
