@@ -46,7 +46,7 @@ void aptrack_chatlog_check(void)
     /* Check if the chatlog feature is enabled in AION */
     if (!aion_chatlog_is_enabled(&chatlog_enabled))
     {
-        aptrack_prompt("Unable to determine if the CHATLOG is enabled. Not all features might be available. Press RETURN to contunue.", "");
+        aptrack_prompt("Unable to determine if the CHATLOG is enabled. Not all features might be available. Press RETURN to continue.", "");
         return;
     }
 
