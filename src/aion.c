@@ -18,6 +18,11 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
+/**
+ * @file aion.c Aion specific functionality, tracking groups, chatlog ...
+ * 
+ * @author Mitja Horvat <mitja.horvat@aviatnet.com>
+ */
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>

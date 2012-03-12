@@ -10,3 +10,6 @@ sub-all: $(SUB_DIRS)
 
 sub-clean:
 	@for DIR in $(SUB_DIRS); do $(MAKE) -C $$DIR clean; done
+
+docs:
+	doxygen 
