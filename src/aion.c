@@ -21,7 +21,7 @@
 /**
  * @file aion.c Aion specific functionality, tracking groups, chatlog ...
  * 
- * @author Mitja Horvat <mitja.horvat@aviatnet.com>
+ * @author Mitja Horvat <pinkfluid@gmail.com>
  */
 #include <stdlib.h>
 #include <stdbool.h>
@@ -40,32 +40,120 @@
 #include "event.h"
 #include "items.h"
 
+/**
+ * @defgroup aion Aion sub-system
+ *
+ * @brief This is a collection of functions that deal with various aspects of the game.
+ * 
+ * Before you can use this sub-system, aion_init() must be called.
+ *
+ * This module is responsible for:
+ *      - Tracking of group members
+ *      - Processing looted items
+ *      - Updating AP statistics
+ *      - The language translator
+ *      - Probably lots more
+ * @{
+ */
+
+/**
+ * This structures hold information about a player:
+ *  - Name
+ *  - Accumulated Abyss points
+ *  - Chat log (txtbuf)
+ *  - Inventory full flag
+ *
+ * @note A player can be on the cached list and on the
+ * group list simultaneously.
+ */
 struct aion_player
 {
-    LIST_ENTRY(aion_player)     apl_cached;             /* Cached linked list element           */
-    LIST_ENTRY(aion_player)     apl_group;              /* Group linked list element            */
+    LIST_ENTRY(aion_player)     apl_cached;             /**< Cached linked list element         */
+    LIST_ENTRY(aion_player)     apl_group;              /**< Group linked list element          */
 
-    char                        apl_name[AION_NAME_SZ]; /* Aion player name                     */
-    uint32_t                    apl_apvalue;            /* Accumulated AP value                 */
-    struct txtbuf               apl_txtbuf;             /* Text buffer, linked to chat buffer   */
-    char                        apl_chat[AION_CHAT_SZ]; /* Chat buffer                          */
-    bool                        apl_invfull;            /* Is inventory full?                   */
+    char                        apl_name[AION_NAME_SZ]; /**< Aion player name                   */
+    uint32_t                    apl_apvalue;            /**< Accumulated AP value               */
+    struct txtbuf               apl_txtbuf;             /**< Text buffer, linked to chat buffer */
+    char                        apl_chat[AION_CHAT_SZ]; /**< Chat buffer                        */
+    bool                        apl_invfull;            /**< Is inventory full flag             */
 };
 
+/** Create the definition of the HEAD structure for the linked list of aion_player structures   */
 LIST_HEAD(aion_player_list, aion_player);
 
-/*
- * Currently I'm not sure where to put the structure about US, so lets just keep it separate
- */
+/** This is us, the player! */
 struct aion_player      aion_player_self;
 
-struct aion_player_list aion_players_cached;    /* Remembered players   */
+/** Cached list of players, mainly used for chat history */
+struct aion_player_list aion_players_cached;
+
+/**
+ * List of players in the current group. This list cannot be empty 
+ * so it is assumed that the players itself is always on this list
+ *
+ * @dot
+ *
+ *  digraph player_list
+ *  {
+ *
+ *      subgraph cluster0
+ *      {
+ *          style=filled
+ *          color=lightgray
+ *
+ *          node [fontsize=8.0]
+ *          FULL [label="Full Group" shape="none" fontsize="12.0"]
+ *
+ *          Player -> Member1
+ *          Member1 -> Member2
+ *          Member2 -> Member3
+ *          Member3 -> Member4
+ *          Member4 -> Member5
+ *          Member5 -> Player
+ *
+ *          {
+ *              rank=sink
+ *              FULL
+ *          }
+ *      }
+ *
+ *      subgraph cluster1
+ *      {
+ *          style=filled
+ *          color=lightgray
+ *
+ *          node [fontsize=8.0]
+ *
+ *          EMPTY [label="Empty Group" shape="none" fontsize="12.0"]
+ *          Self [label="Player"]
+ *
+ *          Self -> Self
+ *
+ *          {
+ *              rank=sink
+ *              EMPTY
+ *          }
+ *      }
+ *  }
+ *
+ * @enddot
+ */
 struct aion_player_list aion_group;             /* Current group        */
 
-/* Exclude the player if it has full invenvtory from the AP fair system */
-static bool aion_invfull_exclude = false; /* Default OFF */
+/**
+ * If true, exclude the player if it has full invenvtory from the AP fair system.
+ * This is confusing for some palyers so it is turned OFF by default.
+ */
+static bool aion_invfull_exclude = false;
 
-static uint32_t aion_ap_limit = 0;   /* Current maximum AP limit */
+/**
+ * Maximum AP a palyer may accumulate before it is free-for-all.
+ * 0 means there's no limit.
+ *
+ * @see aion_aplimit_set
+ * @see aion_aplimit_get
+ */
+static uint32_t aion_ap_limit = 0;
 
 static void aion_player_init(struct aion_player *player, char *name);
 static struct aion_player* aion_player_alloc(char *charname);
@@ -73,6 +161,12 @@ static struct aion_player* aion_group_find(char *charname);
 static void aion_group_dump(void);
 static void aion_group_iter_fill(struct aion_group_iter *iter, struct aion_player *player);
 
+/**
+ * Initialize the AION sub-system. This must be called before any other functions
+ *
+ * @retval true on error
+ * @retval false on error
+ */
 bool aion_init(void)
 {
     LIST_INIT(&aion_players_cached);
@@ -89,7 +183,15 @@ bool aion_init(void)
     return true;
 }
 
-/* Main means of posting results back to the game client */
+/**
+ * "paste" <I>text</I> to the clipboard, this is how we send
+ * data to the user via the game chat.
+ *
+ * @param[in]       text        Text to copy to the clipboard
+ *
+ * @return
+ *      This function just forwards the error from clipboard_set_text()
+ */
 bool aion_clipboard_set(char *text)
 {
     char clip[AION_CLIPBOARD_MAX];
@@ -100,6 +202,12 @@ bool aion_clipboard_set(char *text)
     return clipboard_set_text(clip);
 }
 
+/**
+ * Initialize a <I>aion_player</I> structure with default values
+ *
+ * @param[in]   charname    Player name
+ * @param[out]  player      The aion_player structure
+ */ 
 void aion_player_init(struct aion_player *player, char *charname)
 {
     util_strlcpy(player->apl_name, charname, sizeof(player->apl_name));
@@ -111,9 +219,16 @@ void aion_player_init(struct aion_player *player, char *charname)
     tb_init(&player->apl_txtbuf, player->apl_chat, AION_CHAT_SZ);
 }
 
-/*
+/**
+ * Test if the given <I>charname</I> is ourselves, <I>the player</I>.
+ *
  * If charname is NULL, "You" or Player's name, then 
  * we're dealing with ourselves
+ *
+ * @param[in]       charname        Character name
+ *
+ * @retval          true            If <I>charname</I> is the player
+ * @retval          false           If <I>charname</I> is not the current palyer
  */ 
 bool aion_player_is_self(char *charname)
 {
@@ -124,6 +239,12 @@ bool aion_player_is_self(char *charname)
     return false;
 }
 
+/**
+ * Set the current player name
+ *
+ * @param[in]       charname        Player name
+ *
+ */
 void aion_player_name_set(char *charname)
 {
     util_strlcpy(aion_player_self.apl_name, charname, sizeof(aion_player_self.apl_name));
@@ -131,6 +252,21 @@ void aion_player_name_set(char *charname)
     event_signal(EVENT_AION_GROUP_UPDATE);
 }
 
+/**
+ * Allocate a aion_player structure.
+ *
+ * If a player with <I>charname</I> alraedy exists in the
+ * cached list, move the structure to the head of the list
+ * and return it.
+ *
+ * If not, allocate a new structure, register it
+ * on the head of the cached list and return it.
+ *
+ * @param[in]       charname        Player name
+ *
+ * @return
+ *      Always returns a valid @ref aion_player structure
+ */
 struct aion_player* aion_player_alloc(char *charname)
 {
     struct aion_player *curplayer;
@@ -163,7 +299,15 @@ struct aion_player* aion_player_alloc(char *charname)
     return curplayer;
 }
 
-/* Cache the chat, so we can use all sorts of useful tricks */
+/**
+ * Cache a chat line from character <I>charname</I> 
+ *
+ * @param[in]       charname        Character name
+ * @param[in]       chat            Chat line
+ *
+ * @return
+ *      Returns false on error, but that shouldn't happen.
+ */
 bool aion_player_chat_cache(char *charname, char *chat)
 {
     struct aion_player *player;
@@ -180,6 +324,17 @@ bool aion_player_chat_cache(char *charname, char *chat)
     return true;
 }
 
+/**
+ * Retrieve a previously cached chat line for character <I>charname</I>
+ *
+ * @param[in]       charname    Character name
+ * @param[in]       msgnum      Chat line number in reverse order (0 = most recent, 1 second most recent)
+ * @param[out]      dst         Destination buffer
+ * @param[out]      dst_sz      Size of the destinatin buffer
+ *
+ * @retval          true        On success
+ * @retval          false       On error
+ */
 bool aion_player_chat_get(char *charname, int msgnum, char *dst, size_t dst_sz)
 {
     struct aion_player *player;
@@ -193,6 +348,15 @@ bool aion_player_chat_get(char *charname, int msgnum, char *dst, size_t dst_sz)
     return tb_strlast(&player->apl_txtbuf, msgnum, dst, dst_sz);
 }
 
+/**
+ * Search the current group for a character with the name of <I>charname</I>
+ *
+ * @param[in]       charname    Character name
+ *
+ * @return 
+ *      Returns the associated aion_player structure or NULL if <I>charname</I>
+ *      was not found in the current group list.
+ */
 struct aion_player* aion_group_find(char *charname)
 {
     struct aion_player *curplayer;
@@ -213,8 +377,15 @@ struct aion_player* aion_group_find(char *charname)
     return NULL;
 }
 
-/*
- * Add a character to the current group list
+/**
+ * Add the character with <I>charname</I> to the current group list.
+ *
+ * If the character is already on the list, do nothing.
+ *
+ * @param[in]       charname    Character name
+ * 
+ * @retval          true        On success
+ * @retval          false       On error
  */
 bool aion_group_join(char *charname)
 {
@@ -249,8 +420,17 @@ bool aion_group_join(char *charname)
 }
 
 
-/*
- * Remove a character from the current group list
+/**
+ * Remove the character <I>charname</I> from the group list.
+ *
+ * If <I>charname</I> is the player itself, disband the group -- we're alone again :(
+ *
+ * @param[in]       charname        Character name
+ *
+ * @retval          true            On success
+ * @retval          false           On error
+ *
+ * @bug Always returns true?
  */ 
 bool aion_group_leave(char *charname)
 {
@@ -281,8 +461,11 @@ bool aion_group_leave(char *charname)
     return true;
 }
 
-/*
- * Remove all group members from the list
+/**
+ * Disband the group.
+ *
+ * This function removes all characters from the current group list, except 
+ * the player itself.
  */
 void aion_group_disband(void)
 {
@@ -301,8 +484,20 @@ void aion_group_disband(void)
     event_signal(EVENT_AION_GROUP_UPDATE);
 }
 
-/*
- * Update the AP value of group members 
+/**
+ * Process group/alliance item loot
+ *
+ * If the item looted is an AP relic, update AP statistics for the player
+ * <I>charname</I>.
+ *
+ * If the player acuqired the item it also means it has room in the inventory,
+ * therefore we should clear the inventory full flag.
+ *
+ * @note
+ * This function will also update the application main screen.
+ *
+ * @param[in]       charname        The player that looted the item
+ * @param[in]       itemid          The itemID as parsed from the chatlog
  */
 void aion_group_loot(char *charname, uint32_t itemid)
 {
@@ -359,8 +554,16 @@ void aion_group_loot(char *charname, uint32_t itemid)
     }
 }
 
-/*
- * Update AP value of the player's name
+/**
+ * Update the AP statistics for <I>charname</I>
+ *
+ * @param[in]       charname        Character name
+ * @param[in]       apval           Abyss points
+ *
+ * @retval          true            On success
+ * @retval          false           If the character was not found in the current group list
+ *
+ * @note This function will update the application's main screen.
  */
 bool aion_group_apvalue_update(char *charname, uint32_t apval)
 {
@@ -380,6 +583,17 @@ bool aion_group_apvalue_update(char *charname, uint32_t apval)
     return true;
 }
 
+/**
+ * Set the accumulated abyss points for <I>charname</I> to a specific value
+ *
+ * @param[in]       charname        Character name
+ * @param[in]       apval           Abyss points
+ *
+ * @retval          true            On success
+ * @retval          false           If the character was not found in the current group list
+ *
+ * @note This function will update the application's main screen.
+ */
 bool aion_group_apvalue_set(char *charname, uint32_t apval)
 {
     struct aion_player *player;
@@ -400,6 +614,11 @@ bool aion_group_apvalue_set(char *charname, uint32_t apval)
     return true;
 }
 
+/**
+ * Reset the accumulated abyss points for all known characters including the player
+ *
+ * @note This function will update the application's main screen.
+ */
 void aion_apvalue_reset(void)
 {
     struct aion_player *player;
@@ -418,8 +637,12 @@ void aion_apvalue_reset(void)
     event_signal(EVENT_AION_AP_UPDATE);
 }
 
-/*
- * Find what's the lowest AP in the group
+/**
+ * Scan the current group list and find out the lowest
+ * amount of abyss points between the characters
+ *
+ * @return
+ *      The lowest value of Abyss Points
  */
 uint32_t aion_group_apvalue_lowest(void)
 {
@@ -442,6 +665,17 @@ uint32_t aion_group_apvalue_lowest(void)
     return lowest_ap;
 }
 
+/**
+ * Set the <I>intentory full</I> flag for <I>charname</I>
+ * 
+ * @param[in]       charname        Character name
+ * @param[in]       isfull          Full inventory flag
+ *
+ * @retval          true            On success
+ * @retval          false           If the character was not found in the current group list
+ *
+ * @note This function will update the application's main screen.
+ */
 bool aion_invfull_set(char *charname, bool isfull)
 {
     struct aion_player *player;
@@ -460,6 +694,17 @@ bool aion_invfull_set(char *charname, bool isfull)
     return true;
 }
 
+/**
+ * Get the <I>inventory full</I> flag for <I>charname</I>
+ *
+ * @param[in]       charname        Character name
+ *
+ * @retval          true            If inventory full flag is set
+ * @retval          false           If inventory flag not set or error
+ *
+ * @bug Inventory not full and error both return false and is not possible to
+ * differentiate between the two.
+ */
 bool aion_invfull_get(char *charname)
 {
     struct aion_player *player;
@@ -474,27 +719,37 @@ bool aion_invfull_get(char *charname)
     return player->apl_invfull;
 }
 
-/*
- * Enable or disable enforcment of "clean inventory"
+/**
+ * Enable or disable enforcment of "inventory full" exclude policy
+ *
+ * @param[in]       enable      True if clean inventory should be enforced, otherwise false
+ *
+ * @note The default behavior is "false"
+ * @see aion_invfull_excl_get
  */
 void aion_invfull_excl_set(bool enable)
 {
     aion_invfull_exclude = enable;
 }
 
-/*
- * Rerurn the status of the exclude policy:
- *      - on = true
- *      - off = false
+/**
+ * Rerurn the status of the "inventory full" exclude policy:
+ *
+ * @retval          true        If exclude policy enabled
+ * @retval          false       If exclude policy disabled (default)
+ *
+ * @see aion_invfull_excl_set
  */
 bool aion_invfull_excl_get(void)
 {
     return aion_invfull_exclude;
 }
 
-/*
- * Clear invfull status for all known players
- */
+/**
+ * Clear the "inventory full" flag for all players
+ * 
+ * @note This will update the application's main screen.
+ */ 
 void aion_invfull_clear(void)
 {
     struct aion_player *player;
@@ -511,9 +766,17 @@ void aion_invfull_clear(void)
     event_signal(EVENT_AION_GROUP_UPDATE);
 }
 
-/*
- * Set the upper AP limit a player can have -- some players just prefer
- * some randomness in their loots
+/**
+ * Set the upper AP limit.
+ * 
+ * After the AP limit was reached the player will be excluded
+ * from the loot rotation. When all players reach the limit,
+ * the loot should be FFA.
+ * 
+ * @param[in]       aplimit     The upper limit of AP (0 means unlimited, default)
+ *
+ * @note This is a user requested feature, some players just
+ * prefer to add some randomness in their loots
  */
 void aion_aplimit_set(uint32_t aplimit)
 {
@@ -522,11 +785,31 @@ void aion_aplimit_set(uint32_t aplimit)
     event_signal(EVENT_AION_GROUP_UPDATE);
 }
 
+/**
+ * Return the upper AP limit
+ * 
+ * @return
+ *      The AP upper limit value.
+ *
+ * @see aion_aplimit_set
+ */
 uint32_t aion_aplimit_get(void)
 {
     return aion_ap_limit;
 }
 
+/**
+ * Get statistics for the current group in text format.
+ *
+ * @note This is used for ?apstat
+ *
+ * @param[out]      stats       Statistics character buffer
+ * @param[in]       stats_sz    Maximum size of the buffer
+ *
+ * @retval          true        On success
+ *
+ * @bug This function never returns false, should it be void?
+ */
 bool aion_group_get_stats(char *stats, size_t stats_sz)
 {
     char curstat[64];
@@ -543,6 +826,18 @@ bool aion_group_get_stats(char *stats, size_t stats_sz)
     return true;
 }
 
+/**
+ * Get the current AP loot rights in text format.
+ *
+ * @note This is ued by ?aploot
+ *
+ * @param[out]      stats       Statistics character buffer
+ * @param[in]       stats_sz    Maximum size of the buffer
+ *
+ * @retval          true        On success
+ *
+ * @bug This function never returns false, should it be void?
+ */
 bool aion_group_get_aplootrights(char *stats, size_t stats_sz)
 {
     char curstats[64];
@@ -627,6 +922,18 @@ bool aion_group_get_aplootrights(char *stats, size_t stats_sz)
     return true;
 }
 
+/**
+ * Initialize a aion_group_iter structure from an aion_player structure
+ *
+ * This is used for iterating the current group
+ *
+ * @param[out]      iter        aion_group_iter structure that will be filled with data from <I>player</I>
+ * @param[in]       player      aion_player structure that will be used to fill the <I>iter</I> structure
+ *
+ * @see aion_group_first
+ * @see aion_group_next
+ * @see aion_group_end
+ */
 void aion_group_iter_fill(struct aion_group_iter *iter, struct aion_player *player)
 {
     iter->__agi_curplayer  = player;
@@ -693,3 +1000,6 @@ void aion_group_dump(void)
     con_printf("======\n");
 }
 
+/**
+ * @}
+ */
