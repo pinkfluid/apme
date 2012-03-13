@@ -18,6 +18,12 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
+/**
+ * @file aion_trans.c
+ *
+ * @brief Aion Language Translator
+ * @author Mitja Horvat <pinkfluid@gmail.com>
+ */
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -27,21 +33,137 @@
 #include "console.h"
 #include "aion.h"
 
-/*
- * Aion translation tables
+/**
+ * 
+ * @defgroup aion_trans Aion Translator
+ * @brief Aion Translator between Asmodian <-> Elyos languages
+ *
+ * In game this module is used by 4 commands:
+ *      - ?elyos: This is whta an Asmodian uses to talk to Elys
+ *      - ?asmo: This is what Elyos use to talk to Asmodians
+ *      - ?relyos: The reverse of ?elyos (used by Elyos to decode
+ *          what other Elyos said to Asmodians)
+ *      - ?rasom: Reverse of ?asmo (used by Asmodians to decode 
+ *          what other Asmodians said to elyos)
+ *
+ * @note The tables and algorithm there was not inveted by me, but
+ * was ripped off on a forum thread on aionsource.com
+ * @todo Update credits for the translator.
+ *
+ * @section aion_trans_howto How does it work?
+ *
+ * - There are 4 translation tables; start with Table 1
+ * - Translate the character in the <I>In</I> row to the
+ *   character in the <I>Out</I> row
+ * - Move to the table with index <I>NextTbl</I>
+ * - Repeat until done
+ *
+ * @dot
+ * digraph translate
+ * {
+ *      TABLE1
+ *      [
+ *          shape="none"
+ *          label=
+ *          <
+ *              <TABLE border="0" cellborder="1" cellspacing="0">
+ *                  <TR>
+ *                      <TD border="0" port="blank"></TD>
+ *                      <TD colspan="5" port="table">Table 1</TD>
+ *                  </TR>
+ *                  <TR>
+ *                      <TD port="in"><FONT point-size="8.0">In</FONT></TD>
+ *                      <TD>a</TD>
+ *                      <TD>b</TD>
+ *                      <TD>c</TD>
+ *                      <TD>d</TD>
+ *                      <TD port="e">e</TD>
+ *                  </TR>
+ *                  <TR>
+ *                      <TD><FONT point-size="8.0">Out</FONT></TD>
+ *                      <TD>q</TD>
+ *                      <TD>w</TD>
+ *                      <TD>e</TD>
+ *                      <TD>r</TD>
+ *                      <TD>t</TD>
+ *                  </TR>
+ *                  <TR>
+ *                      <TD><FONT point-size="8.0">NextTbl</FONT></TD>
+ *                      <TD port="1">1</TD>
+ *                      <TD port="2">2</TD>
+ *                      <TD port="3">3</TD>
+ *                      <TD port="4">4</TD>
+ *                      <TD port="5">1</TD>
+ *                  </TR>
+ *              </TABLE>
+ *          >
+ *      ]
+ *      TABLE2
+ *      [
+ *          shape="none"
+ *          label=
+ *          <
+ *              <TABLE border="0" cellborder="1" cellspacing="0">
+ *                  <TR>
+ *                      <TD colspan="5" port="table">Table 2</TD>
+ *                  </TR>
+ *                  <TR>
+ *                      <TD port="a">a</TD>
+ *                      <TD>b</TD>
+ *                      <TD>c</TD>
+ *                      <TD>d</TD>
+ *                      <TD>e</TD>
+ *                  </TR>
+ *                  <TR>
+ *                      <TD>q</TD>
+ *                      <TD>w</TD>
+ *                      <TD>e</TD>
+ *                      <TD>r</TD>
+ *                      <TD>t</TD>
+ *                  </TR>
+ *                  <TR>
+ *                      <TD port="2">2</TD>
+ *                      <TD port="3">3</TD>
+ *                      <TD port="4">4</TD>
+ *                      <TD port="3">3</TD>
+ *                      <TD port="5">1</TD>
+ *                  </TR>
+ *              </TABLE>
+ *          >
+ *      ]
+ *
+ *      TABLE3 [ shape="box" color="lightgray" fontcolor="lightgray"]
+ *      TABLE4 [ shape="box" color="lightgray" fontcolor="lightgray"]
+ *
+ *      TABLE1:1 -> TABLE1:in
+ *      TABLE2:2 -> TABLE2:a
+ *      TABLE1:2 -> TABLE2
+ *      TABLE2:5 -> TABLE1:e
+ *
+ *      TABLE1:3 -> TABLE3 [color="lightgray"]
+ *      TABLE1:4 -> TABLE4 [color="lightgray"]
+ *      TABLE2:3 -> TABLE3 [color="lightgray"]
+ *      TABLE2:4 -> TABLE4 [color="lightgray"]
+ * }
+ * @enddot
+ *
+ * @{
  */
+
+/** Translation structure */
 struct aion_table
 {
-    char *at_alpha;
-    char *at_next;
+    char *at_alpha;         /**< Translation table              */
+    char *at_next;          /**< Index of next table to be used */
 };
 
+/** Language table definition           */
 struct aion_language
 {
     struct aion_table al_table[4];
 };
 
-/* Elyos -> Asmodian language translation table */
+/** Elyos -> Asmodian language translation table */
 struct aion_language aion_lang_asmodian =
 {
     .al_table =
@@ -65,7 +187,7 @@ struct aion_language aion_lang_asmodian =
     }
 };
 
-/* Asmodian -> Elyos language translation table */
+/** Asmodian -> Elyos language translation table */
 struct aion_language aion_lang_elyos =
 {
     .al_table =
@@ -200,3 +322,6 @@ void aion_rtranslate(char *txt, uint32_t langid)
     }
 }
 
+/**
+ * @}
+ */

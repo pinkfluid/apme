@@ -41,7 +41,7 @@
 #include "items.h"
 
 /**
- * @defgroup aion Aion sub-system
+ * @defgroup aion Aion Subsystem
  *
  * @brief This is a collection of functions that deal with various aspects of the game.
  * 
@@ -951,6 +951,31 @@ void aion_group_iter_fill(struct aion_group_iter *iter, struct aion_player *play
     }
 }
 
+/**
+ * Group iterator initializer. This function must be called before
+ * any other iterator functions.
+ *
+ * The iterator functions traverse the group list and fill the
+ * itertator with data accordingly. The <I>aion_player</I>
+ * structure is not exposed outside this module.
+ *
+ * @param[in,out]       iter        Group iterator
+ *
+ * Example code:
+ * @code 
+ *
+ * struct aion_group_iter iter;
+ *
+ * for (aion_group_first(&iter); !aion_group_end(&iter); aion_group_next(&iter))
+ * {
+ *       printf("%s %d %s\n", iter.agi_name, iter.agi_apvalue, iter.agi_invfull ? "INVFULL" : "");
+ * }
+ *
+ * @endcode
+ *
+ * @see aion_group_next
+ * @see aion_group_end
+ */
 void aion_group_first(struct aion_group_iter *iter)
 {
     struct aion_player *player;
@@ -959,6 +984,16 @@ void aion_group_first(struct aion_group_iter *iter)
     aion_group_iter_fill(iter, player);
 }
 
+/**
+ * Move to the next character in the group
+ *
+ * <I>iter</I> should be initialized with aion_group_first()
+ *
+ * @param[in,out]       iter        Current/Next player data
+ *
+ * @see aion_group_first
+ * @see aion_group_end
+ */
 void aion_group_next(struct aion_group_iter *iter)
 {
     struct aion_player *player;
@@ -967,6 +1002,14 @@ void aion_group_next(struct aion_group_iter *iter)
     aion_group_iter_fill(iter, player);
 }
 
+/**
+ * Checks if the current iterator reached end of the list
+ *
+ * param[in]        iter        Group iterator
+ *
+ * @retval          true        If end of list was reached
+ * @retval          false       If end of list not reached yet
+ */
 bool aion_group_end(struct aion_group_iter *iter)
 {
     if (iter->__agi_curplayer == NULL) return true;
@@ -974,6 +1017,9 @@ bool aion_group_end(struct aion_group_iter *iter)
     return false;
 }
 
+/**
+ *  Debug function that dumps the current group info to the console
+ */
 void aion_group_dump(void)
 {
     struct aion_player *curplayer;
