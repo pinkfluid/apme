@@ -55,6 +55,8 @@
  * - There are 4 translation tables; start with Table 1
  * - Translate the character in the <I>In</I> row to the
  *   character in the <I>Out</I> row
+ * - Non-alphanumeric characters are not translated, but they
+ *   do reset the table index to Table1
  * - Move to the table with index <I>NextTbl</I>
  * - Repeat until done
  *
@@ -212,6 +214,23 @@ struct aion_language aion_lang_elyos =
 };
 
 #ifndef USE_NEW_TRANSLATE
+/**
+ * Translate text to a language. Currently only
+ * the Asmodian and Elyos language are supported.
+ * If somebody wants to add support for Mau or
+ * Krall, feel free to send patches :P
+ *
+ * Supported language IDs:
+ *  - LANG_ASMODIAN
+ *  - LANG_ELYOS
+ *
+ * @note This is used by the ?relyos and ?rasmo commands
+ *
+ * @param[in,out]   txt     Input/Output text
+ * @param[in]       langid  Language ID
+ *
+ * @see aion_rtranslate()
+ */
 void aion_translate(char *txt, uint32_t langid)
 {
     int index;
@@ -255,7 +274,11 @@ void aion_translate(char *txt, uint32_t langid)
 
 #else /* USE_NEW_TRANSLATE */
 
-/* This translator produces lots of capital text, so it's not that good */
+/**
+ * @cond
+ * This translator produces lots of capital text, so it's not that good
+ * and has several other issues. It's much better to use the table.
+ */
 void aion_translate(char *txt, uint32_t langid)
 {
     int carry = 0;
@@ -294,8 +317,25 @@ void aion_translate(char *txt, uint32_t langid)
 
     return;
 }
+/**
+ * @endcond
+ */
 #endif /* USE_NEW_TRNASLATE */
 
+/**
+ * Reverse translator. This uses the translation formula
+ * to reverse a translated a text back to normal language.
+ *
+ * This function does the opposite of aion_translate().
+ * 
+ * @note This is used by the ?relyos and ?rasmo commands
+ *
+ * @param[in,out]   txt     Input/Output text to translate
+ * @param[in]       langid  Language ID. 
+ *                          Either LANG_ASMODIAN or LANG_ELYOS
+ *
+ * @see aion_translate()
+ */
 void aion_rtranslate(char *txt, uint32_t langid)
 {
     char carry = 0;
