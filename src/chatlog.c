@@ -18,6 +18,12 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
+/**
+ * @file chatlog.c Aion chatlog parser
+ * 
+ * @author Mitja Horvat <pinkfluid@gmail.com>
+ */
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -35,45 +41,72 @@
 #include "chatlog.h"
 #include "event.h"
 
-#define RE_NAME     "([0-9a-zA-Z_]+)"
-#define RE_ITEM     "([0-9]+)"
-#define RE_NUM_ROLL "[0-9\\.]+"
+/**
+ * @defgroup chatlog Aion Chatlog Parser
+ *
+ * @brief This module parses the chatlog
+ * 
+ * This module reads the chatlog line-by-line and matches
+ * each line against a regex and fires off an event accordingly.
+ * 
+ * Events are processed in a giant loop switch. The loop switch
+ * extracts some information from the regex and calls a function
+ * with the information as parameters.
+ * 
+ * @{
+ */
 
-#define RE_ITEM_LOOT_SELF           100
-#define RE_ITEM_LOOT_PLAYER         101
+#define RE_NAME     "([0-9a-zA-Z_]+)"           /**< Character name regex pattern           */
+#define RE_ITEM     "([0-9]+)"                  /**< Item number regex pattern              */
+#define RE_NUM_ROLL "[0-9\\.]+"                 /**< Item link regex pattern                */
 
-#define RE_DAMAGE_INFLICT           200
-#define RE_DAMAGE_CRITICAL          201
+#define RE_ITEM_LOOT_SELF           100         /**< Event, item looted by player           */
+#define RE_ITEM_LOOT_PLAYER         101         /**< Event, item looted by a character      */
 
-#define RE_GROUP_SELF_JOIN          300
-#define RE_GROUP_SELF_LEAVE         301
-#define RE_GROUP_PLAYER_JOIN        303
-#define RE_GROUP_PLAYER_LEAVE       304
-#define RE_GROUP_PLAYER_DISCONNECT  305
-#define RE_GROUP_PLAYER_KICK        306
-#define RE_GROUP_PLAYER_OFFLINE     307
-#define RE_GROUP_DISBAND            310
+#define RE_DAMAGE_INFLICT           200         /**< Damage was inflicted                   */
+#define RE_DAMAGE_CRITICAL          201         /**< Damage was inflicted and was critical  */
 
-#define RE_CHAT_SELF                400
-#define RE_CHAT_GENERAL             401
-#define RE_CHAT_WHISPER             402
-#define RE_CHAT_SHOUT               403
+#define RE_GROUP_SELF_JOIN          300         /**< The player joined a group              */
+#define RE_GROUP_SELF_LEAVE         301         /**< The player left the group              */
+#define RE_GROUP_PLAYER_JOIN        303         /**< Some other player joined the group     */
+#define RE_GROUP_PLAYER_LEAVE       304         /**< Some other player left the group       */
+#define RE_GROUP_PLAYER_DISCONNECT  305         /**< Some player was disconnected           */
+#define RE_GROUP_PLAYER_KICK        306         /**< A player was kicked from the group     */
+#define RE_GROUP_PLAYER_OFFLINE     307         /**< A player in the group went offline     */
+#define RE_GROUP_DISBAND            310         /**< The group was disbanded                */
 
-#define RE_ROLL_ITEM_SELF           500
-#define RE_ROLL_ITEM_PLAYER         501
-#define RE_ROLL_ITEM_PASS           502
-#define RE_ROLL_ITEM_HIGHEST        503
-#define RE_ROLL_DICE_SELF           504 /* When using the /roll command */
-#define RE_ROLL_DICE_PLAYER         505 /* When using the /roll command */
+#define RE_CHAT_SELF                400         /**< Chat from the player itself            */
+#define RE_CHAT_GENERAL             401         /**< General chat                           */
+#define RE_CHAT_WHISPER             402         /**< A whisper was received                 */
+#define RE_CHAT_SHOUT               403         /**< Somebody shouteed something            */
 
-static FILE* chatlog_file = NULL;
+#define RE_ROLL_ITEM_SELF           500         /**< The player rolled on an item           */
+#define RE_ROLL_ITEM_PLAYER         501         /**< Some other player rolled on an item    */
+#define RE_ROLL_ITEM_PASS           502         /**< The player passed on an item           */
+#define RE_ROLL_ITEM_HIGHEST        503         /**< Somebody rolled the highest            */
+#define RE_ROLL_DICE_SELF           504         /**< The player used /roll to roll a dice   */
+#define RE_ROLL_DICE_PLAYER         505         /**< Group member used /roll to roll a dice */
 
-static bool chatlog_open(void);
+static FILE* chatlog_file = NULL;   /**< Chatlog FILE descriptor    */
+
+static bool chatlog_open(void); 
 static re_callback_t chatlog_parse;
 
+/**
+ * Define chatlog regex patterns and corresponding event.
+ *
+ * This list is scanned from beginning to end. If a regular expressions matches,
+ * an event is generated.
+ *
+ * For speed reasons, try to put most commonly matched regular expressions at the
+ * beginning
+ *
+ * @see regeng
+ *
+ * @showinitializer
+ */
 struct regeng re_aion[] =
 {
-    /* Put damage meter at the beginning, because Aion generates a lot of text with this, so it's best they match first */
     {
         .re_id  = RE_DAMAGE_INFLICT,
         .re_exp = "^: " RE_NAME " inflicted ([0-9.]+) damage on ([A-Za-z ]+) by using ([A-Za-z ]+)\\.",
@@ -172,11 +205,54 @@ struct regeng re_aion[] =
     RE_REGENG_END
 };
 
+/**
+ * @name Chatlog Event Processing Functions
+ *
+ * These process various events that are triggered by the regeng
+ * engine when it parses the chat log.
+ *
+ * They process stuff like:
+ *  - Item loot
+ *  - Item rolls
+ *  - Damage taken/received
+ *  - Group joins/leaves
+ *  - Probably much more..
+ *
+ * @{
+ */
+
+/**
+ * Processes an "item loot" event. This function is called
+ * whenever a player or a group/alliance member loots 
+ * an item
+ *
+ * Triggered by:
+ *  - RE_ITEM_LOOT_SELF
+ *  - RE_ITEM_LOOT_PLAYER
+ *
+ * @param[in]       player      Character name
+ * @param[in]       itemid      Item id number
+ *
+ */
 void parse_action_loot_item(char *player, uint32_t itemid)
 {
     aion_group_loot(player, itemid);
 }
 
+/** 
+ * Process a "damage inflict" event. This function is called
+ * whenever something in chat range inflicts damage
+ *
+ * Triggered by:
+ *      - RE_DAMAGE_INFLICT
+ *      - RE_DAMAGE_CRITICAL
+ *
+ * @param[in]       player      Character name
+ * @param[in]       target      Afflicted target name
+ * @param[in]       damage      Damage number (may contain ,.)
+ * @param[in]       skill       Skill that was used to inflict damage, or NULL if none
+ *
+ */
 void parse_action_damage_inflict(char *player, char *target, char *damage, char *skill)
 {
     (void)player;
@@ -187,6 +263,14 @@ void parse_action_damage_inflict(char *player, char *target, char *damage, char 
     //con_printf("DMG: %s -> %s: %s (%s)\n", player, target, damage, skill);
 }
 
+/**
+ * Process a "self join group" event. This function is called
+ * when the player joins a group.
+ *
+ * Triggered by:
+ *      - RE_GROUP_SELF_JOIN
+ *
+ */
 void parse_action_group_self_join(void)
 {
     /*
@@ -196,64 +280,183 @@ void parse_action_group_self_join(void)
     aion_group_disband();
 }
 
+/**
+ * Process a "self leave group" event. This function is called
+ * when the player leaves a group or the group is disbanded.
+ *
+ * Triggered by:
+ *
+ *      - RE_GROUP_SELF_LEAVE
+ *      - RE_GROUP_DISBAND
+ */
 void parse_action_group_self_leave(void)
 {
     aion_group_disband();
 }
 
+/**
+ * Process "player join group" event. This is triggered
+ * when another player joins a group/alliance.
+ * 
+ * Triggered by:
+ *      - RE_GROUP_PLAYER_JOIN:
+ * 
+ * @param[in]       who     Character name that joined
+ */ 
 void parse_action_group_player_join(char *who)
 {
     con_printf("GROUP: %s joined the group.\n", who);
     aion_group_join(who);
 }
 
+/**
+ * Process a "player leave group" event. This is tirggered
+ * when another player leaves a group/alliance.
+ *
+ * This even is triggered by lots of events, like
+ * disconnects, group leavse, offline disconnects...
+ *
+ * Triggered by:
+ *      - RE_GROUP_PLAYER_DISCONNECT
+ *      - RE_GROUP_PLAYER_LEAVE
+ *      - RE_GROUP_PLAYER_KICK
+ *      - RE_GROUP_PLAYER_OFFLINE
+ *
+ * @param[in]       who     Character name that left the group
+ */
 void parse_action_group_player_leave(char *who)
 {
     con_printf("GROUP: %s left the group.\n", who);
     aion_group_leave(who);
 }
 
+/**
+ * Process a "general chat" event. This function is called
+ * whenever other players say something on on /say,
+ * /group, /legion ...
+ *
+ * @note /1,/2,/3 chat is not part of this
+ *
+ * Triggered by:
+ *      - RE_CHAT_GENERAL
+ *
+ * @param[in]       name        The player that said something on chat
+ * @param[in]       txt         The chat line
+ *
+ */
 void parse_action_chat_general(char *name, char *txt)
 {
     aion_player_chat_cache(name, txt);
 //    con_printf("CHAT: %s -> %s\n", name, txt);
 }
 
+/**
+ * Process a "whisper chat" event. This function is called
+ * whenever the player receives a whisper.
+ *
+ * Triggered by:
+ *      - RE_CHAT_WHISPER
+ *
+ * @param[in]       name        The whispering player
+ * @param[in]       txt         The whisper chat line
+ *
+ */
 void parse_action_chat_whisper(char *name, char *txt)
 {
     aion_player_chat_cache(name, txt);
 }
 
+/**
+ * Process a "shout chat" event. This function is called
+ * whenever the player receives a shout from another 
+ * player. The player obviously must be in range of
+ * the shout.
+ *
+ * Triggered by
+ *      - RE_CHAT_SHOUT
+ *
+ * @param[in]       name        The player that shouted
+ * @param[in]       txt         The shout chat line
+ *
+ */
 void parse_action_chat_shout(char *name, char *txt)
 {
     aion_player_chat_cache(name, txt);
 }
 
+/**
+ * Process a "self rolled on item" event. This function
+ * is called whenever a player rolls for an item.
+ *
+ * Triggered by:
+ *      - RE_ROLL_ITEM_SELF
+ *
+ * @note This is currently unused.
+ *
+ */
 void parse_action_roll_item_self(void)
 {
     //con_printf("ROLL: You rolled.\n");
 }
 
+/**
+ * Process a "player rolled on item" event. This function
+ * is called whenever a player rolls on an item.
+ *
+ * This is also used to auto-detect group members.
+ * the problem is that there's no information in the chat log
+ * of group members when you join an EXISTING group. 
+ * For the time being, the best way to detect the other
+ * players is to watch for this event.
+ *
+ * Triggered by:
+ *      - RE_ROLL_ITEM_PLAYER
+ *
+ * @param[in]       who         Player that rolled on an item
+ */
 void parse_action_roll_item_player(char *who)
 {
-    /*
-     * Roll dices can be detected only for group members. So parsing rolling or passing
-     * of a dice is a good way of detecting group members.
-     */
     aion_group_join(who);
 }
 
+/**
+ * Process a "player passed on item" event. This function is called
+ * whenever a player passed on an item.
+ *
+ * This is also used to autodetect group members. Refer to @ref
+ * parse_action_roll_item_player() for more info.
+ * 
+ * Triggered by:
+ *      - RE_ROLL_ITEM_PASS
+ *
+ * @param[in]       who         Player that passed on an item
+ */
 void parse_action_roll_item_pass(char *who)
 {
     /* See parse_action_roll_item_player() */
     aion_group_join(who);
 }
 
+/**
+ * Process the "player rolled the highest on an item" event.
+ * This function is called whenever a player wins an item
+ * by rolling the highest dice.
+ *
+ * This event is used to detect an "inventory full" condition.
+ * If the player wins an item, but doesn't loot it, it means
+ * his inventory is full.
+ * 
+ * Triggered by:
+ *      - RE_ROLL_ITEM_HIGHEST
+ *
+ * @param[in]       who         Player who won the item
+ *
+ */
 void parse_action_roll_item_highest(char *who)
 {
     char aprolls[CHATLOG_CHAT_SZ];
     /*
-     * Mark this user as having full inventory. If the user doesn't have a full inv
+     * Mark this user as having full inventory.
      * This flag will be cleared as soon as an item is looted.
      */
     aion_invfull_set(who, true);
@@ -264,6 +467,20 @@ void parse_action_roll_item_highest(char *who)
     event_signal(EVENT_AION_LOOT_RIGHTS);
 }
 
+/**
+ * @}
+ */
+
+/**
+ * This is the gigantic switch case that maps the matched ID
+ * to an event function. What parameters are passed to the
+ * handler is determined in here.
+ *
+ * @param[in]       re_id           Matched regex ID
+ * @param[in]       matchstr        Matched string
+ * @param[in]       rematch         regmatch_t regex, used to extract arguments
+ * @param[in]       rematch_num     Number of regmatch_t structures in <I>rematch</I>
+ */
 void chatlog_parse(uint32_t re_id, const char* matchstr, regmatch_t *rematch, size_t rematch_num)
 {
     char item[CHATLOG_ITEM_SZ];
@@ -385,6 +602,14 @@ void chatlog_parse(uint32_t re_id, const char* matchstr, regmatch_t *rematch, si
     }
 }
 
+/**
+ * Open the chatlog file
+ * 
+ * Uses aion_default_install_path() to find the path to the chatlog file.
+ *
+ * @retval      true        If successfull
+ * @retval      false       On error
+ */ 
 bool chatlog_open(void)
 {
     char *chatlog_dir;
@@ -434,8 +659,13 @@ bool chatlog_open(void)
     return true;
 }
 
-/*
- * Initialize the chat log
+/**
+ * Initialize the chat log facility
+ *
+ * This must be called before any other chatlog function
+ *
+ * @retval      true        On success
+ * @retval      false       On error
  */
 bool chatlog_init()
 {
@@ -454,6 +684,17 @@ bool chatlog_init()
     return true;
 }
 
+/**
+ * Processes a line from the chatlog
+ *
+ * Calls the regeng re_parse() function, which is used to 
+ * match a particular line to an event
+ *
+ * @param       chatstr     Chat line to process
+ *
+ * @retval      true        On sucess  
+ * @retval      false       If invalid chatlog line
+ */
 bool chatlog_readstr(char *chatstr)
 {
     char *pchat; 
@@ -469,6 +710,15 @@ bool chatlog_readstr(char *chatstr)
     return re_parse(chatlog_parse, re_aion, pchat);
 }
 
+/**
+ * Checks if there are any new lines in the chatlog.
+ * If there are it reads the chatlog and processes
+ * the line; otherwise it immediatelly returns
+ *
+ * @retval      true        On success (note, this is returned
+ *                          even if there are no new lines)
+ * @retval      false       If fatal error
+ */
 bool chatlog_poll()
 {
     char chatstr[CHATLOG_CHAT_SZ];
@@ -492,6 +742,17 @@ bool chatlog_poll()
     return true;
 }
 
+/**
+ * This reads the file </I>file</I> as if it was a chatlog
+ *
+ * This is mainly used for debugging.
+ *
+ * @param[in]       file        File to read chastlog from
+ *
+ * @retval          true        On success
+ * @retval          false       If there was an error processing the file
+ *                              or could not be found
+ */
 bool chatlog_readfile(char *file)
 {
     char chatstr[CHATLOG_CHAT_SZ];

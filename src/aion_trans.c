@@ -19,9 +19,8 @@
  */
 
 /**
- * @file aion_trans.c
+ * @file aion_trans.c Aion Language Translator
  *
- * @brief Aion Language Translator
  * @author Mitja Horvat <pinkfluid@gmail.com>
  */
 #include <stdbool.h>

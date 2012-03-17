@@ -18,6 +18,21 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
+/**
+ * @file aion_sys.c Aion System Functions
+ *
+ * @author Mitja Horvat <pinkfluid@gmail.com>
+ *
+ */
+
+/**
+ * @defgroup aion_sys Aion System Functions
+ *
+ * @brief Various Aion system functions for dealing with
+ * registry keys, installation path ...
+ *
+ * @{
+ */
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -33,8 +48,8 @@
 
 static bool aion_get_sysovr_path(char *sysovr_path, size_t sysovr_pathsz);
 
-/*
- * Retrieve the default Aion isntall path from the registry
+/**
+ * Aion registry keys structure
  */ 
 struct aion_reg_keys
 {
@@ -42,6 +57,14 @@ struct aion_reg_keys
     char *ark_key;
 };
 
+/**
+ * Aion install path registry keys
+ *
+ * These point to various registry paths used by
+ * the Aion game client. APme uses hese ones to
+ * retrieve the installation folder where the
+ * chat log is located.
+ */
 struct aion_reg_keys aion_install_reg_keys[] =
 {
     {
@@ -61,7 +84,17 @@ struct aion_reg_keys aion_install_reg_keys[] =
     },
 };
 
-char* aion_default_install_path(void)
+/**
+ * Retrieve the Aion default installation path
+ *
+ * If APME_AION_PATH is set, it is used as the default installation path
+ * for Aion. Otherwise the registry is scanned for known registry keys
+ * used by the game client.
+ *
+ * @return
+ *      Installation path or NULL on error.
+ */
+char *aion_default_install_path(void)
 {
 #ifdef SYS_WINDOWS
     static char default_install_path[1024];
@@ -100,8 +133,19 @@ char* aion_default_install_path(void)
 #endif
 }
 
+/** Pattern for matching system.ovr values */
 #define RE_SYSTEM_OVR "^ *([a-zA-Z0-9_]+) *= *\"?([0-9]+)\"?"
 
+/**
+ * Figure out the full path of the system.ovr file
+ *
+ * @param[out]      sysovr_path     Character buffer pointing to the full
+ *                                  system.ovr path
+ * @param[in]       sysovr_pathsz   Size of the buffer pointed to by sysovr_path
+ *
+ * @retval          true            On success
+ * @retval          false           On error
+ */
 bool aion_get_sysovr_path(char *sysovr_path, size_t sysovr_pathsz)
 {
     char *aion_install;
@@ -125,6 +169,16 @@ bool aion_get_sysovr_path(char *sysovr_path, size_t sysovr_pathsz)
     return true;
 }
 
+/**
+ * Check if the chatlog feature of the Aion game client is enabled.
+ *
+ * @param[out]      isenabled       True if the chatlog is enabled, false
+ *                                  otherwise
+ * @retval          true            On success (this doesn't mean that the
+ *                                  chatlog is enabled)
+ * @retval          false           Error, unable to verify if the chatlog
+ *                                  is enabled.
+ */
 bool aion_chatlog_is_enabled(bool *isenabled)
 {
     char sysovr_path[1024];
@@ -192,6 +246,17 @@ bool aion_chatlog_is_enabled(bool *isenabled)
     return true;
 }
 
+/**
+ * Enable the chatlog feature of the Aion game client
+ *
+ * This function enables the chatlog feature of the Aion
+ * game client by writing "g_chatlog=1" in the system.ovr
+ * file. If system.ovr does not exist it is created,
+ * otherwise the string is appended at the end of the file.
+ *
+ * @retval      true        If chatlog was successfully enabled
+ * @retval      false       If an error occurred
+ */
 bool aion_chatlog_enable(void)
 {
     char sysovr_path[1024];
@@ -220,3 +285,7 @@ bool aion_chatlog_enable(void)
 
     return true;
 }
+
+/**
+ * @}
+ */
