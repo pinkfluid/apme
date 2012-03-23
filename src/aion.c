@@ -184,7 +184,7 @@ bool aion_init(void)
 }
 
 /**
- * "paste" <I>text</I> to the clipboard, this is how we send
+ * "paste" @p text to the clipboard, this is how we send
  * data to the user via the game chat.
  *
  * @param[in]       text        Text to copy to the clipboard
@@ -203,7 +203,7 @@ bool aion_clipboard_set(char *text)
 }
 
 /**
- * Initialize a <I>aion_player</I> structure with default values
+ * Initialize a @p aion_player structure with default values
  *
  * @param[in]   charname    Player name
  * @param[out]  player      The aion_player structure
@@ -220,15 +220,15 @@ void aion_player_init(struct aion_player *player, char *charname)
 }
 
 /**
- * Test if the given <I>charname</I> is ourselves, <I>the player</I>.
+ * Test if the given @p charname is ourselves, <I>the player</I>.
  *
  * If charname is NULL, "You" or Player's name, then 
  * we're dealing with ourselves
  *
  * @param[in]       charname        Character name
  *
- * @retval          true            If <I>charname</I> is the player
- * @retval          false           If <I>charname</I> is not the current palyer
+ * @retval          true            If @p charname is the player
+ * @retval          false           If @p charname is not the current palyer
  */ 
 bool aion_player_is_self(char *charname)
 {
@@ -255,7 +255,7 @@ void aion_player_name_set(char *charname)
 /**
  * Allocate a aion_player structure.
  *
- * If a player with <I>charname</I> alraedy exists in the
+ * If a player with @p charname alraedy exists in the
  * cached list, move the structure to the head of the list
  * and return it.
  *
@@ -300,7 +300,7 @@ struct aion_player* aion_player_alloc(char *charname)
 }
 
 /**
- * Cache a chat line from character <I>charname</I> 
+ * Cache a chat line from character @p charname
  *
  * @param[in]       charname        Character name
  * @param[in]       chat            Chat line
@@ -325,7 +325,7 @@ bool aion_player_chat_cache(char *charname, char *chat)
 }
 
 /**
- * Retrieve a previously cached chat line for character <I>charname</I>
+ * Retrieve a previously cached chat line for character @p charname
  *
  * @param[in]       charname    Character name
  * @param[in]       msgnum      Chat line number in reverse order (0 = most recent, 1 second most recent)
@@ -349,12 +349,12 @@ bool aion_player_chat_get(char *charname, int msgnum, char *dst, size_t dst_sz)
 }
 
 /**
- * Search the current group for a character with the name of <I>charname</I>
+ * Search the current group for a character with the name of @p charname
  *
  * @param[in]       charname    Character name
  *
  * @return 
- *      Returns the associated aion_player structure or NULL if <I>charname</I>
+ *      Returns the associated aion_player structure or NULL if @p charname
  *      was not found in the current group list.
  */
 struct aion_player* aion_group_find(char *charname)
@@ -378,7 +378,7 @@ struct aion_player* aion_group_find(char *charname)
 }
 
 /**
- * Add the character with <I>charname</I> to the current group list.
+ * Add the character with @p charname to the current group list.
  *
  * If the character is already on the list, do nothing.
  *
@@ -421,9 +421,9 @@ bool aion_group_join(char *charname)
 
 
 /**
- * Remove the character <I>charname</I> from the group list.
+ * Remove the character @p charname from the group list.
  *
- * If <I>charname</I> is the player itself, disband the group -- we're alone again :(
+ * If @p charname is the player itself, disband the group -- we're alone again :(
  *
  * @param[in]       charname        Character name
  *
@@ -488,7 +488,7 @@ void aion_group_disband(void)
  * Process group/alliance item loot
  *
  * If the item looted is an AP relic, update AP statistics for the player
- * <I>charname</I>.
+ * @p charname
  *
  * If the player acuqired the item it also means it has room in the inventory,
  * therefore we should clear the inventory full flag.
@@ -555,7 +555,7 @@ void aion_group_loot(char *charname, uint32_t itemid)
 }
 
 /**
- * Update the AP statistics for <I>charname</I>
+ * Update the AP statistics for @p charname
  *
  * @param[in]       charname        Character name
  * @param[in]       apval           Abyss points
@@ -584,7 +584,7 @@ bool aion_group_apvalue_update(char *charname, uint32_t apval)
 }
 
 /**
- * Set the accumulated abyss points for <I>charname</I> to a specific value
+ * Set the accumulated abyss points for @p charname to a specific value
  *
  * @param[in]       charname        Character name
  * @param[in]       apval           Abyss points
@@ -666,7 +666,7 @@ uint32_t aion_group_apvalue_lowest(void)
 }
 
 /**
- * Set the <I>intentory full</I> flag for <I>charname</I>
+ * Set the <I>intentory full</I> flag for @p charname
  * 
  * @param[in]       charname        Character name
  * @param[in]       isfull          Full inventory flag
@@ -695,7 +695,7 @@ bool aion_invfull_set(char *charname, bool isfull)
 }
 
 /**
- * Get the <I>inventory full</I> flag for <I>charname</I>
+ * Get the <I>inventory full</I> flag for @p charname
  *
  * @param[in]       charname        Character name
  *
@@ -927,8 +927,8 @@ bool aion_group_get_aplootrights(char *stats, size_t stats_sz)
  *
  * This is used for iterating the current group
  *
- * @param[out]      iter        aion_group_iter structure that will be filled with data from <I>player</I>
- * @param[in]       player      aion_player structure that will be used to fill the <I>iter</I> structure
+ * @param[out]      iter        aion_group_iter structure that will be filled with data from @p player
+ * @param[in]       player      aion_player structure that will be used to fill the @p iter structure
  *
  * @see aion_group_first
  * @see aion_group_next
@@ -956,7 +956,7 @@ void aion_group_iter_fill(struct aion_group_iter *iter, struct aion_player *play
  * any other iterator functions.
  *
  * The iterator functions traverse the group list and fill the
- * itertator with data accordingly. The <I>aion_player</I>
+ * itertator with data accordingly. The @p aion_player
  * structure is not exposed outside this module.
  *
  * @param[in,out]       iter        Group iterator
@@ -987,7 +987,7 @@ void aion_group_first(struct aion_group_iter *iter)
 /**
  * Move to the next character in the group
  *
- * <I>iter</I> should be initialized with aion_group_first()
+ * @p iter should be initialized with aion_group_first()
  *
  * @param[in,out]       iter        Current/Next player data
  *
