@@ -19,7 +19,8 @@
  */
 
 /**
- * @file aion_sys.c Aion System Functions
+ * @file
+ * Aion System Functions
  *
  * @author Mitja Horvat <pinkfluid@gmail.com>
  *
@@ -53,8 +54,8 @@ static bool aion_get_sysovr_path(char *sysovr_path, size_t sysovr_pathsz);
  */ 
 struct aion_reg_keys
 {
-    char *ark_path;
-    char *ark_key;
+    char *ark_path;         /**< Path to the registry key       */
+    char *ark_key;          /**< Key name                       */
 };
 
 /**

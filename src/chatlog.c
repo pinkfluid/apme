@@ -19,7 +19,8 @@
  */
 
 /**
- * @file chatlog.c Aion chatlog parser
+ * @file
+ * Aion chatlog parser
  * 
  * @author Mitja Horvat <pinkfluid@gmail.com>
  */
@@ -87,10 +88,10 @@
 #define RE_ROLL_DICE_SELF           504         /**< The player used /roll to roll a dice   */
 #define RE_ROLL_DICE_PLAYER         505         /**< Group member used /roll to roll a dice */
 
-static FILE* chatlog_file = NULL;   /**< Chatlog FILE descriptor    */
+static FILE* chatlog_file = NULL;   /**< Chatlog FILE descriptor            */
 
 static bool chatlog_open(void); 
-static re_callback_t chatlog_parse;
+static re_callback_t chatlog_parse; /**< Declaration of chatlog_parse()     */
 
 /**
  * Define chatlog regex patterns and corresponding event.
@@ -743,7 +744,7 @@ bool chatlog_poll()
 }
 
 /**
- * This reads the file </I>file</I> as if it was a chatlog
+ * This reads the file <I>file</I> as if it was a chatlog
  *
  * This is mainly used for debugging.
  *
@@ -779,3 +780,8 @@ bool chatlog_readfile(char *file)
 
     return true;
 }
+
+/**
+ * @}
+ */
+

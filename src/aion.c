@@ -19,7 +19,8 @@
  */
 
 /**
- * @file aion.c Aion specific functionality, tracking groups, chatlog ...
+ * @file
+ * Aion specific functionality, tracking groups, chatlog ...
  * 
  * @author Mitja Horvat <pinkfluid@gmail.com>
  */

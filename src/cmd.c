@@ -18,6 +18,12 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
+/**
+ * @file
+ * APme command processing
+ * 
+ * @author Mitja Horvat <pinkfluid@gmail.com>
+ */
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -34,48 +40,78 @@
 #include "help.h"
 #include "version.h"
 
-#define CMD_COMMAND_CHAR    '?'
-#define CMD_CHATHIST_CHAR   '^'
-#define CMD_SIZE            64
-#define CMD_ARGC_MAX        32
-#define CMD_DELIM           " ,"
-#define CMD_TEXT_SZ         AION_CHAT_SZ
+/**
+ * @defgroup cmd Command Processing and Chat History
+ *
+ * @brief This module processes APme commands and the chat history.
+ *
+ * This module periodically polls the clipboard in @ref cmd_poll(). If it detects
+ * a command text (oen starting with '?', or CMD_COMMAND_CHAR) it assumes it's
+ * an APme command text and it processes it.
+ *
+ * @{
+ */
+#define CMD_COMMAND_CHAR    '?'                 /**< Chat command prefix                        */
+#define CMD_CHATHIST_CHAR   '^'                 /**< History command prefix                     */
+#define CMD_SIZE            64                  /**< Maximum command size                       */
+#define CMD_ARGC_MAX        32                  /**< Maximum number of arguments for a command  */
+#define CMD_DELIM           " ,"                /**< delimiters between arguments               */
+#define CMD_TEXT_SZ         AION_CHAT_SZ        /**< Total command text size                    */
 
-#define CMD_RETVAL_OK       "OK"
-#define CMD_RETVAL_ERROR    "Error"
-#define CMD_RETVAL_UNKNOWN  "Unknown"
+#define CMD_RETVAL_OK       "OK"                /**< Default response on success                */
+#define CMD_RETVAL_ERROR    "Error"             /**< Default response on error                  */
+#define CMD_RETVAL_UNKNOWN  "Unknown command"   /**< Default response if command not found      */
 
+/**
+ * Whatever a command returns back to the user is written
+ * into this static buffer
+ */
 static char cmd_retval[CMD_TEXT_SZ];
+
+/**
+ * This is the general command processing function format
+ */
 
 typedef bool cmd_func_t(int argc, char *argv[], char *txt);
 
-static cmd_func_t cmd_func_help;
-static cmd_func_t cmd_func_hello;
-static cmd_func_t cmd_func_nameset;
-static cmd_func_t cmd_func_ap_stats;
-static cmd_func_t cmd_func_ap_loot;
-static cmd_func_t cmd_func_ap_set;
-static cmd_func_t cmd_func_ap_reset;
-static cmd_func_t cmd_func_ap_limit;
-static cmd_func_t cmd_func_group_join;
-static cmd_func_t cmd_func_group_leave;
-static cmd_func_t cmd_func_elyos;
-static cmd_func_t cmd_func_asmo;
-static cmd_func_t cmd_func_relyos;
-static cmd_func_t cmd_func_rasmo;
-static cmd_func_t cmd_func_echo;
-static cmd_func_t cmd_func_apcalc;
-static cmd_func_t cmd_func_inv;
-static cmd_func_t cmd_func_dbgdump;
-static cmd_func_t cmd_func_dbgparse;
+static bool cmd_func_translate(char *txt, int langid);
+static bool cmd_func_rtranslate(char *txt, int langid);
 
+static cmd_func_t cmd_func_help;            /**< Declaration of cmd_func_helpi()        */
+static cmd_func_t cmd_func_hello;           /**< Declaration of cmd_func_hello()        */
+static cmd_func_t cmd_func_nameset;         /**< Declaration of cmd_func_nameset()      */
+static cmd_func_t cmd_func_ap_stats;        /**< Declaration of cmd_func_apstat()       */
+static cmd_func_t cmd_func_ap_loot;         /**< Declaration of cmd_func_aploot()       */
+static cmd_func_t cmd_func_ap_set;          /**< Declaration of cmd_ap_set()            */
+static cmd_func_t cmd_func_ap_reset;        /**< Declaration of cmd_ap_reset()          */
+static cmd_func_t cmd_func_ap_limit;        /**< Declaration of cmd_ap_limit()          */
+static cmd_func_t cmd_func_group_add;       /**< Declaration of cmd_func_group_add()    */
+static cmd_func_t cmd_func_group_del;       /**< Declaration of cmd_func_group_del()    */
+static cmd_func_t cmd_func_elyos;           /**< Declaration of cmd_func_elyos()        */
+static cmd_func_t cmd_func_asmo;            /**< Declaration of cmd_func_asmo()         */
+static cmd_func_t cmd_func_relyos;          /**< Declaration of cmd_func_relyos()       */
+static cmd_func_t cmd_func_rasmo;           /**< Declaration of cmd_func_rasmo()        */
+static cmd_func_t cmd_func_echo;            /**< Declaration of cmd_func_echo()         */
+static cmd_func_t cmd_func_apcalc;          /**< Declaration of cmd_func_apcalc()       */
+static cmd_func_t cmd_func_inv;             /**< Declaration of cmd_func_inv()          */
+static cmd_func_t cmd_func_dbgdump;         /**< Declaration of cmd_func_dbgdump()      */
+static cmd_func_t cmd_func_dbgparse;        /**< Declaration of cmd_func_dbgparse()     */
+
+/**
+ * Chat command declaration structure
+ *
+ * @see cmd_list
+ */
 struct cmd_entry
 {
-    char        *cmd_command;
-    cmd_func_t  *cmd_func;
+    char        *cmd_command;       /**< Command name       */
+    cmd_func_t  *cmd_func;          /**< Command function   */
 };
 
 
+/**
+ * Global list of chat commands
+ */
 struct cmd_entry cmd_list[] =
 {
     {
@@ -112,11 +148,11 @@ struct cmd_entry cmd_list[] =
     },
     {
         .cmd_command    = "gradd",
-        .cmd_func       = cmd_func_group_join,
+        .cmd_func       = cmd_func_group_add,
     },
     {
         .cmd_command    = "grdel",
-        .cmd_func       = cmd_func_group_leave,
+        .cmd_func       = cmd_func_group_del,
     },
     {
         .cmd_command    = "elyos",
@@ -156,6 +192,12 @@ struct cmd_entry cmd_list[] =
     }
 };
 
+/**
+ * printf-like function for storing a command status strings to the return buffer
+ *
+ * @param[in]       fmt     printf-like format
+ * @param[in]       ...     arguments
+ */
 void cmd_retval_printf(char *fmt, ...)
 {
     va_list vargs;
@@ -168,6 +210,11 @@ void cmd_retval_printf(char *fmt, ...)
     if (cmd_retval[0] == '?') cmd_retval[0] = ' ';
 }
 
+/**
+ * Set the return string for a command
+ *
+ * param[in]        txt     Return string
+ */
 void cmd_retval_set(const char *txt)
 {
     util_strlcpy(cmd_retval, txt, sizeof(cmd_retval));
@@ -176,6 +223,17 @@ void cmd_retval_set(const char *txt)
     if (cmd_retval[0] == '?') cmd_retval[0] = ' ';
 }
 
+/**
+ * This function implements the ?help command
+ *
+ * @param[in]       argc        Number of arguments in @p argv
+ * @param[in]       argv        Command arguments:
+ *                                  - argv[0] = Command name
+ *                                  - argv[1] = Help topic
+ * @param[in]       txt         Full chat line text with the command stripped
+ *
+ * @retval          true        Always returns true
+ */
 bool cmd_func_help(int argc, char *argv[], char *txt)
 {
     (void)txt;
@@ -189,6 +247,16 @@ bool cmd_func_help(int argc, char *argv[], char *txt)
     return true;
 }
 
+/**
+ * This function implements the ?hello command, just displays the version number
+ *
+ * @param[in]       argc        Number of arguments in @p argv
+ * @param[in]       argv        Command arguments:
+ *                                  - argv[0] = Command name
+ * @param[in]       txt         Full chat line text with the command stripped
+ *
+ * @retval          true        Always returns true
+ */
 bool cmd_func_hello(int argc, char *argv[], char *txt)
 {
     (void)argc;
@@ -200,6 +268,17 @@ bool cmd_func_hello(int argc, char *argv[], char *txt)
     return true;
 }
 
+/**
+ * This function implements the ?name command, which sets the player's name
+ *
+ * @param[in]       argc        Number of arguments in @p argv
+ * @param[in]       argv        Command arguments
+ *                                  - argv[0] = Command name
+ *                                  - argv[1] = New name
+ * @param[in]       txt         Full chat line text with the command stripped
+ *
+ * @retval          true        Always returns true
+ */
 bool cmd_func_nameset(int argc, char *argv[], char *txt)
 {
     (void)txt;
@@ -213,6 +292,17 @@ bool cmd_func_nameset(int argc, char *argv[], char *txt)
     return true;
 }
 
+/**
+ * This function implements the ?apstat command, which returns the current
+ * AP statistics of the group
+ *
+ * @param[in]       argc        Number of arguments
+ * @param[in]       argv        Command arguments
+ *                                  - argv[0] = Command name
+ * @param[in]       txt         Full chat line text with the command stripped
+ *
+ * @retval          true        Always returns true
+ */
 bool cmd_func_ap_stats(int argc, char *argv[], char *txt)
 {
     char buf[AION_CHAT_SZ];
@@ -231,6 +321,17 @@ bool cmd_func_ap_stats(int argc, char *argv[], char *txt)
     return true;
 }
 
+/**
+ * This function implements the ?aploot command, which returns the current
+ * loot statistics
+ *
+ * @param[in]       argc        Number of arguments
+ * @param[in]       argv        Command arguments
+ *                                  - argv[0] = Command name
+ * @param[in]       txt         Full chat line text with the command stripped
+ *
+ * @retval          true        Always returns true
+ */
 bool cmd_func_ap_loot(int argc, char *argv[], char *txt)
 {
     char buf[256];
@@ -249,6 +350,20 @@ bool cmd_func_ap_loot(int argc, char *argv[], char *txt)
     return true;
 }
 
+/**
+ * This function implements the ?apset command, sets the AP accumulated
+ * by a player to a certain value
+ *
+ * @param[in]       argc        Number of arguments in @p argv
+ * @param[in]       argv        Command arguments:
+ *                                  - argv[0] = Command name
+ *                                  - argv[1] = Player name
+ *                                  - argv[2] = New AP value
+ * @param[in]       txt         Full chat line text with the command stripped
+ *
+ * @retval          true        On success
+ * @retval          false       If argument format error
+ */
 bool cmd_func_ap_set(int argc, char *argv[], char *txt)
 {
     uint32_t apvalue;
@@ -271,6 +386,17 @@ bool cmd_func_ap_set(int argc, char *argv[], char *txt)
     return true;
 }
 
+/**
+ * This function implements the ?apreset command, which resets
+ * the AP statistics for all known players to 0
+ *
+ * @param[in]       argc        Number of arguments
+ * @param[in]       argv        Command arguments
+ *                                  - argv[0] = Command name
+ * @param[in]       txt         Full chat line text with the command stripped
+ *
+ * @retval          true        Always returns true
+ */
 bool cmd_func_ap_reset(int argc, char *argv[], char *txt)
 {
     (void)argc;
@@ -284,6 +410,21 @@ bool cmd_func_ap_reset(int argc, char *argv[], char *txt)
     return true;
 }
 
+/**
+ * This function implements the ?aplimit command, sets the upper bound
+ * limit for the AP loot
+ *
+ * @param[in]       argc        Number of arguments
+ * @param[in]       argv        Command arguments
+ *                                  - argv[0] = Command name
+ *                                  - argv[1] = New AP limit value
+ * @param[in]       txt         Full chat line text with the command stripped
+ *
+ * @retval          true        On success
+ * @retval          false       If argument format error
+ *
+ * @see aion_aplimit_set
+ */
 bool cmd_func_ap_limit(int argc, char *argv[], char *txt)
 {
     uint32_t apvalue;
@@ -304,7 +445,19 @@ bool cmd_func_ap_limit(int argc, char *argv[], char *txt)
     return true;
 }
 
-bool cmd_func_group_join(int argc, char *argv[], char *txt)
+/**
+ * This function implements the ?gradd command, which manually adds a player
+ * to the current group if it is not autodetected automatically
+ *
+ * @param[in]       argc        Number of arguments
+ * @param[in]       argv        Command arguments
+ *                                  - argv[0] = Command name
+ *                                  - argv[1+] = Players to add to the group
+ * @param[in]       txt         Full chat line text with the command stripped
+ *
+ * @retval          true        Always returns true
+ */
+bool cmd_func_group_add(int argc, char *argv[], char *txt)
 {
     (void)txt;
     int ii;
@@ -319,7 +472,19 @@ bool cmd_func_group_join(int argc, char *argv[], char *txt)
     return true;
 }
 
-bool cmd_func_group_leave(int argc, char *argv[], char *txt)
+/**
+ * This function implements the ?grdeel command, which manually removes a player
+ * from the current group if it is not autodetected automatically
+ *
+ * @param[in]       argc        Number of arguments
+ * @param[in]       argv        Command arguments
+ *                                  - argv[0] = Command name
+ *                                  - argv[1+] = Players to remove from the group
+ * @param[in]       txt         Full chat line text with the command stripped
+ *
+ * @retval          true        Always returns true
+ */
+bool cmd_func_group_del(int argc, char *argv[], char *txt)
 {
     (void)txt;
     int ii;
@@ -334,11 +499,20 @@ bool cmd_func_group_leave(int argc, char *argv[], char *txt)
     return true;
 }
 
-bool cmd_func_translate(char *argv[], char *txt, int langid)
+/**
+ * Generic translate functions, used by @ref cmd_func_elyos() 
+ * and @ref cmd_func_asmo
+ *
+ * @param[in,out]   txt         Full chat line text with the command stripped
+ * @param[in]       langid      Language ID
+ * 
+ * @retval          true        Always true at the moment
+ *
+ * @see aion_translate
+ */
+bool cmd_func_translate(char *txt, int langid)
 {
     char tr_txt[CMD_TEXT_SZ];
-
-    (void)argv;
 
     util_strlcpy(tr_txt, txt, sizeof(tr_txt));
 
@@ -349,25 +523,60 @@ bool cmd_func_translate(char *argv[], char *txt, int langid)
     return true;
 }
 
+/**
+ * This function implements the ?elyos translator command
+ * This is used by Elyos to talk to Asmodians
+ *
+ * @param[in]       argc        Number of arguments
+ * @param[in]       argv        Command arguments
+ *                                  - argv[0] = Command name
+ * @param[in]       txt         Full chat line text with the command stripped
+ *
+ * @return Returns the error code from @ref cmd_func_translate()
+ */
 bool cmd_func_elyos(int argc, char *argv[], char *txt)
 {
     (void)argc;
+    (void)argv;
 
-    return cmd_func_translate(argv, txt, LANG_ELYOS);
+    return cmd_func_translate(txt, LANG_ELYOS);
 }
 
+/**
+ * This function implements the ?asmo translator command
+ * This is used by Elyos to talk to Asmodians
+ *
+ * @param[in]       argc        Number of arguments
+ * @param[in]       argv        Command arguments
+ *                                  - argv[0] = Command name
+ * @param[in]       txt         Full chat line text with the command stripped
+ *
+ * @return Returns the error code from @ref cmd_func_translate()
+ */
 bool cmd_func_asmo(int argc, char *argv[], char *txt)
 {
     (void)argc;
+    (void)argv;
 
-    return cmd_func_translate(argv, txt, LANG_ASMODIAN);
+    return cmd_func_translate(txt, LANG_ASMODIAN);
 }
 
-bool cmd_func_rtranslate(char *argv[], char *txt, int langid)
+/**
+ * Generic reverse translate function, used by @ref cmd_func_relyos() 
+ * and @ref cmd_func_rasmo
+ *
+ * This function is the exact opposite of @ref cmd_func_translate()
+ *
+ * @param[in,out]   txt         Full chat line text with the command stripped
+ * @param[in]       langid      Language ID
+ * 
+ * @retval          true        Always true at the moment
+ *
+ * @see aion_rtranslate
+ */
+bool cmd_func_rtranslate(char *txt, int langid)
 {
     char tr_txt[CMD_TEXT_SZ];
-
-    (void)argv;
 
     util_strlcpy(tr_txt, txt, sizeof(tr_txt));
 
@@ -378,19 +587,64 @@ bool cmd_func_rtranslate(char *argv[], char *txt, int langid)
     return true;
 }
 
+/**
+ * This function implements the ?relyos translator command
+ *
+ * This function reverses the text translated by ?elyos back
+ * to the original text (if you want to see what other
+ * Asmodians are saying to Elyos)
+ *
+ * @param[in]       argc        Number of arguments
+ * @param[in]       argv        Command arguments
+ *                                  - argv[0] = Command name
+ * @param[in]       txt         Full chat line text with the command stripped
+ *
+ * @return Returns the error code from @ref cmd_func_rtranslate()
+ */
 bool cmd_func_relyos(int argc, char *argv[], char *txt)
 {
     (void)argc;
+    (void)argv;
 
-    return cmd_func_rtranslate(argv, txt, LANG_ASMODIAN);
+    return cmd_func_rtranslate(txt, LANG_ASMODIAN);
 }
 
+/**
+ * This function implements the ?rasmo translator command
+ *
+ * This function reverses the text translated by ?asmo back
+ * to the original text (if you want to see what other
+ * Elyos are saying to Asmodians)
+ *
+ * @param[in]       argc        Number of arguments
+ * @param[in]       argv        Command arguments
+ *                                  - argv[0] = Command name
+ * @param[in]       txt         Full chat line text with the command stripped
+ *
+ * @return Returns the error code from @ref cmd_func_rtranslate()
+ */
 bool cmd_func_rasmo(int argc, char *argv[], char *txt)
 {
     (void)argc;
+    (void)argv;
 
-    return cmd_func_rtranslate(argv, txt, LANG_ELYOS);
+    return cmd_func_rtranslate(txt, LANG_ELYOS);
 }
+
+/**
+ * This function implements the ?echo command
+ *
+ * This function just echoes back whatever text it received as argument
+ *
+ * @param[in]       argc        Number of arguments
+ * @param[in]       argv        Command arguments
+ *                                  - argv[0] = Command name
+ * @param[in]       txt         Full chat line text with the command stripped
+ *
+ * @retval          true        Always returns true
+ *
+ * @note This is mainly useful for retrieving the chathistory
+ */
 bool cmd_func_echo(int argc, char *argv[], char *txt)
 {
     (void)argc;
@@ -401,6 +655,26 @@ bool cmd_func_echo(int argc, char *argv[], char *txt)
     return true;
 }
 
+/**
+ * This function implements the ?apcalc function
+ *
+ * This is used for calculating the values of relics.
+ * For example, it can calculate how much AP is 
+ * 5x&lt;Major Ancient Crown&gt;, or &lt;Major Ancient Crown&gt;x5
+ *
+ * @note
+ * This function is  quite a complex function and rarely ever used.
+ * This was somehow made obosolete by the relic appriser, so 
+ * currently it is a candidate for removal.
+ *
+ * @param[in]       argc        Number of arguments
+ * @param[in]       argv        Command arguments
+ *                                  - argv[0] = Command name
+ * @param[in]       txt         Full chat line text with the command stripped
+ *
+ * @retval          true        true on success
+ * @retval          false       On error
+ */
 bool cmd_func_apcalc(int argc, char *argv[], char *txt)
 {
     static regex_t  cmd_apcalc_re1;
@@ -523,11 +797,22 @@ bool cmd_func_apcalc(int argc, char *argv[], char *txt)
     return true;
 }
 
-/*
- * The ?inv (inventory full) function and sub-commands:
- *      - ?inv on
- *      - ?inv off
- *      - ?inv clear
+/**
+ * This function implements the ?inv command for setting the 
+ * "inventory full" policy handling
+ *
+ * It supports arguments:
+ *  - ?inv off: turn inventory full policy enforcment off
+ *  - ?inv on: Turn inventory full policy enforcment on
+ *  - ?inv clear: Clear the inventory full flags for all players
+ *
+ * @param[in]       argc        Number of arguments
+ * @param[in]       argv        Command arguments
+ *                                  - argv[0] = Command name
+ *                                  - argv[1] = ?inv sub-command
+ * @param[in]       txt         Full chat line text with the command stripped
+ *
+ * @retval          true        Always returns true
  */
 bool cmd_func_inv(int argc, char *argv[], char *txt)
 {
@@ -572,6 +857,18 @@ bool cmd_func_inv(int argc, char *argv[], char *txt)
     return true;
 }
 
+/**
+ * Implements the ?dbgdump function, which dumps the console to stdout
+ *
+ * This is a bit awkward to use so maybe somebody can improve this.
+ *
+ * @param[in]       argc        Number of arguments
+ * @param[in]       argv        Command arguments
+ *                                  - argv[0] = Command name
+ * @param[in]       txt         Full chat line text with the command stripped
+ *
+ * @retval          true        Always returns true
+ */
 bool cmd_func_dbgdump(int argc, char *argv[], char *txt)
 {
     (void)argc;
@@ -585,6 +882,21 @@ bool cmd_func_dbgdump(int argc, char *argv[], char *txt)
     return true;
 }
 
+/**
+ * Implements the ?dbgparse debugging command
+ *
+ * It parses a piece of chatlog file from a file, which is useful
+ * for debugging 
+ *
+ * @param[in]       argc        Number of arguments
+ * @param[in]       argv        Command arguments
+ *                                  - argv[0] = Command name
+ *                                  - argv[1] = Path to chatlog file
+ * @param[in]       txt         Full chat line text with the command stripped
+ *
+ * @retval          true        True on error
+ * @retval          false       If parsing of the file fails
+ */
 bool cmd_func_dbgparse(int argc, char *argv[], char *txt)
 {
     (void)txt;
@@ -604,8 +916,22 @@ bool cmd_func_dbgparse(int argc, char *argv[], char *txt)
     return true;
 }
 
-/*
- * Parse chat history format, N^^^^^Player
+/**
+ * This functions scans the command arguments (argc,argv) and returns true if 
+ * it contains a chatlog history command in the format of [N]^+NAME
+ *
+ * In case a chat history command is matched, it returns the name of the player
+ * to retrieve the chat history and the message number, where 0 is the most recent
+ * message
+ *
+ * @param[in]       argc        Number of elements in argv
+ * @param[in]       argv        Argument array
+ * @param[out]      player      Requested chat history player name
+ * @param[in]       player_sz   Size of the buffer pointed to by @p player
+ * @param[out]      msgnum      The index of the chat history line requested (0 being most recent)
+ *
+ * @retval          true        If argc/argv contain a valid chathistory command
+ * @retval          false       Otherwise
  */
 bool cmd_chat_hist(int argc, char *argv[], char *player, size_t player_sz, int *msgnum)
 {
@@ -677,8 +1003,13 @@ bool cmd_chat_hist(int argc, char *argv[], char *player, size_t player_sz, int *
     return true;
 }
 
-/*
- * Parse and execute a command 
+/**
+ * Parses the text in @p txt and if it starts with a '?' (CMD_COMMAND_CHAR)
+ * string it processes it as an APme command
+ *
+ * All the command processing starts here.
+ *
+ * @param[in]       txt     Text to process (usually from the clipboard)
  */ 
 void cmd_exec(char *txt)
 {
@@ -762,8 +1093,8 @@ void cmd_exec(char *txt)
     aion_clipboard_set(cmd_retval);
 }
 
-/*
- * Check if we have a valid command in the clipboard
+/**
+ * Poll the clipboard, if we get some text, pass it to @ref cmd_exec().
  */
 void cmd_poll(void)
 {
@@ -775,3 +1106,7 @@ void cmd_poll(void)
     }
 }
 
+
+/**
+ * @}
+ */
