@@ -19,7 +19,8 @@
  */
 
 /**
- * @file aion_trans.c Aion Language Translator
+ * @file
+ * Aion Language Translator
  *
  * @author Mitja Horvat <pinkfluid@gmail.com>
  */
@@ -161,7 +162,7 @@ struct aion_table
 /** Language table definition           */
 struct aion_language
 {
-    struct aion_table al_table[4];
+    struct aion_table al_table[4];      /**< Translation tables for a language  */
 };
 
 /** Elyos -> Asmodian language translation table */

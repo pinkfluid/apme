@@ -21,16 +21,31 @@
 #ifndef ITEM_H_INCLUDED
 #define ITEM_H_INCLUDED
 
+/**
+ * @file 
+ */
+
 #include <stdint.h>
 
+/**
+ * @ingroup items
+ *
+ * @{
+ */
+
+/** Item structure  */
 struct item
 {
-    uint32_t    item_id;
-    char        *item_name;
-    uint32_t    item_ap;
+    uint32_t    item_id;        /**< The item ID                */
+    char        *item_name;     /**< The item name              */
+    uint32_t    item_ap;        /**< The AP value of this item  */
 };
 
 extern struct item* item_find(uint32_t itemid);
 extern struct item* item_find_name(char *item_name);
+
+/**
+ * @}
+ */
 
 #endif // ITEM_H_INCLUDED

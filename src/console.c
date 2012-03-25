@@ -18,6 +18,13 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
+/**
+ * @file
+ * Debugging console for APme
+ *
+ * @author Mitja Horvat <pinkfluid@gmail.com>
+ */
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -27,16 +34,36 @@
 #include "console.h"
 #include "txtbuf.h"
 
-char con_buf[16384];
-char con_str[1024];
+/**
+ * @defgroup console APme Debugging Console
+ * 
+ * @brief APme debugging console. Debug messages are logged here.
+ *
+ * @{
+ */
+char con_buf[16384];        /**< Debugging console buffer, used for @p con_tb   */
+char con_str[1024];         /**< Cconsole string                                */
 
-struct txtbuf con_tb;
+struct txtbuf con_tb;       /**< Console textbuffer @see txtbuf                 */
 
+/**
+ * Initialize the APme console
+ *
+ * This just initializes the @p con_tb textbuffer
+ *
+ * @note Must be called before other con_* functions
+ */
 void con_init(void)
 {
     tb_init(&con_tb, con_buf, sizeof(con_buf));
 }
 
+/**
+ * Logs a text to the console; it uses a printf-like format
+ *
+ * @param[in]       fmt     printf-like format
+ * @param[in]       ...     Additional arguments
+ */
 void con_printf(char *fmt, ...)
 {
     va_list vargs;
@@ -54,6 +81,9 @@ void con_printf(char *fmt, ...)
     tb_strput(&con_tb, con_str);
 }
 
+/**
+ * Dumps the console to standard output
+ */
 void con_dump(void)
 {
     int ii;
@@ -75,3 +105,8 @@ void con_dump(void)
 
     fflush(stdout);
 }
+
+/**
+ * @}
+ */
+

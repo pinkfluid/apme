@@ -17,20 +17,47 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
+
+/** 
+ * @file
+ * Simple Events Library
+ */
 #include <stdlib.h>
 
 #include "event.h"
 
+/**
+ * @defgroup event Event Subsystem
+ * @brief 4 lines of code do not need extensive documentation.
+ *
+ * @{
+ */
+
+/** The event processing callback       */
 static event_callback_t *event_process_cb = NULL;
 
+/**
+ * Register the event callback
+ *
+ * @param[in]       event_cb        The event processing function
+ */ 
 void event_register(event_callback_t *event_cb)
 {
     event_process_cb = event_cb;
 }
 
+/**
+ * Dispatch an event to the event processing function
+ *
+ * @param[in]       event           The event type
+ */
 void event_signal(enum event_type event)
 {
     if (event_process_cb == NULL) return;
 
     event_process_cb(event);
 }
+
+/**
+ * @}
+ */

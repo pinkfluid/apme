@@ -18,6 +18,11 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
+/**
+ * @file
+ * Simple Iitem Database
+ *
+ */
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
@@ -25,6 +30,15 @@
 
 #include "items.h"
 
+/**
+ * @defgroup items Simple Item Database
+ *
+ * @brif Currnetly it contains only the IDs for the AP relics
+ *
+ * @{
+ */
+
+/** Items database */
 struct item itemdb[] =
 {
     /* Icons */
@@ -115,6 +129,14 @@ struct item itemdb[] =
 };
 
 
+/**
+ * Find item with ID @p itemid in the database
+ *
+ * @param[in]       itemid      The item ID
+ *
+ * @return
+ * Returns NULL on error or a pointer to an item in the database
+ */
 struct item* item_find(uint32_t itemid)
 {
     size_t ii;
@@ -130,6 +152,14 @@ struct item* item_find(uint32_t itemid)
     return NULL;
 }
 
+/**
+ * Lookup an item by the item name
+ *
+ * @param[in]       item_name   The item name
+ *
+ * @return
+ * Returns NULL on error or a pointer to an item in the database
+ */
 struct item* item_find_name(char *item_name)
 {
     size_t ii;
@@ -144,3 +174,7 @@ struct item* item_find_name(char *item_name)
 
     return NULL;
 }
+
+/**
+ * @}
+ */
