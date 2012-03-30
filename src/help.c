@@ -18,6 +18,12 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
+/**
+ * @file
+ *
+ * Help and Strings
+ */
+
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
@@ -27,13 +33,23 @@
 #include "util.h"
 #include "console.h"
 
+/**
+ * @defgroup help Help and Related Stuff
+ * 
+ * @brief Help files, help text....
+ *
+ * @{
+ */
+
+/** Structure that defines the help for the APme commands */
 struct help_entry
 {
-    char *help_cmd;
-    char *help_usage;
-    char *help_text;
+    char *help_cmd;         /**< The help command or topic      */
+    char *help_usage;       /**< Short usage help               */
+    char *help_text;        /**< Full help text                 */
 };
 
+/** Chatlog warning text */
 const char *help_chatlog_warning =
 "!!!!! WARNING!!!!!! !!!!! WARNING!!!!!! !!!!! WARNING!!!!!! \n"
 "\n"
@@ -53,6 +69,7 @@ const char *help_chatlog_warning =
 "parsing). The difference is only in that I was kind enough to warn you :)\n"
 "\n";
 
+/** Chatlog enabled help text */
 const char *help_chatlog_enabled =
 "The chatlog feature was enabled in AION.\n"
 "You must restart the game client to apply the new settings.\n"
@@ -61,18 +78,25 @@ const char *help_chatlog_enabled =
 "the client directory to disable this feature.\n"
 "\n";
 
+/** Error enabling chatlog */
 const char *help_chatlog_enable_error =
 "Error enabling the CHATLOG feature. Restart the application to try again.\n";
 
+/** Main screen help */
 const char *help_mainscreen = 
 "Type \"?command <PARAMS>\", selecte the text and copy-paste.\nFor more info, please use the \"?help <TOPIC>\" command.\n";
 
+/** Inventory full policy enabled text */
 const char *help_invfull_on =
 "ON: Users with full inventory will be temporarily excluded from the AP fair loot system.";
 
+/** Inventory full policy disabled text */
 const char *help_invfull_off = 
 "OFF: Users with full inventory will be warned only.";
 
+/**
+ * This is the help used for the ?help command
+ */
 struct help_entry help_commands[] =
 {
     {
@@ -163,6 +187,15 @@ struct help_entry help_commands[] =
 };
 
 
+/**
+ * Find help text for @p keyword
+ *
+ * @param[in]       keyword     Help topic
+ * 
+ * @return
+ * This function returns a pointer to a @p help_entry structure or NULL if help not found
+ *
+ */
 struct help_entry *help_find(char *keyword)
 {
     size_t ii;
@@ -178,6 +211,15 @@ struct help_entry *help_find(char *keyword)
     return NULL;
 }
 
+/**
+ * This function returns the help for command @p cmd into the
+ * buffer pointed to by @p help
+ *
+ * @param[in]       cmd         Help topic/command to search the help for
+ * @param[out]      help        Help string
+ * @param[in]       help_sz     Size of the buffer pointed to by @p help
+ *
+ */
 void help_cmd(char *cmd, char *help, size_t help_sz)
 {
     struct help_entry *he;
@@ -204,6 +246,13 @@ void help_cmd(char *cmd, char *help, size_t help_sz)
     util_strlcat(help, he->help_text, help_sz);
 }
 
+/**
+ * Generate a list of all topics available and store it to the @p help
+ * variable
+ *
+ * @param[out]      help        Variable pointing to the buffer where to save the help text
+ * @param[in]       help_sz     Space available for the help text in bytes
+ */
 void help_usage(char *help, size_t help_sz)
 {
     size_t ii;
@@ -223,3 +272,7 @@ void help_usage(char *help, size_t help_sz)
         }
     }
 }
+
+/**
+ * @}
+ */

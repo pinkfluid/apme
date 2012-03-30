@@ -33,7 +33,7 @@
 /**
  * @defgroup items Simple Item Database
  *
- * @brif Currnetly it contains only the IDs for the AP relics
+ * @brief Currnetly it contains only the IDs for the AP relics
  *
  * @{
  */
