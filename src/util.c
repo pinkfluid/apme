@@ -18,6 +18,12 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
+/**
+ * @file
+ * Random utilities
+ * 
+ * @author Mitja Horvat <pinkfluid@gmail.com>
+ */
 #include <stdbool.h>
 #include <stdio.h>
 #include <assert.h>
@@ -30,7 +36,24 @@
 #include "util.h"
 #include "console.h"
 
+/** 
+ * @defgroup util Utilities
+ * @brief Collection of verious utilities that do not have a place of their own, yet
+ *
+ * @note Only Windows specific functions are documented
+ *
+ * @{
+ */
+
 #ifdef SYS_WINDOWS
+/**
+ * Copy @p text to the clipboard
+ *
+ * @param[in]       text        Text to copy to the clipboard
+ *
+ * @retval          true        On success
+ * @retval          false       If any of the Windows clipboard functions failed
+ */
 bool clipboard_set_text(char *text)
 {
     bool retval;
@@ -66,6 +89,15 @@ bool clipboard_set_text(char *text)
     return true;
 }
 
+/**
+ * Store the content of the clipboard to @p text
+ *
+ * @param[out]      text        Buffer that will receive the buffer data
+ * @param[in]       text_sz     Maximum size of @p text
+ *
+ * @retval          true        On success
+ * @retval          false       On error
+ */
 bool clipboard_get_text(char *text, size_t text_sz)
 {
     HGLOBAL hsrc;
@@ -106,6 +138,18 @@ error:
 
 }
 
+/**
+ * Store a registry key value to @p buf
+ *
+ * @param[in]       key     Registry key path
+ * @param[in]       val     Registry key name
+ * @param[out]      buf     Buffer that will receive the registry key value
+ * @param[in]       buflen  Maximum size of buffer @p buf
+ *
+ * @retval          true    On success
+ * @retval          false   If @p key is invalid
+ * @retval          false   If @p val is invalid
+ */
 bool reg_read_key(char *key, char *val, void *buf, size_t buflen)
 {
     LONG retval;
@@ -135,6 +179,9 @@ error:
 
 #else /* Unix */
 
+/**
+ * @cond UTILS_UNIX
+ */
 bool clipboard_set_text(char *text)
 {
     FILE *clipboard;
@@ -184,10 +231,25 @@ bool reg_read_key(char *key, char *val, void *buf, size_t buflen)
     return true;
 }
 
+/**
+ * @endcond
+ */
+
 #endif
 
-/* 
+/**
+ * This is a safe string copy function, it never overflows. In the *BSD world it's know as strlcpy().
+ *
  * Thansk to Ulrich Drepper, these two functions probably get the re-inventing-the-wheel-over-and-over-again award.
+ *
+ * @note If dst is too small to hold src, it is safely truncated.
+ *
+ * @param[out]      dst         Buffer that will receive the string from @p src
+ * @param[in]       src         Input string
+ * @param[in]       dst_size    Maximum size of @p dst; if a larger string is copied it is truncated and padded with '\\0'
+ *
+ * @return
+ * Number of bytes stored to dst (not counting the ending null char)
  */
 size_t util_strlcpy(char *dst, const char *src, size_t dst_size)
 {
@@ -205,6 +267,16 @@ size_t util_strlcpy(char *dst, const char *src, size_t dst_size)
     return dst_len;
 }
 
+/**
+ * Equivalent of the strlcat() function from the *BSD world. See @ref util_strlcpy() for the rant.
+ *
+ * @param[in,out]   dst         String that we're appending to
+ * @param[in]       src         String that will be appended
+ * @param[in]       dst_size    Maximum size of @p dst
+ *
+ * @return
+ * Number of bytes stored to @p dst
+ */
 size_t util_strlcat(char *dst, const char *src, size_t dst_size)
 {
     size_t src_len = strlen(src);
@@ -222,8 +294,13 @@ size_t util_strlcat(char *dst, const char *src, size_t dst_size)
     return dst_len + src_len;
 }
 
-/*
+/**
  * There's no strsep() on MinGW, so we have to implement our own
+ * 
+ * @note This function should be equivalent to a POSIX strsep()
+ *
+ * @param[in,out]       pinputstr   String to scan for @p delim
+ * @param[in]           delim       Delimiters
  */
 char* util_strsep(char **pinputstr, const char *delim)
 {
@@ -249,6 +326,12 @@ char* util_strsep(char **pinputstr, const char *delim)
     return pstr;
 }
 
+/**
+ * This function this function removes new-lines characters
+ * from the end of the string
+ *
+ * @param[in]       str     String to be chomped
+ */
 void util_chomp(char *str)
 {
     char *pstr;
@@ -260,3 +343,6 @@ void util_chomp(char *str)
     }
 }
 
+/**
+ * @}
+ */

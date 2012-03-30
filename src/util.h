@@ -18,9 +18,20 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
+/**
+ * @file
+ * Utilities
+ * 
+ * @author Mitja Horvat <pinkfluid@gmail.com>
+ */
 #ifndef UTIL_H_INCLUDED
 #define UTIL_H_INCLUDED
 
+/**
+ * @ingroup util
+ *
+ * @{
+ */
 extern bool clipboard_set_text(char *text);
 extern bool clipboard_get_text(char *text, size_t text_sz);
 
@@ -32,4 +43,7 @@ extern void util_chomp(char *str);
 /* Registry stuff */
 extern bool reg_read_key(char *key, char *val, void *buf, size_t buflen);
 
+/**
+ * @}
+ */
 #endif // UTIL_H_INCLUDED
