@@ -18,6 +18,13 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
+/**
+ * @file 
+ *
+ * The Regular Expression Engine
+ *
+ * @author Mitja Horvat <pinkfluid@gmail.com>
+ */
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -29,8 +36,31 @@
 #include "regeng.h"
 #include "console.h"
 
-/*
- * Copy a string from a matched regular expression
+/**
+ * @defgroup regeng The Regular Expression Engine
+ *
+ * @brief The regular expression engine
+ *
+ * This module was written first by using regular POSIX-regex. Since
+ * there's no POSIX regex support in MinGW, it was necessary to use
+ * an external regex library -- PCRE.
+ *
+ * @note This is the only module that heavily relies on 3rd party libraries.
+ *
+ * @{
+ */
+
+/**
+ * Extract a sub-string that was matched by the regular expression
+ * in @p rem
+ *
+ * @note This function will properly truncate the string if the output string
+ * is too small and place a '\0' at the end without causing any overflows.
+ *
+ * @param[out]      outstr      Sub-string pointer
+ * @param[in]       instr       Full-string on which regex was performed
+ * @param[in]       outsz       Maximum size of the output sub-string
+ * @param[in]       rem         The regex match structure
  */
 void re_strlcpy(char *outstr, const char *instr, size_t outsz, regmatch_t rem)
 {
@@ -64,6 +94,14 @@ void re_strlcpy(char *outstr, const char *instr, size_t outsz, regmatch_t rem)
     outstr[sz] = '\0';
 }
 
+/**
+ * Returns the length of the matched regex 
+ *
+ * @param[in]       rem     Matched regex
+ *
+ * @return
+ * Number of characters that was matched in @p rem
+ */
 size_t re_strlen(regmatch_t rem)
 {
     if ((rem.rm_so < 0) ||
@@ -75,10 +113,17 @@ size_t re_strlen(regmatch_t rem)
     return (rem.rm_eo - rem.rm_so);
 }
 
-/*
- * Initialize a regeng structure
+/**
+ * Initialize the regular expression engine 
+ *
+ * Scan the regex array and compile the regular expressions in the @p re_exp field
+ *
+ * @param[in]       re_array        Array of regular expression structures
+ *
+ * @return
+ * true on success, or false if any of the regular expressions failed to
+ * initialize.
  */
-
 bool re_init(struct regeng *re_array)
 {
     char errstr[64];
@@ -100,7 +145,19 @@ bool re_init(struct regeng *re_array)
     return true;
 }
 
-
+/**
+ * This is the main loop of the regular expression engine
+ *
+ * @note @p re_array must have been initialized with re_init() before
+ * calling this function
+ *
+ * @param[in]       re_array        Initialized regular expression array
+ * @param[in]       re_callback     Callback that will be called for processing any matches
+ * @param[in]       str             String to match
+ *
+ * @return
+ * Currently returns always true
+ */
 bool re_parse(re_callback_t re_callback, struct regeng *re_array, char *str)
 {
     struct regeng *reptr;
@@ -118,3 +175,7 @@ bool re_parse(re_callback_t re_callback, struct regeng *re_array, char *str)
     return true;
 }
 
+
+/**
+ * @}
+ */

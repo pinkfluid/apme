@@ -20,8 +20,9 @@
 
 /**
  * @file
- * Simple Iitem Database
+ * Simple Item Database
  *
+ * @author Mitja Horvat <pinkfluid@gmail.com>
  */
 #include <stdlib.h>
 #include <stdint.h>

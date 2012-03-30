@@ -21,6 +21,8 @@
 /** 
  * @file
  * Simple Events Library
+ *
+ * @author Mitja Horvat <pinkfluid@gmail.com>
  */
 #include <stdlib.h>
 

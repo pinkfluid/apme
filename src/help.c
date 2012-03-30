@@ -22,8 +22,9 @@
  * @file
  *
  * Help and Strings
+ *
+ * @author Mitja Horvat <pinkfluid@gmail.com>
  */
-
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>

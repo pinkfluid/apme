@@ -18,6 +18,13 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
+/**
+ * @file
+ *
+ * Main Terminal Application 
+ *
+ * @author Mitja Horvat <pinkfluid@gmail.com>
+ */
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -35,6 +42,25 @@
 #include "version.h"
 #include "term.h"
 
+/**
+ * @defgroup headless Headless Main
+ * @brief This is the main module of the terminal (GUI-less) client
+ *
+ * @{
+ */ 
+
+/**
+ * Simple "prompt a question and wait for an answer" function
+ *
+ * This is mainly used during startup to ask various questions
+ *
+ * @param[in]       prompt      Text to prompt
+ * @param[in]       answer      Expected answer
+ *
+ * @return
+ * If the answer is equals to the @p answer parameter
+ * return true, otherwise false
+ */
 bool aptrack_prompt(char *prompt, char *answer)
 {
     char line[64];
@@ -58,6 +84,11 @@ bool aptrack_prompt(char *prompt, char *answer)
     return false;
 }
 
+/**
+ * Check if the chatlog is enabled
+ *
+ * If the chatlog is not enabled, ask the user for permission to enable it
+ */
 void aptrack_chatlog_check(void)
 {
     bool chatlog_enabled;
@@ -97,6 +128,11 @@ void aptrack_chatlog_check(void)
     aptrack_prompt("Press ENTER to continue", "");
 }
 
+/**
+ * Updates the applications main terminal screen
+ *
+ * This is usually called in response to certain events
+ */
 void aptrack_screen_update(void)
 {
     struct aion_group_iter iter;
@@ -152,6 +188,12 @@ void aptrack_screen_update(void)
     fflush(stdout);
 }
 
+/**
+ * This is the "catch all events" function
+ *
+ * In the current implementation, this just calls the screen update
+ * function
+ */
 void aptrack_event_handler(enum event_type ev)
 {
     (void)ev;
@@ -160,6 +202,20 @@ void aptrack_event_handler(enum event_type ev)
     aptrack_screen_update();
 }
 
+/**
+ * Initialize the application:
+ *      - Initialize the debug console
+ *      - Initialize the Aion subsystem
+ *      - Initialize the chatlog engine
+ *      - Register events
+ *
+ * @param[in]   argc        Argument number (passed from main) -- not used
+ * @param[in]   argv        Argument array (passed from main) -- not used
+ *
+ * @retval      true        On success
+ * @retval      false       If it fails to initialize the aion sub-system
+ * @retval      false       If it fails to initialize the chatlog engine
+ */
 bool aptrack_init(int argc, char* argv[])
 {
     (void)argc;
@@ -184,6 +240,9 @@ bool aptrack_init(int argc, char* argv[])
     return true;
 }
 
+/**
+ * Check the environment and set the environment name
+ */
 void aptrack_env(void)
 {
     char *default_name = getenv("APME_NAME");
@@ -194,12 +253,27 @@ void aptrack_env(void)
     }
 }
 
-void aptrack_periodic()
+/**
+ * The periodic function, this is called by the main loop periodically
+ *
+ * It polls the clipboard for commands and the chatlog for new text
+ *
+ */
+void aptrack_periodic(void)
 {
     cmd_poll();
     chatlog_poll();
 }
 
+/**
+ * The terminal application main entry function
+ *
+ * @param[in]   argc        Argument number (passed from main) -- not used
+ * @param[in]   argv        Argument array (passed from main) -- not used
+ *
+ * @return
+ * 0 on success, any other number on error.
+ */
 int main(int argc, char *argv[])
 {
     /* Do the chatlog enable/disable stuff, warn user... */
@@ -237,3 +311,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+
+/**
+ * @}
+ */ 

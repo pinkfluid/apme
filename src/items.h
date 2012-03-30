@@ -23,8 +23,11 @@
 
 /**
  * @file 
+ *
+ * Simple Item Database
+ *
+ * @author Mitja Horvat <pinkfluid@gmail.com>
  */
-
 #include <stdint.h>
 
 /**

@@ -18,11 +18,33 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
+/**
+ * @file 
+ *
+ * OS independent simple terminal support functions
+ *
+ * @note The Windows Console under MinGW does not support VT100
+ * codes, so we have to use the Win32 console functions
+ *
+ * @author Mitja Horvat <pinkfluid@gmail.com>
+ */
 #include <stdio.h>
 #include "term.h"
 
-#if !defined(OS_MINGW)
+/**
+ * @defgroup term Terminal Support Module
+ * @brief Simple OS-independent functions for handling terminals
+ *
+ * @note Currnetly supports only VT100 (Linux) and Windows consoles, but
+ * the VT100 functions will not be documented in Doxygen.
+ *
+ * @{
+ */
 
+#if !defined(OS_MINGW)
+/**
+ * @cond TERM_VT100
+ */
 #define VT100_ESCAPE "\x1B"
 
 void term_clear(void)
@@ -70,20 +92,25 @@ void term_setcolor(enum term_color color)
     printf(VT100_ESCAPE "[%dm", code);
 }
 
-#else
-
-/*
- * The Windows Console under MinGW does not support VT100 codes,
- * so we have to use the Win32 console functions
+/**
+ * @endcond 
  */
+#else
 
 #include <windows.h>
 
+/** Mask for the foreground color */
 #define FOREGROUND_MASK (FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED)
+/** Mask for the background color */
 #define BACKGROUND_MASK (BACKGROUND_GREEN | BACKGROUND_BLUE | BACKGROUND_RED)
 
+/** STDOUT Windows handle */
 HANDLE win32con_handle = INVALID_HANDLE_VALUE;
 
+/**
+ * Initializes the win32 standard output handle,
+ * @p win32con_handle
+ */
 static void term_get_handle(void)
 {
     if (win32con_handle != INVALID_HANDLE_VALUE) return;
@@ -92,6 +119,12 @@ static void term_get_handle(void)
 
 }
 
+/**
+ * Clear the screen
+ *
+ * This basically fills the whole screen with a rectangle colored with
+ * the background color
+ */
 void term_clear(void)
 {
     CONSOLE_SCREEN_BUFFER_INFO duh;
@@ -118,6 +151,12 @@ void term_clear(void)
     SetConsoleCursorPosition(win32con_handle, coord);
 }
 
+/**
+ * Sets the color of the text, this affects only new printed 
+ * text
+ *
+ * @param[in]       color       Color of the text
+ */
 void term_setcolor(enum term_color color)
 {
     static WORD code = FOREGROUND_MASK;
