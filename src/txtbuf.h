@@ -18,17 +18,29 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
+/**
+ * @file
+ *
+ * @author Mitja Horvat <pinkfluid@gmail.com>
+ */ 
 #ifndef TXTBUF_H_INCLUDED
 #define TXTBUF_H_INCLUDED
 
 #include <stdbool.h>
 
+/**
+ * @ingroup txtbuf
+ *
+ * @{
+ */
+
+/** Text buffer structure */
 struct txtbuf
 {
-    size_t  tb_size;
-    size_t  tb_head;
-    size_t  tb_tail;
-    char    *tb_text;
+    size_t  tb_size;        /**< Text buffer fixed size         */
+    size_t  tb_head;        /**< Text buffer head pointer       */
+    size_t  tb_tail;        /**< Text buffer tail pointer       */
+    char    *tb_text;       /**< Text buffer data               */
 };
 
 extern void tb_init(struct txtbuf *tb, char *txt, size_t txt_sz);
@@ -39,4 +51,7 @@ extern int tb_strnum(struct txtbuf *tb);
 extern bool tb_strget(struct txtbuf *tb, int index, char *dst, size_t dst_sz);
 extern bool tb_strlast(struct txtbuf *tb, int index, char *dst, size_t dst_sz);
 
+/**
+ * @}
+ */
 #endif /* TXTBUF_H_INCLUDED */

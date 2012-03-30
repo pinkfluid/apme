@@ -18,6 +18,12 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
+/**
+ * @file
+ * Text Buffers
+ * 
+ * @author Mitja Horvat <pinkfluid@gmail.com>
+ */
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
@@ -25,6 +31,25 @@
 
 #include "txtbuf.h"
 
+/** 
+ * @defgroup txtbuf Text Buffers
+ *
+ * Text buffers are simple fixed-size buffers that can hold
+ * variable lenght strings.
+ *
+ * Text buffers are mainly used for the debug console and for
+ * the chat history.
+ *
+ * @{
+ */
+
+/**
+ * Initialize a text buffer structure
+ *
+ * @param[in]       tb      Text buffer structure
+ * @param[in]       txt     Fixed-size buffer that will hold text buffer strings
+ * @param[in]       txt_sz  Size of the buffer
+ */
 void tb_init(struct txtbuf *tb, char *txt, size_t txt_sz)
 {
     tb->tb_head = 0;
@@ -33,16 +58,45 @@ void tb_init(struct txtbuf *tb, char *txt, size_t txt_sz)
     tb->tb_size = txt_sz;
 }
 
+/**
+ * Return number of bytes used by the textbuffer @p tb
+ *
+ * @param[in]       tb      A text buffer
+ *
+ * @return
+ * This function returns the number of bytes used by the
+ * textbuffer @p tb
+ */
 inline size_t tb_len(struct txtbuf *tb)
 {
     return tb->tb_tail - tb->tb_head;
 }
 
+/**
+ * Returns the number of free bytes in the textbuffer @p tb
+ *
+ * @param[in]       tb      A text buffer
+ *
+ * @return
+ * This function returns the number of free bytes in the
+ * textbuffer @p tb
+ */
 inline size_t tb_free(struct txtbuf *tb)
 {
     return tb->tb_size - tb_len(tb);
 }
 
+/**
+ * Store the variable lenght buffer @p buf to the
+ * text buffer @p tb
+ *
+ * @param[in]       tb      A text buffer
+ * @param[in]       buf     Buffer that will be copied to @p tb
+ * @param[in]       buf_sz  Buffer size
+ *
+ * @return          true    On success
+ * @return          false   If there's not enough space in the buffer
+ */
 bool tb_put(struct txtbuf *tb, void *buf, size_t buf_sz)
 {
     char *cbuf = (char *)buf;
@@ -79,8 +133,13 @@ bool tb_put(struct txtbuf *tb, void *buf, size_t buf_sz)
     return true; 
 }
 
-/*
- * Move the head forward to the beginning of the next string
+/**
+ * Delete the oldest string in the textbuffer
+ *
+ * This function tries to move the head forward to the beginning
+ * of the next string
+ * 
+ * @param[in]        tb      A text buffer
  */
 void tb_strtrim(struct txtbuf *tb)
 {
@@ -104,6 +163,17 @@ void tb_strtrim(struct txtbuf *tb)
     }
 }
 
+/**
+ * Store a string into a text buffer
+ *
+ * @note This function removes old strings if there's not enough space
+ *
+ * @param[in]       tb      A text buffer
+ * @param[in]       str     A string
+ *
+ * @retval          true    If the string was successfully stored
+ * @retval          false   If string is larget than the textbuffer total size
+ */
 bool tb_strput(struct txtbuf *tb, char *str)
 {
     size_t str_len = strlen(str);
@@ -135,7 +205,14 @@ bool tb_strput(struct txtbuf *tb, char *str)
     return true;
 }
 
-/* Return number of strings stored in the txtbuf */
+/**
+ * Return number of strings stored in the txtbuf
+ *
+ * @param[in]       tb      A text buffer
+ * 
+ * @return
+ * This function returns the number of strings stored in the text buffer
+ */
 int tb_strnum(struct txtbuf *tb)
 {
     size_t ii;
@@ -151,7 +228,21 @@ int tb_strnum(struct txtbuf *tb)
 }
 
 
-/* Get the Nth string from the textbuf */
+/** 
+ * Retrieve a string at position @p index from the text buffer, where 0 is the most
+ * recent string added to the buffer
+ *
+ * This function retrieves a string from the text buffer according to @p index
+ * An @p index o 0 means the most recent string, 1 is the 2nd most recent ...
+ *
+ * @param[in]       tb      A text buffer
+ * @param[in]       index   Index of the string to retrieve, where 0 is the most recent one
+ * @param[out]      dst     Buffer to store the string to
+ * @param[in]       dst_sz  Size of the output buffer
+ *
+ * @retval          true    On success
+ * @retval          false   If @p index out of range
+ */
 bool tb_strget(struct txtbuf *tb, int index, char *dst, size_t dst_sz)
 {
     size_t str_start;
@@ -215,7 +306,18 @@ bool tb_strget(struct txtbuf *tb, int index, char *dst, size_t dst_sz)
     return true;
 }
 
-/* Same as tb_stget(), except the indexes are reversed (0 - last string) */
+/**
+ * Retrieve a string at position @p index from the text buffer, where 0 is the oldest
+ * string added to the buffer (the opposite of of @ref tb_strget)
+ *
+ * @param[in]       tb      A text buffer
+ * @param[in]       index   Index of the string to retrieve, where 0 is the oldest one
+ * @param[out]      dst     Buffer to store the string to
+ * @param[in]       dst_sz  Size of the output buffer
+ *
+ * @retval          true    On success
+ * @retval          false   If @p index out of range
+ */
 bool tb_strlast(struct txtbuf *tb, int index, char *dst, size_t dst_sz)
 {
     int nstr;
@@ -232,6 +334,9 @@ bool tb_strlast(struct txtbuf *tb, int index, char *dst, size_t dst_sz)
 }
 
 #if TEST
+/**
+ * @cond TXTBUF_UNITTEST
+ */
 void tb_dump(struct txtbuf *tb)
 {
     printf("tb_head = %u\n", tb->tb_head);
@@ -283,5 +388,12 @@ int main(void)
     printf("\n");
 
 }
+/**
+ * @endcond
+ */
 #endif
+
+/**
+ * @}
+ */
 

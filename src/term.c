@@ -202,5 +202,9 @@ void term_setcolor(enum term_color color)
 
     SetConsoleTextAttribute(win32con_handle, code);
 }
+
 #endif
 
+/**
+ * @}
+ */

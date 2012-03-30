@@ -55,7 +55,7 @@
  * in @p rem
  *
  * @note This function will properly truncate the string if the output string
- * is too small and place a '\0' at the end without causing any overflows.
+ * is too small and place a '\\0' at the end without causing any overflows.
  *
  * @param[out]      outstr      Sub-string pointer
  * @param[in]       instr       Full-string on which regex was performed
