@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<title>APme: Abyss Point Tracker for Aion</title>
+<title>src/cmd.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javaScript" src="search/search.js"></script>
@@ -17,11 +17,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="navigation" id="top">
   <div class="tabs">
     <ul>
-      <li class="current"><a href="index.html"><span>Main&nbsp;Page</span></a></li>
+      <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
       <li><a href="pages.html"><span>Related&nbsp;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
-      <li><a href="files.html"><span>Files</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <img id="MSearchSelect" src="search/search.png"
@@ -37,30 +37,39 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       </li>
     </ul>
   </div>
-</div>
-<div class="contents">
-<h1>APme: Abyss Point Tracker for Aion </h1><dl class="warning"><dt><b>Warning:</b></dt><dd>Under construction</dd></dl>
-<h2><a class="anchor" id="apme_main_intro">
-Introduction</a></h2>
-<p>APme was the first automatic AP tracking tool for Aion: The Tower Of Eternity. It collects various statistics by reading the game client chat log, most importantly the abyss points gained for each group member. Based on this data, it can suggest who should loot the next AP relic so the AP is evenly spread between the group.</p>
-<p>Interesting links:</p>
-<ul>
-<li><a href="http://noom.ath.cx/apme/">Download stable releases</a></li>
-<li><a href="http://www.youtube.com/watch?v=Okl5AvpZY_Q">Video of APme in action</a></li>
-<li><a href="http://www.aionsource.com/topic/128758-apme-020-a-different-ap-relic-share-tool-first-public-release/page__pid__2665522#entry2665522">AionArmory.com announcements</a></li>
-<li><a class="el" href="apme__devel.html">Developer Section</a></li>
-<li><a class="el" href="apme__license.html">License</a></li>
-</ul>
-<h2><a class="anchor" id="apme_features">
-Features</a></h2>
-<ul>
-<li>Autoamtic AP sharing calculator</li>
-<li>"Copy/Paste" interface; no need to leave the game to use it, the magic happens in your chat window!</li>
-<li>Elyos &lt;-&gt; Asmodian translator w/o leaving the game</li>
-<li>Built-in help system</li>
-<li>Chat history </li>
-</ul>
-</div>
+  <div class="tabs">
+    <ul>
+      <li><a href="files.html"><span>File&nbsp;List</span></a></li>
+      <li><a href="globals.html"><span>File&nbsp;Members</span></a></li>
+    </ul>
+  </div>
+<h1>src/cmd.h</h1><div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 <span class="comment">/*</span>
+<a name="l00002"></a>00002 <span class="comment"> * cmd.h - APme: Aion Automatic Abyss Point Tracker</span>
+<a name="l00003"></a>00003 <span class="comment"> *</span>
+<a name="l00004"></a>00004 <span class="comment"> * Copyright (C) 2012 Mitja Horvat &lt;pinkfluid@gmail.com&gt;</span>
+<a name="l00005"></a>00005 <span class="comment"> *</span>
+<a name="l00006"></a>00006 <span class="comment"> * This program is free software; you can redistribute it and/or modify</span>
+<a name="l00007"></a>00007 <span class="comment"> * it under the terms of the GNU General Public License as published by</span>
+<a name="l00008"></a>00008 <span class="comment"> * the Free Software Foundation; either version 2 of the License, or (at</span>
+<a name="l00009"></a>00009 <span class="comment"> * your option) any later version.</span>
+<a name="l00010"></a>00010 <span class="comment"> *</span>
+<a name="l00011"></a>00011 <span class="comment"> * This program is distributed in the hope that it will be useful, but</span>
+<a name="l00012"></a>00012 <span class="comment"> * WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<a name="l00013"></a>00013 <span class="comment"> * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU</span>
+<a name="l00014"></a>00014 <span class="comment"> * General Public License for more details.</span>
+<a name="l00015"></a>00015 <span class="comment"> *</span>
+<a name="l00016"></a>00016 <span class="comment"> * You should have received a copy of the GNU General Public License along</span>
+<a name="l00017"></a>00017 <span class="comment"> * with this program; if not, write to the Free Software Foundation, Inc.,</span>
+<a name="l00018"></a>00018 <span class="comment"> * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.</span>
+<a name="l00019"></a>00019 <span class="comment"> */</span>
+<a name="l00020"></a>00020 
+<a name="l00021"></a>00021 <span class="preprocessor">#ifndef CMD_H_INCLUDED</span>
+<a name="l00022"></a>00022 <span class="preprocessor"></span><span class="preprocessor">#define CMD_H_INCLUDED</span>
+<a name="l00023"></a>00023 <span class="preprocessor"></span>
+<a name="l00024"></a>00024 <span class="keyword">extern</span> <span class="keywordtype">void</span> <a class="code" href="group__cmd.html#gaf55af4709d609d6416199c3ec492194d">cmd_poll</a>(<span class="keywordtype">void</span>);
+<a name="l00025"></a>00025 
+<a name="l00026"></a>00026 <span class="preprocessor">#endif </span><span class="comment">/* CMD_H_INCLUDED */</span>
+</pre></div></div>
 <!--- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"

@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<title>APme: Abyss Point Tracker for Aion</title>
+<title>Terminal Support Module</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javaScript" src="search/search.js"></script>
@@ -17,7 +17,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="navigation" id="top">
   <div class="tabs">
     <ul>
-      <li class="current"><a href="index.html"><span>Main&nbsp;Page</span></a></li>
+      <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
       <li><a href="pages.html"><span>Related&nbsp;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
@@ -39,27 +39,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
 </div>
 <div class="contents">
-<h1>APme: Abyss Point Tracker for Aion </h1><dl class="warning"><dt><b>Warning:</b></dt><dd>Under construction</dd></dl>
-<h2><a class="anchor" id="apme_main_intro">
-Introduction</a></h2>
-<p>APme was the first automatic AP tracking tool for Aion: The Tower Of Eternity. It collects various statistics by reading the game client chat log, most importantly the abyss points gained for each group member. Based on this data, it can suggest who should loot the next AP relic so the AP is evenly spread between the group.</p>
-<p>Interesting links:</p>
-<ul>
-<li><a href="http://noom.ath.cx/apme/">Download stable releases</a></li>
-<li><a href="http://www.youtube.com/watch?v=Okl5AvpZY_Q">Video of APme in action</a></li>
-<li><a href="http://www.aionsource.com/topic/128758-apme-020-a-different-ap-relic-share-tool-first-public-release/page__pid__2665522#entry2665522">AionArmory.com announcements</a></li>
-<li><a class="el" href="apme__devel.html">Developer Section</a></li>
-<li><a class="el" href="apme__license.html">License</a></li>
-</ul>
-<h2><a class="anchor" id="apme_features">
-Features</a></h2>
-<ul>
-<li>Autoamtic AP sharing calculator</li>
-<li>"Copy/Paste" interface; no need to leave the game to use it, the magic happens in your chat window!</li>
-<li>Elyos &lt;-&gt; Asmodian translator w/o leaving the game</li>
-<li>Built-in help system</li>
-<li>Chat history </li>
-</ul>
+<h1>Terminal Support Module</h1>
+<p>Simple OS-independent functions for handling terminals.  
+<a href="#_details">More...</a></p>
+<table border="0" cellpadding="0" cellspacing="0">
+</table>
+<p>Simple OS-independent functions for handling terminals. </p>
+<dl class="note"><dt><b>Note:</b></dt><dd>Currnetly supports only VT100 (Linux) and Windows consoles, but the VT100 functions will not be documented in Doxygen. </dd></dl>
 </div>
 <!--- window showing the filter options -->
 <div id="MSearchSelectWindow"
@@ -75,7 +61,7 @@ Features</a></h2>
 </iframe>
 </div>
 
-<hr class="footer"/><address style="text-align: right;"><small>Generated on Sat Mar 31 17:17:12 2012 by&nbsp;
+<hr class="footer"/><address style="text-align: right;"><small>Generated on Sat Mar 31 17:17:15 2012 by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.6.3 </small></address>
 </body>

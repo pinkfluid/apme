@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<title>APme: Abyss Point Tracker for Aion</title>
+<title>src/util.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javaScript" src="search/search.js"></script>
@@ -17,11 +17,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="navigation" id="top">
   <div class="tabs">
     <ul>
-      <li class="current"><a href="index.html"><span>Main&nbsp;Page</span></a></li>
+      <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
       <li><a href="pages.html"><span>Related&nbsp;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
-      <li><a href="files.html"><span>Files</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <img id="MSearchSelect" src="search/search.png"
@@ -37,29 +37,35 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       </li>
     </ul>
   </div>
+  <div class="tabs">
+    <ul>
+      <li><a href="files.html"><span>File&nbsp;List</span></a></li>
+      <li><a href="globals.html"><span>File&nbsp;Members</span></a></li>
+    </ul>
+  </div>
 </div>
 <div class="contents">
-<h1>APme: Abyss Point Tracker for Aion </h1><dl class="warning"><dt><b>Warning:</b></dt><dd>Under construction</dd></dl>
-<h2><a class="anchor" id="apme_main_intro">
-Introduction</a></h2>
-<p>APme was the first automatic AP tracking tool for Aion: The Tower Of Eternity. It collects various statistics by reading the game client chat log, most importantly the abyss points gained for each group member. Based on this data, it can suggest who should loot the next AP relic so the AP is evenly spread between the group.</p>
-<p>Interesting links:</p>
-<ul>
-<li><a href="http://noom.ath.cx/apme/">Download stable releases</a></li>
-<li><a href="http://www.youtube.com/watch?v=Okl5AvpZY_Q">Video of APme in action</a></li>
-<li><a href="http://www.aionsource.com/topic/128758-apme-020-a-different-ap-relic-share-tool-first-public-release/page__pid__2665522#entry2665522">AionArmory.com announcements</a></li>
-<li><a class="el" href="apme__devel.html">Developer Section</a></li>
-<li><a class="el" href="apme__license.html">License</a></li>
-</ul>
-<h2><a class="anchor" id="apme_features">
-Features</a></h2>
-<ul>
-<li>Autoamtic AP sharing calculator</li>
-<li>"Copy/Paste" interface; no need to leave the game to use it, the magic happens in your chat window!</li>
-<li>Elyos &lt;-&gt; Asmodian translator w/o leaving the game</li>
-<li>Built-in help system</li>
-<li>Chat history </li>
-</ul>
+<h1>src/util.h File Reference</h1>
+<p><a href="util_8h_source.html">Go to the source code of this file.</a></p>
+<table border="0" cellpadding="0" cellspacing="0">
+<tr><td colspan="2"><h2>Functions</h2></td></tr>
+<tr><td colspan="2"><div class="groupHeader"></div></td></tr>
+<tr><td colspan="2"><div class="groupText"><p><a class="anchor" id="amgrpd41d8cd98f00b204e9800998ecf8427e"></a> </p>
+</div></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaf00c6443c41b9b5a74d8b36def965bd9"></a><!-- doxytag: member="util.h::clipboard_set_text" ref="gaf00c6443c41b9b5a74d8b36def965bd9" args="(char *text)" -->
+bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>clipboard_set_text</b> (char *text)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga22e696d377a963e286b16a3be9752ccf"></a><!-- doxytag: member="util.h::clipboard_get_text" ref="ga22e696d377a963e286b16a3be9752ccf" args="(char *text, size_t text_sz)" -->
+bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>clipboard_get_text</b> (char *text, size_t text_sz)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga61777acdc7f92c75350e4196d38d0770">util_strsep</a> (char **pinputstr, const char *delim)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">size_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga79569539f995dbceb7e8af9861a41168">util_strlcpy</a> (char *dst, const char *src, size_t dst_size)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">size_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#gad6494c4cced98e0d0d68abf3fe206ec4">util_strlcat</a> (char *dst, const char *src, size_t dst_size)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga73aa7e4d18796244be605af72cc819d0">util_chomp</a> (char *str)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga6b41115e6392b8afe5b79f7093cae68d"></a><!-- doxytag: member="util.h::reg_read_key" ref="ga6b41115e6392b8afe5b79f7093cae68d" args="(char *key, char *val, void *buf, size_t buflen)" -->
+bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>reg_read_key</b> (char *key, char *val, void *buf, size_t buflen)</td></tr>
+</table>
+<hr/><a name="_details"></a><h2>Detailed Description</h2>
+<p>Utilities</p>
+<dl class="author"><dt><b>Author:</b></dt><dd>Mitja Horvat &lt;<a href="mailto:pinkfluid@gmail.com">pinkfluid@gmail.com</a>&gt; </dd></dl>
 </div>
 <!--- window showing the filter options -->
 <div id="MSearchSelectWindow"

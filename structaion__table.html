@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<title>APme: Abyss Point Tracker for Aion</title>
+<title>aion_table Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javaScript" src="search/search.js"></script>
@@ -17,10 +17,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="navigation" id="top">
   <div class="tabs">
     <ul>
-      <li class="current"><a href="index.html"><span>Main&nbsp;Page</span></a></li>
+      <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
       <li><a href="pages.html"><span>Related&nbsp;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -37,28 +37,57 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       </li>
     </ul>
   </div>
+  <div class="tabs">
+    <ul>
+      <li><a href="annotated.html"><span>Class&nbsp;List</span></a></li>
+      <li><a href="functions.html"><span>Class&nbsp;Members</span></a></li>
+    </ul>
+  </div>
 </div>
 <div class="contents">
-<h1>APme: Abyss Point Tracker for Aion </h1><dl class="warning"><dt><b>Warning:</b></dt><dd>Under construction</dd></dl>
-<h2><a class="anchor" id="apme_main_intro">
-Introduction</a></h2>
-<p>APme was the first automatic AP tracking tool for Aion: The Tower Of Eternity. It collects various statistics by reading the game client chat log, most importantly the abyss points gained for each group member. Based on this data, it can suggest who should loot the next AP relic so the AP is evenly spread between the group.</p>
-<p>Interesting links:</p>
-<ul>
-<li><a href="http://noom.ath.cx/apme/">Download stable releases</a></li>
-<li><a href="http://www.youtube.com/watch?v=Okl5AvpZY_Q">Video of APme in action</a></li>
-<li><a href="http://www.aionsource.com/topic/128758-apme-020-a-different-ap-relic-share-tool-first-public-release/page__pid__2665522#entry2665522">AionArmory.com announcements</a></li>
-<li><a class="el" href="apme__devel.html">Developer Section</a></li>
-<li><a class="el" href="apme__license.html">License</a></li>
-</ul>
-<h2><a class="anchor" id="apme_features">
-Features</a></h2>
-<ul>
-<li>Autoamtic AP sharing calculator</li>
-<li>"Copy/Paste" interface; no need to leave the game to use it, the magic happens in your chat window!</li>
-<li>Elyos &lt;-&gt; Asmodian translator w/o leaving the game</li>
-<li>Built-in help system</li>
-<li>Chat history </li>
+<h1>aion_table Struct Reference<br/>
+<small>
+[<a class="el" href="group__aion__trans.html">Aion Translator</a>]</small>
+</h1><!-- doxytag: class="aion_table" -->
+<p><a href="structaion__table-members.html">List of all members.</a></p>
+<table border="0" cellpadding="0" cellspacing="0">
+<tr><td colspan="2"><h2>Public Attributes</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structaion__table.html#a00497ab83f6aeba6ac3aaf12ddc06c3d">at_alpha</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structaion__table.html#ac3c6196929fdaf059e29d4d78574ca17">at_next</a></td></tr>
+</table>
+<hr/><a name="_details"></a><h2>Detailed Description</h2>
+<p>Translation structure </p>
+<hr/><h2>Member Data Documentation</h2>
+<a class="anchor" id="a00497ab83f6aeba6ac3aaf12ddc06c3d"></a><!-- doxytag: member="aion_table::at_alpha" ref="a00497ab83f6aeba6ac3aaf12ddc06c3d" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char* <a class="el" href="structaion__table.html#a00497ab83f6aeba6ac3aaf12ddc06c3d">aion_table::at_alpha</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Translation table </p>
+
+</div>
+</div>
+<a class="anchor" id="ac3c6196929fdaf059e29d4d78574ca17"></a><!-- doxytag: member="aion_table::at_next" ref="ac3c6196929fdaf059e29d4d78574ca17" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char* <a class="el" href="structaion__table.html#ac3c6196929fdaf059e29d4d78574ca17">aion_table::at_next</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Index of next table to be used </p>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
+<li>src/<a class="el" href="aion__trans_8c.html">aion_trans.c</a></li>
 </ul>
 </div>
 <!--- window showing the filter options -->
@@ -75,7 +104,7 @@ Features</a></h2>
 </iframe>
 </div>
 
-<hr class="footer"/><address style="text-align: right;"><small>Generated on Sat Mar 31 17:17:12 2012 by&nbsp;
+<hr class="footer"/><address style="text-align: right;"><small>Generated on Sat Mar 31 17:17:16 2012 by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.6.3 </small></address>
 </body>

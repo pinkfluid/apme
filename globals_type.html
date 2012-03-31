@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<title>APme: Abyss Point Tracker for Aion</title>
+<title>Class Members</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javaScript" src="search/search.js"></script>
@@ -17,11 +17,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="navigation" id="top">
   <div class="tabs">
     <ul>
-      <li class="current"><a href="index.html"><span>Main&nbsp;Page</span></a></li>
+      <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
       <li><a href="pages.html"><span>Related&nbsp;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
-      <li><a href="files.html"><span>Files</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <img id="MSearchSelect" src="search/search.png"
@@ -37,28 +37,35 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       </li>
     </ul>
   </div>
+  <div class="tabs">
+    <ul>
+      <li><a href="files.html"><span>File&nbsp;List</span></a></li>
+      <li class="current"><a href="globals.html"><span>File&nbsp;Members</span></a></li>
+    </ul>
+  </div>
+  <div class="tabs">
+    <ul>
+      <li><a href="globals.html"><span>All</span></a></li>
+      <li><a href="globals_func.html"><span>Functions</span></a></li>
+      <li><a href="globals_vars.html"><span>Variables</span></a></li>
+      <li class="current"><a href="globals_type.html"><span>Typedefs</span></a></li>
+      <li><a href="globals_enum.html"><span>Enumerations</span></a></li>
+      <li><a href="globals_eval.html"><span>Enumerator</span></a></li>
+      <li><a href="globals_defs.html"><span>Defines</span></a></li>
+    </ul>
+  </div>
 </div>
 <div class="contents">
-<h1>APme: Abyss Point Tracker for Aion </h1><dl class="warning"><dt><b>Warning:</b></dt><dd>Under construction</dd></dl>
-<h2><a class="anchor" id="apme_main_intro">
-Introduction</a></h2>
-<p>APme was the first automatic AP tracking tool for Aion: The Tower Of Eternity. It collects various statistics by reading the game client chat log, most importantly the abyss points gained for each group member. Based on this data, it can suggest who should loot the next AP relic so the AP is evenly spread between the group.</p>
-<p>Interesting links:</p>
-<ul>
-<li><a href="http://noom.ath.cx/apme/">Download stable releases</a></li>
-<li><a href="http://www.youtube.com/watch?v=Okl5AvpZY_Q">Video of APme in action</a></li>
-<li><a href="http://www.aionsource.com/topic/128758-apme-020-a-different-ap-relic-share-tool-first-public-release/page__pid__2665522#entry2665522">AionArmory.com announcements</a></li>
-<li><a class="el" href="apme__devel.html">Developer Section</a></li>
-<li><a class="el" href="apme__license.html">License</a></li>
-</ul>
-<h2><a class="anchor" id="apme_features">
-Features</a></h2>
-<ul>
-<li>Autoamtic AP sharing calculator</li>
-<li>"Copy/Paste" interface; no need to leave the game to use it, the magic happens in your chat window!</li>
-<li>Elyos &lt;-&gt; Asmodian translator w/o leaving the game</li>
-<li>Built-in help system</li>
-<li>Chat history </li>
+&nbsp;<ul>
+<li>cmd_func_t
+: <a class="el" href="group__cmd.html#ga425f957ccc0be1769d201160cb8bd3ea">cmd.c</a>
+</li>
+<li>event_callback_t
+: <a class="el" href="event_8h.html#a02a4d91d823fa3cdfcc68533a63b671d">event.h</a>
+</li>
+<li>re_callback_t
+: <a class="el" href="group__regeng.html#ga42e90138dd46035848f04f6594d820dd">regeng.h</a>
+</li>
 </ul>
 </div>
 <!--- window showing the filter options -->
@@ -75,7 +82,7 @@ Features</a></h2>
 </iframe>
 </div>
 
-<hr class="footer"/><address style="text-align: right;"><small>Generated on Sat Mar 31 17:17:12 2012 by&nbsp;
+<hr class="footer"/><address style="text-align: right;"><small>Generated on Sat Mar 31 17:17:16 2012 by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.6.3 </small></address>
 </body>
