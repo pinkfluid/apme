@@ -114,6 +114,9 @@ char *aion_default_install_path(void)
 
     for (ii = 0; ii < sizeof(aion_install_reg_keys) / sizeof(aion_install_reg_keys[0]); ii++)
     {
+        con_printf("INSTALL: Trying %s/%s...\n", aion_install_reg_keys[ii].ark_path,
+                                                 aion_install_reg_keys[ii].ark_key);
+
         retval = reg_read_key(aion_install_reg_keys[ii].ark_path,
                               aion_install_reg_keys[ii].ark_key,
                               default_install_path,
@@ -124,9 +127,12 @@ char *aion_default_install_path(void)
             continue;
         }
 
+        con_printf("INTALL: Found: %s\n", default_install_path);
+
         return default_install_path;
     }
 
+    con_printf("INTALL: Not found\n");
     return NULL;
 #else
     /* On Linux, just return the current directory. Used for debugging mainly. */
