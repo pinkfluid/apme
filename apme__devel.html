@@ -41,7 +41,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="contents">
 
 
-<h1><a class="anchor" id="apme_devel">Developer Section </a></h1><h2><a class="anchor" id="apme_devel_source">
+<h1><a class="anchor" id="apme_devel">Developer Section </a></h1><h2><a class="anchor" id="apme_devel_intro">
+Introduction</a></h2>
+<p>I'm not a Windows developer, I've been somehow involved with Unix and Linux almost all my coder life. This means that I developed this application with the tools I'm most familiar with, which usually means lots of command line :)</p>
+<p>So my tools of choice were Cygwin, VIM and GIT :)</p>
+<p>If somebody decides to port this to VisualStudio or some other IDE, please go ahead and send me your changes :)</p>
+<dl class="warning"><dt><b>Warning:</b></dt><dd>This page is under construction.</dd></dl>
+<h2><a class="anchor" id="apme_devel_source">
 Obtaining The Source Code</a></h2>
 <p>The project is host on github.com, so you can grab the git repository from there:</p>
 <ul>
@@ -50,9 +56,20 @@ Obtaining The Source Code</a></h2>
 <h2><a class="anchor" id="apme_devel_build_instructions">
 Build Instructions</a></h2>
 <p>APme was developed under Cygwin using GNU/C and the vim editor.</p>
-<p>I couldn't help it, I'm a Unix guy, so I choose the tools I'm familiar with it. If someone wants to port this to VisualStudio, please do!</p>
+<p>So, in order to successfully build APme you will need Cygwin with several development tools installed:</p>
+<ul>
+<li>Go to the <a href="http://cygwin.com">Cygwin Homepage</a> and download and run the Cygwin installer (setup.exe)</li>
+<li>During the installation phase, make sure to select the following packages:<ul>
+<li><b>mingw64-i686-gcc-core</b>: the MinGW 32-bit compiler</li>
+<li><b>make</b>: the GNU Make tool</li>
+<li><b>perl</b>: the Perl interpreter, only if you wish to generate the release notes</li>
+</ul>
+</li>
+</ul>
+<p>After you're done, open up a shell window, change your current directory to the APme source code directory and simply type <code>make</code>. This should produce a win32 application in the src directory (src/APme.exe).</p>
 <h3><a class="anchor" id="apme_devel_build_dependencies">
 Dependencies</a></h3>
+<p>This tool require PCRE to compile properly. If not present, the build system will automatically download the PCRE sources from the internet and compile them. </p>
 </div>
 <!--- window showing the filter options -->
 <div id="MSearchSelectWindow"
@@ -68,7 +85,7 @@ Dependencies</a></h3>
 </iframe>
 </div>
 
-<hr class="footer"/><address style="text-align: right;"><small>Generated on Mon Apr 2 16:34:32 2012 by&nbsp;
+<hr class="footer"/><address style="text-align: right;"><small>Generated on Tue Apr 3 22:50:16 2012 by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.6.3 </small></address>
 </body>
