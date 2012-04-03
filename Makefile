@@ -1,3 +1,4 @@
+include sys.mk
 
 SUB_DIRS:=extern src
 

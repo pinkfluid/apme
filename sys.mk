@@ -17,8 +17,20 @@ include $(TOP_DIR)/config.mk
 UNAME:=$(shell uname -s)
 
 ifneq ($(findstring CYGWIN, $(UNAME)),)
+# Check if we should do a MinGW cross compile on Cygwin (default)
+ifdef MINGW_XBUILD
+    ifeq ($(wildcard /usr/bin/i686-w64-mingw32-gcc),)
+        $(error The 32-bit MinGW-w64 compiler is not installed. Please install the i686 mingw64-i686-gcc-core package)
+    endif
+    CFLAGS+=-DSYS_WINDOWS -DOS_MINGW
+    CC:=i686-w64-mingw32-gcc.exe
+    LD:=i686-w64-mingw32-gcc.exe
+    BUILTIN_PCRE:=true
+    PCRE_EXTRA_CONFIG:=--host=i686-w64-mingw32
+else
     CFLAGS+=-DSYS_WINDOWS -DOS_CYGWIN
     BUILTIN_PCRE:=true
+endif
 endif
 
 ifneq ($(findstring MINGW, $(UNAME)),)

@@ -12,7 +12,7 @@ LDFLAGS:=
 #
 # Do a MINGW cross-compile under Cygwin
 #
-# MINGW_XBUILD:=1
+MINGW_XBUILD:=1
 
 # 
 # Command used to fetch remote packages

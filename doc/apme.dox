@@ -65,7 +65,22 @@
  * I'm familiar with it. If someone wants to port this to
  * VisualStudio, please do! 
  *
+ * So, in order to successfully build APme you will need Cygwin with several 
+ * development tools installed:
+ *  - Go to the <A HREF="http://cygwin.com">Cygwin Homepage</A> and download
+ *    and install Cygwin
+ *  - When running the installer, make sure to install the following packages:
+ *    - <B>mingw64-i686-gcc-core</B>, the MinGW 32-bit compiler
+ *    - <B>make</B>, the GNU Make tool
+ *    - <B>perl</B>, Perl, only if you wish to generate the release notes
+ *
+ * After you're done, open up a shell window, change your current directory
+ * to the APme source code directory and simply type @p make.
+ *
  * @subsection apme_devel_build_dependencies Dependencies
+ *
+ * This tool require PCRE to compile properly. If not present, it will be 
+ * downloaded from the internet.
  *
  * @page apme_license License
  * Copyright (C) 2012 Mitja Horvat <pinkfluid@gmail.com>
