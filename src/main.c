@@ -61,7 +61,7 @@
  * If the answer is equals to the @p answer parameter
  * return true, otherwise false
  */
-bool aptrack_prompt(char *prompt, char *answer)
+bool apme_prompt(char *prompt, char *answer)
 {
     char line[64];
 
@@ -89,7 +89,7 @@ bool aptrack_prompt(char *prompt, char *answer)
  *
  * If the chatlog is not enabled, ask the user for permission to enable it
  */
-void aptrack_chatlog_check(void)
+void apme_chatlog_check(void)
 {
     bool chatlog_enabled;
     bool enable_ok;
@@ -97,7 +97,7 @@ void aptrack_chatlog_check(void)
     /* Check if the chatlog feature is enabled in AION */
     if (!aion_chatlog_is_enabled(&chatlog_enabled))
     {
-        aptrack_prompt("Unable to determine if the CHATLOG is enabled. Not all features might be available. Press RETURN to continue.", "");
+        apme_prompt("Unable to determine if the CHATLOG is enabled. Not all features might be available. Press RETURN to continue.", "");
         return;
     }
 
@@ -109,23 +109,23 @@ void aptrack_chatlog_check(void)
 
     /* Do the warn dialog and enable chatlog stuff */
     printf("%s\n", help_chatlog_warning);
-    enable_ok = aptrack_prompt("Press ENTER to enable the chatlog or type NO to abort.",
-                               "");
+    enable_ok = apme_prompt("Press ENTER to enable the chatlog or type NO to abort.",
+                            "");
     if (!enable_ok)
     {
-        aptrack_prompt("The CHATLOG was not enabled by user request, press ENTER to continue", "");
+        apme_prompt("The CHATLOG was not enabled by user request, press ENTER to continue", "");
         return;
     }
 
     if (!aion_chatlog_enable())
     {
         printf("%s\n", help_chatlog_enable_error);
-        aptrack_prompt("Press ENTER to continue", "");
+        apme_prompt("Press ENTER to continue", "");
         return;
     }
 
     printf("%s\n", help_chatlog_enabled);
-    aptrack_prompt("Press ENTER to continue", "");
+    apme_prompt("Press ENTER to continue", "");
 }
 
 /**
@@ -133,7 +133,7 @@ void aptrack_chatlog_check(void)
  *
  * This is usually called in response to certain events
  */
-void aptrack_screen_update(void)
+void apme_screen_update(void)
 {
     struct aion_group_iter iter;
     char buf[256];
@@ -194,12 +194,12 @@ void aptrack_screen_update(void)
  * In the current implementation, this just calls the screen update
  * function
  */
-void aptrack_event_handler(enum event_type ev)
+void apme_event_handler(enum event_type ev)
 {
     (void)ev;
     
     /* Just update the main screen on every event */
-    aptrack_screen_update();
+    apme_screen_update();
 }
 
 /**
@@ -216,7 +216,7 @@ void aptrack_event_handler(enum event_type ev)
  * @retval      false       If it fails to initialize the aion sub-system
  * @retval      false       If it fails to initialize the chatlog engine
  */
-bool aptrack_init(int argc, char* argv[])
+bool apme_init(int argc, char* argv[])
 {
     (void)argc;
     (void)argv;
@@ -235,7 +235,7 @@ bool aptrack_init(int argc, char* argv[])
         return false;
     }
 
-    event_register(aptrack_event_handler);
+    event_register(apme_event_handler);
 
     return true;
 }
@@ -243,7 +243,7 @@ bool aptrack_init(int argc, char* argv[])
 /**
  * Check the environment and set the environment name
  */
-void aptrack_env(void)
+void apme_env(void)
 {
     char *default_name = getenv("APME_NAME");
 
@@ -259,7 +259,7 @@ void aptrack_env(void)
  * It polls the clipboard for commands and the chatlog for new text
  *
  */
-void aptrack_periodic(void)
+void apme_periodic(void)
 {
     cmd_poll();
     chatlog_poll();
@@ -277,24 +277,24 @@ void aptrack_periodic(void)
 int main(int argc, char *argv[])
 {
     /* Do the chatlog enable/disable stuff, warn user... */
-    aptrack_chatlog_check();
+    apme_chatlog_check();
 
     /* Initialize sub-systems */
-    if (!aptrack_init(argc, argv))
+    if (!apme_init(argc, argv))
     {
         return 1;
     }
 
     /* Get some stuff from the environment */
-    aptrack_env();
+    apme_env();
 
     /* Show screen */
-    aptrack_screen_update();
+    apme_screen_update();
 
     /* Main processing loop */
     for (;;)
     {
-        aptrack_periodic();
+        apme_periodic();
         usleep(300);
     }
 

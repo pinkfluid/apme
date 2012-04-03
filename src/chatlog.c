@@ -676,12 +676,6 @@ bool chatlog_init()
         return false;
     }
 
-    if (!chatlog_open())
-    {
-        con_printf("Fatal error opening chatlog file.\n");
-        return false;
-    }
-
     return true;
 }
 
