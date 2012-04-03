@@ -52,6 +52,21 @@
  * - Chat history 
  * 
  * @page apme_devel Developer Section
+ *
+ * @section apme_devel_intro Introduction
+ *
+ * I'm not a Windows developer, I've been somehow involved with Unix and Linux
+ * almost all my coder life. This means that I developed this application
+ * with the tools I'm most familiar with, which usually means lots of command
+ * line :)
+ *
+ * So my tools of choice were Cygwin, VIM and GIT :)
+ * 
+ * If somebody decides to port this to VisualStudio or some other IDE, please
+ * go ahead and send me your changes :)
+ * 
+ * @warning This page is under construction.
+ *
  * @section apme_devel_source Obtaining The Source Code
  *
  * The project is host on github.com, so you can grab the git repository
@@ -61,26 +76,25 @@
  * @section apme_devel_build_instructions Build Instructions
  * APme was developed under Cygwin using GNU/C and the vim editor.
  * 
- * I couldn't help it, I'm a Unix guy, so I choose the tools
- * I'm familiar with it. If someone wants to port this to
- * VisualStudio, please do! 
- *
  * So, in order to successfully build APme you will need Cygwin with several 
  * development tools installed:
  *  - Go to the <A HREF="http://cygwin.com">Cygwin Homepage</A> and download
- *    and install Cygwin
- *  - When running the installer, make sure to install the following packages:
- *    - <B>mingw64-i686-gcc-core</B>, the MinGW 32-bit compiler
- *    - <B>make</B>, the GNU Make tool
- *    - <B>perl</B>, Perl, only if you wish to generate the release notes
+ *    and run the Cygwin installer (setup.exe)
+ *  - During the installation phase, make sure to select the following
+ *    packages:
+ *    - <B>mingw64-i686-gcc-core</B>: the MinGW 32-bit compiler
+ *    - <B>make</B>: the GNU Make tool
+ *    - <B>perl</B>: the Perl interpreter, only if you wish to generate the release notes
  *
  * After you're done, open up a shell window, change your current directory
- * to the APme source code directory and simply type @p make.
+ * to the APme source code directory and simply type @p make. This should 
+ * produce a win32 application in the src directory (src/APme.exe).
  *
  * @subsection apme_devel_build_dependencies Dependencies
  *
- * This tool require PCRE to compile properly. If not present, it will be 
- * downloaded from the internet.
+ * This tool require PCRE to compile properly. If not present, the build system
+ * will automatically download the PCRE sources from the internet and compile
+ * them. 
  *
  * @page apme_license License
  * Copyright (C) 2012 Mitja Horvat <pinkfluid@gmail.com>
