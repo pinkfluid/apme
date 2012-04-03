@@ -33,6 +33,7 @@
 
 #include "console.h"
 #include "txtbuf.h"
+#include "util.h"
 
 /**
  * @defgroup console APme Debugging Console
@@ -41,10 +42,13 @@
  *
  * @{
  */
-char con_buf[16384];        /**< Debugging console buffer, used for @p con_tb   */
-char con_str[1024];         /**< Cconsole string                                */
+#define CON_STR_SZ  1024            /**< Maximum size of a con_printf string            */
 
-struct txtbuf con_tb;       /**< Console textbuffer @see txtbuf                 */
+static char con_buf[16384];         /**< Debugging console buffer, used for @p con_tb   */
+static char con_str[CON_STR_SZ];    /**< Console string                                 */
+static uint32_t con_str_rep;        /**< Number of times the last message was repeated  */
+
+struct txtbuf con_tb;               /**< Console textbuffer @see txtbuf                 */
 
 /**
  * Initialize the APme console
@@ -55,6 +59,9 @@ struct txtbuf con_tb;       /**< Console textbuffer @see txtbuf                 
  */
 void con_init(void)
 {
+    con_str[0] = '\0';
+    con_str_rep = 0;
+
     tb_init(&con_tb, con_buf, sizeof(con_buf));
 }
 
@@ -66,18 +73,35 @@ void con_init(void)
  */
 void con_printf(char *fmt, ...)
 {
+    char curstr[CON_STR_SZ];
     va_list vargs;
 
-#if 0
     va_start(vargs, fmt);
-    vprintf(fmt, vargs);
+    vsnprintf(curstr, sizeof(curstr), fmt, vargs);
     va_end(vargs);
+
+    if (strcmp(curstr, con_str) == 0)
+    {
+        con_str_rep++;
+        return;
+    }
+
+    if (con_str_rep > 0)
+    {
+        snprintf(con_str, sizeof(con_str), "Last message was repeated %d more time/s.\n", con_str_rep);
+        con_str_rep = 0;
+
+        tb_strput(&con_tb, con_str);
+#ifdef CON_DEBUG
+        fputs(con_str, stdout);
 #endif
+    }
 
-    va_start(vargs, fmt);
-    vsnprintf(con_str, sizeof(con_str), fmt, vargs);
-    va_end(vargs);
+    util_strlcpy(con_str, curstr, sizeof(con_str));
 
+#ifdef CON_DEBUG
+    fputs(con_str, stdout);
+#endif
     tb_strput(&con_tb, con_str);
 }
 
