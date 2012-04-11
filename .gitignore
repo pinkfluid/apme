@@ -1,0 +1,12 @@
+*.o
+*.a
+doc/html/
+doc/latex/
+extern/build/
+extern/pcre/.pcre_install_done
+extern/pcre/pcre-config
+extern/pcre/pcreposix.h
+extern/pcre/pcre.h
+src/APme
+src/APme.exe
+*.swp
