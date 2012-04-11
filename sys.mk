@@ -20,6 +20,7 @@ UNAME:=$(shell uname -s)
 ifneq ($(findstring CYGWIN, $(UNAME)),)
     SYS_CFLAGS      :=  -DSYS_WINDOWS -DOS_CYGWIN
     BUILTIN_PCRE    :=  true
+    XBUILD          :=  $(XBUILD_CYGWIN)
 
     XBUILD_CC       ?=  i686-w64-mingw32-gcc
     XBUILD_LD       ?=  i686-w64-mingw32-gcc
@@ -43,13 +44,14 @@ ifneq ($(findstring Linux, $(UNAME)),)
     SYS_CFLAGS      :=  -DSYS_UNIX -DOS_LINUX
 
 # Linux actually has these available
+    XBUILD          :=  $(XBUILD_LINUX)
     XBUILD_CC       ?=  i686-w64-mingw32-gcc
     XBUILD_LD       ?=  i686-w64-mingw32-gcc
     XBUILD_ERROR    :=  Unable to find the 32-bit MinGW compiler. Please install the gcc-mingw-w64 package
 endif
 
 # Check if we should do a MinGW cross compile
-ifdef MINGW_XBUILD
+ifdef XBUILD
     ifneq ($(findstring GCC,$(shell $(XBUILD_CC) --version)),GCC)
         $(error $(XBUILD_ERROR))
     endif
