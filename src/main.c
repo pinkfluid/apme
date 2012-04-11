@@ -295,7 +295,8 @@ int main(int argc, char *argv[])
     for (;;)
     {
         apme_periodic();
-        usleep(300);
+        /* Polling rate is 100hz */
+        usleep(1000000 / 100);
     }
 
 #ifdef SYS_WINDOWS
