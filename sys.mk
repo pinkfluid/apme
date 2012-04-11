@@ -6,6 +6,7 @@ TOP_DIR:=$(abspath $(TOP_DIR_SHORT))
 # Allow the flags to be overwritten by config.mk
 CFLAGS:=
 LDFLAGS:=
+STRIP:=strip
 
 EXTERN_DIR:=$(TOP_DIR)/extern
 EXTERN_DIR_SHORT:=$(TOP_DIR_SHORT)/extern
@@ -24,6 +25,7 @@ ifneq ($(findstring CYGWIN, $(UNAME)),)
 
     XBUILD_CC       ?=  i686-w64-mingw32-gcc
     XBUILD_LD       ?=  i686-w64-mingw32-gcc
+    XBUILD_STRIP    ?=  i686-w64-mingw32-strip
     XBUILD_ERROR    :=  Unable to find the 32-bit MinGW compiler. Please install the mingw64-i686-gcc-core package
 endif
 
@@ -47,6 +49,7 @@ ifneq ($(findstring Linux, $(UNAME)),)
     XBUILD          :=  $(XBUILD_LINUX)
     XBUILD_CC       ?=  i686-w64-mingw32-gcc
     XBUILD_LD       ?=  i686-w64-mingw32-gcc
+    XBUILD_STRIP    ?=  i686-w64-mingw32-strip
     XBUILD_ERROR    :=  Unable to find the 32-bit MinGW compiler. Please install the gcc-mingw-w64 package
 endif
 
@@ -59,6 +62,7 @@ ifdef XBUILD
     SYS_CFLAGS          :=  -DSYS_WINDOWS -DOS_MINGW
     CC                  :=  $(XBUILD_CC)
     LD                  :=  $(XBUILD_LD)
+    STRIP               :=  $(XBUILD_STRIP)
     BUILTIN_PCRE        :=  true
     PCRE_EXTRA_CONFIG   := --host=i686-w64-mingw32
     EXE                 := .exe

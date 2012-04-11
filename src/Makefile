@@ -10,6 +10,7 @@ OBJ:=$(patsubst %.c,%.o,$(SRC))
 
 APme$(EXE): $(PCRE_DEP) $(OBJ)
 	$(CC) $(OBJ) -o $@ $(LDFLAGS)
+	$(STRIP) $@
 
 .PHONY: clean
 clean:
