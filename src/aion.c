@@ -841,29 +841,24 @@ bool aion_group_get_stats(char *stats, size_t stats_sz)
  */
 bool aion_group_get_aplootrights(char *stats, size_t stats_sz)
 {
-    char curstats[64];
-    char inv_full_str[256];
     uint32_t lowest_ap;
     struct aion_player *player;
-    bool inv_full_stats;
-    bool have_stats;
+    char pstr[AION_CHAT_SZ];
+    char stats_invfull[AION_CHAT_SZ];
+    char stats_roll[AION_CHAT_SZ];
+    char stats_pass[AION_CHAT_SZ];
 
-    /* The AP limit value changes the format slightly */
-    if (aion_ap_limit > 0)
-    {
-        snprintf(stats, stats_sz, "Loot rights (<%dAP): ", aion_ap_limit);
-    }
-    else
-    {
-        util_strlcpy(stats, "Loot rights: ", stats_sz);
-    }
+    bool have_invfull_stats = false;
+    bool have_pass_stats = false;
+    bool have_roll_stats = false;
 
-    util_strlcpy(inv_full_str, " | Full inventory: ", sizeof(inv_full_str));
+    stats[0] = '\0';
+    pstr[0] = '\0';
+    stats_roll[0] = '\0';
+    stats_pass[0] = '\0';
+    stats_invfull[0] = '\0';
 
     lowest_ap = aion_group_apvalue_lowest();
-
-    inv_full_stats = false;
-    have_stats = false;
 
     LIST_FOREACH(player, &aion_group, apl_group)
     {
@@ -871,9 +866,9 @@ bool aion_group_get_aplootrights(char *stats, size_t stats_sz)
         if (player->apl_invfull)
         {
             /* Display full inventory warning */
-            inv_full_stats = true;
-            util_strlcat(inv_full_str, player->apl_name, sizeof(inv_full_str));
-            util_strlcat(inv_full_str, " ", sizeof(inv_full_str));
+            have_invfull_stats = true;
+            util_strlcat(stats_invfull, " ", sizeof(stats_invfull));
+            util_strlcat(stats_invfull, player->apl_name, sizeof(stats_invfull));
 
             /* If the exclude policy is enabled, this player doesn't get loot :P */
             if (aion_invfull_exclude)
@@ -882,11 +877,7 @@ bool aion_group_get_aplootrights(char *stats, size_t stats_sz)
             }
         }
 
-        if (player->apl_apvalue > lowest_ap)
-        {
-            continue;
-        }
-
+        /* Handle the AP limit value (for stuff like RR2400) */
         if ((aion_ap_limit > 0) &&
             (aion_ap_limit <= player->apl_apvalue))
         {
@@ -897,27 +888,57 @@ bool aion_group_get_aplootrights(char *stats, size_t stats_sz)
             continue;
         }
 
-        util_strlcpy(curstats, player->apl_name, sizeof(curstats));
-        util_strlcat(curstats, " ", sizeof(curstats));
+        have_roll_stats = true;
+        /* Create the "Player AP" string */
+        snprintf(pstr, sizeof(pstr), " %s %d", player->apl_name, player->apl_apvalue);
 
-        util_strlcat(stats, curstats, stats_sz);
-        have_stats = true;
+        /* If the player has the lowest AP, put it on the roll stats, otherwise on the pass stats */
+        if (player->apl_apvalue <= lowest_ap)
+        {
+            util_strlcat(stats_roll, pstr, sizeof(stats_roll));
+        }
+        else
+        {
+            have_pass_stats = true;
+            util_strlcat(stats_pass, pstr, sizeof(stats_pass));
+        }
     }
 
-    if (!have_stats)
+    if (have_roll_stats)
+    {
+        /* If we're using the AP limit, display the AP limit in the roll stats */
+        if (aion_ap_limit <= 0)
+        {
+            util_strlcat(stats, "Roll:", stats_sz);
+        }
+        else
+        {
+            snprintf(pstr, sizeof(pstr), "Roll (<%dAP):", aion_ap_limit);
+            util_strlcat(stats, pstr, stats_sz);
+        }
+
+        util_strlcat(stats, stats_roll, stats_sz);
+
+        if (have_pass_stats)
+        {
+            util_strlcat(stats, " | Pass:", stats_sz);
+            util_strlcat(stats, stats_pass, stats_sz);
+        }
+    }
+    else
     {
         /*
          * We didn't produce a single stat since all players seem to be above
-         * the AP limit
+         * the AP limit; this means the loot is free for all
          */
         util_strlcat(stats, "Free for All", stats_sz);
     }
 
-    con_printf("Stats_sz = %ld\n", (long)stats_sz);
-    /* If somebody has inventory full, display that in the stats */
-    if (inv_full_stats)
+    /* Show inventory full statistics last */
+    if (have_invfull_stats)
     {
-        util_strlcat(stats, inv_full_str, stats_sz);
+        util_strlcat(stats, " | Inv full:", stats_sz);
+        util_strlcat(stats, stats_invfull, stats_sz);
     }
 
     return true;
