@@ -16,41 +16,53 @@ include $(TOP_DIR)/config.mk
 # Get the OS version
 UNAME:=$(shell uname -s)
 
+
 ifneq ($(findstring CYGWIN, $(UNAME)),)
-# Check if we should do a MinGW cross compile on Cygwin (default)
-ifdef MINGW_XBUILD
-    ifeq ($(wildcard /usr/bin/i686-w64-mingw32-gcc),)
-        $(error The 32-bit MinGW-w64 compiler is not installed. Please install the i686 mingw64-i686-gcc-core package)
-    endif
-    CFLAGS+=-DSYS_WINDOWS -DOS_MINGW
-    CC:=i686-w64-mingw32-gcc.exe
-    LD:=i686-w64-mingw32-gcc.exe
-    BUILTIN_PCRE:=true
-    PCRE_EXTRA_CONFIG:=--host=i686-w64-mingw32
-else
-    CFLAGS+=-DSYS_WINDOWS -DOS_CYGWIN
-    BUILTIN_PCRE:=true
-endif
+    SYS_CFLAGS      :=  -DSYS_WINDOWS -DOS_CYGWIN
+    BUILTIN_PCRE    :=  true
+
+    XBUILD_CC       ?=  i686-w64-mingw32-gcc
+    XBUILD_LD       ?=  i686-w64-mingw32-gcc
+    XBUILD_ERROR    :=  Unable to find the 32-bit MinGW compiler. Please install the mingw64-i686-gcc-core package
 endif
 
 ifneq ($(findstring MINGW, $(UNAME)),)
 # MinGW doesn't have a default compiler so we have to force it to GCC
-    CC:=gcc
-    LD:=gcc
-    CFLAGS+=-DSYS_WINDOWS -DOS_MINGW 
+    SYS_CFLAGS      :=  -DSYS_WINDOWS -DOS_MINGW 
+    CC              :=  gcc
+    LD              :=  gcc
     BUILTIN_PCRE:=true
 endif
 
 ifneq ($(findstring DragonFly, $(UNAME)),)
-    CFLAGS+=-DSYS_UNIX -DOS_DRAGONFLY
-    BUILTIN_PCRE:=true
+    SYS_CFLAGS      :=  -DSYS_UNIX -DOS_DRAGONFLY
+    BUILTIN_PCRE    :=  true
 endif
 
 ifneq ($(findstring Linux, $(UNAME)),)
-    CFLAGS+=-DSYS_UNIX -DOS_LINUX
+    SYS_CFLAGS      :=  -DSYS_UNIX -DOS_LINUX
+
+# Linux actually has these available
+    XBUILD_CC       ?=  i686-w64-mingw32-gcc
+    XBUILD_LD       ?=  i686-w64-mingw32-gcc
+    XBUILD_ERROR    :=  Unable to find the 32-bit MinGW compiler. Please install the gcc-mingw-w64 package
+endif
+
+# Check if we should do a MinGW cross compile
+ifdef MINGW_XBUILD
+    ifneq ($(findstring GCC,$(shell $(XBUILD_CC) --version)),GCC)
+        $(error $(XBUILD_ERROR))
+    endif
+    # Override the system CFLAGS 
+    SYS_CFLAGS          :=  -DSYS_WINDOWS -DOS_MINGW
+    CC                  :=  $(XBUILD_CC)
+    LD                  :=  $(XBUILD_LD)
+    BUILTIN_PCRE        :=  true
+    PCRE_EXTRA_CONFIG   := --host=i686-w64-mingw32
+    EXE                 := .exe
 endif
 
 include $(EXTERN_DIR)/pcre/sys_pcre.mk
 
-CFLAGS+=-I$(EXTERN_DIR)
+CFLAGS+=-I$(EXTERN_DIR) $(SYS_CFLAGS)
 
