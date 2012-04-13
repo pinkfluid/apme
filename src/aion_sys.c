@@ -250,6 +250,8 @@ bool aion_chatlog_is_enabled(bool *isenabled)
         }
     }
 
+    fclose(sysovr_file);
+
     return true;
 }
 
