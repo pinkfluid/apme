@@ -21,11 +21,11 @@ UNAME:=$(shell uname -s)
 ifneq ($(findstring CYGWIN, $(UNAME)),)
     SYS_CFLAGS      :=  -DSYS_WINDOWS -DOS_CYGWIN
     BUILTIN_PCRE    :=  true
-    XBUILD          :=  $(XBUILD_CYGWIN)
+    USE_MANIFEST    :=  true
+    WINDRES         :=  windres
 
-    XBUILD_CC       ?=  i686-w64-mingw32-gcc
-    XBUILD_LD       ?=  i686-w64-mingw32-gcc
-    XBUILD_STRIP    ?=  i686-w64-mingw32-strip
+    XBUILD          :=  $(XBUILD_CYGWIN)
+    XBUILD_TARGET   ?=  i686-w64-mingw32
     XBUILD_ERROR    :=  Unable to find the 32-bit MinGW compiler. Please install the mingw64-i686-gcc-core package
 endif
 
@@ -47,24 +47,32 @@ ifneq ($(findstring Linux, $(UNAME)),)
 
 # Linux actually has these available
     XBUILD          :=  $(XBUILD_LINUX)
-    XBUILD_CC       ?=  i686-w64-mingw32-gcc
-    XBUILD_LD       ?=  i686-w64-mingw32-gcc
-    XBUILD_STRIP    ?=  i686-w64-mingw32-strip
+
+    XBUILD_TARGET   ?=  i686-w64-mingw32
     XBUILD_ERROR    :=  Unable to find the 32-bit MinGW compiler. Please install the gcc-mingw-w64 package
 endif
 
 # Check if we should do a MinGW cross compile
 ifdef XBUILD
+    # Override the system CFLAGS 
+    SYS_CFLAGS          :=  -DSYS_WINDOWS -DOS_MINGW
+    USE_MANIFEST        :=  true
+    BUILTIN_PCRE        :=  true
+
+    XBUILD_CC           ?=  $(XBUILD_TARGET)-gcc
+    XBUILD_LD           ?=  $(XBUILD_TARGET)-gcc
+    XBUILD_STRIP        ?=  $(XBUILD_TARGET)-strip
+    XBUILD_WINDRES      ?=  $(XBUILD_TARGET)-windres
+
     ifneq ($(findstring GCC,$(shell $(XBUILD_CC) --version)),GCC)
         $(error $(XBUILD_ERROR))
     endif
-    # Override the system CFLAGS 
-    SYS_CFLAGS          :=  -DSYS_WINDOWS -DOS_MINGW
+
     CC                  :=  $(XBUILD_CC)
     LD                  :=  $(XBUILD_LD)
     STRIP               :=  $(XBUILD_STRIP)
-    BUILTIN_PCRE        :=  true
-    PCRE_EXTRA_CONFIG   := --host=i686-w64-mingw32
+    WINDRES             :=  $(XBUILD_WINDRES)
+    PCRE_EXTRA_CONFIG   := --host=$(XBUILD_TARGET)
     EXE                 := .exe
 endif
 
