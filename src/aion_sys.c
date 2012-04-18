@@ -98,11 +98,16 @@ struct aion_reg_keys aion_install_reg_keys[] =
 char *aion_default_install_path(void)
 {
 #ifdef SYS_WINDOWS
-    static char default_install_path[1024];
+    static char default_install_path[1024] = "";
     size_t ii;
     bool retval;
 
     char *envpath;
+
+    if (default_install_path[0] != '\0')
+    {
+        return default_install_path;
+    }
 
     /* Check the APME_AION_PATH varible, if not set, try to figure out stuff from the registry */
     envpath = getenv("APME_AION_PATH");
@@ -127,12 +132,12 @@ char *aion_default_install_path(void)
             continue;
         }
 
-        con_printf("INTALL: Found: %s\n", default_install_path);
+        con_printf("INSTALL: Found: %s\n", default_install_path);
 
         return default_install_path;
     }
 
-    con_printf("INTALL: Not found\n");
+    con_printf("INSTALL: Not found\n");
     return NULL;
 #else
     /* On Linux, just return the current directory. Used for debugging mainly. */

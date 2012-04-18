@@ -88,12 +88,13 @@ void con_printf(char *fmt, ...)
 
     if (con_str_rep > 0)
     {
-        snprintf(con_str, sizeof(con_str), "Last message was repeated %d more time/s.\n", con_str_rep);
+        char rep_str[CON_STR_SZ];
+        snprintf(rep_str, sizeof(rep_str), "Last message was repeated %d more time/s.\n", con_str_rep);
         con_str_rep = 0;
 
-        tb_strput(&con_tb, con_str);
+        tb_strput(&con_tb, rep_str);
 #ifdef CON_DEBUG
-        fputs(con_str, stdout);
+        fputs(rep_str, stdout);
 #endif
     }
 

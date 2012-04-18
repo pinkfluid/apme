@@ -223,6 +223,9 @@ bool apme_init(int argc, char* argv[])
 
     con_init();
 
+    /* Do the chatlog enable/disable stuff, warn user... */
+    apme_chatlog_check();
+
     if (!aion_init())
     {
         con_printf("Unable to initialize the Aion subsystem.\n");
@@ -276,9 +279,6 @@ void apme_periodic(void)
  */
 int main(int argc, char *argv[])
 {
-    /* Do the chatlog enable/disable stuff, warn user... */
-    apme_chatlog_check();
-
     /* Initialize sub-systems */
     if (!apme_init(argc, argv))
     {

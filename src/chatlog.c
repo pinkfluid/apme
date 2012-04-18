@@ -644,7 +644,7 @@ bool chatlog_open(void)
     if (chatlog_file == NULL)
     {
         /* This can be just a temporary error */
-        con_printf("Error opening chat log\n");
+        con_printf("Error opening chat log: %s\n", chatlog_path);
         return true;
     }
 
