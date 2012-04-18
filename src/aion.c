@@ -890,7 +890,7 @@ bool aion_group_get_aplootrights(char *stats, size_t stats_sz)
 
         have_roll_stats = true;
         /* Create the " Player:AP" string (notice the whitespace at the beginning) */
-        snprintf(pstr, sizeof(pstr), " %s:%d", player->apl_name, player->apl_apvalue);
+        snprintf(pstr, sizeof(pstr), " %s[%d]", player->apl_name, player->apl_apvalue);
 
         /* If the player has the lowest AP, put it on the roll stats, otherwise on the pass stats */
         if (player->apl_apvalue <= lowest_ap)
@@ -909,21 +909,23 @@ bool aion_group_get_aplootrights(char *stats, size_t stats_sz)
         /* If we're using the AP limit, display the AP limit in the roll stats */
         if (aion_ap_limit <= 0)
         {
-            util_strlcat(stats, "ROLL", stats_sz);
+            util_strlcat(stats, "ROLL:", stats_sz);
         }
         else
         {
-            snprintf(pstr, sizeof(pstr), "ROLL (<%dAP)", aion_ap_limit);
+            snprintf(pstr, sizeof(pstr), "ROLL (<%dAP):", aion_ap_limit);
             util_strlcat(stats, pstr, stats_sz);
         }
 
         util_strlcat(stats, stats_roll, stats_sz);
 
+#if 0
         if (have_pass_stats)
         {
-            util_strlcat(stats, " | PASS", stats_sz);
+            util_strlcat(stats, " | PASS:", stats_sz);
             util_strlcat(stats, stats_pass, stats_sz);
         }
+#endif
     }
     else
     {
@@ -937,7 +939,7 @@ bool aion_group_get_aplootrights(char *stats, size_t stats_sz)
     /* Show inventory full statistics last */
     if (have_invfull_stats)
     {
-        util_strlcat(stats, " | INV FULL", stats_sz);
+        util_strlcat(stats, " | INV FULL:", stats_sz);
         util_strlcat(stats, stats_invfull, stats_sz);
     }
 
