@@ -21,7 +21,7 @@ OBJ := $(patsubst %.c,%.o,$(SRC))
 
 ifdef USE_MANIFEST
 # Include the manifest file as a resource in apme.rc
-apme.res : apme.rc
+apme.res : apme.rc apme.manifest
 	$(WINDRES) --input $< --output $@ --output-format=coff
 
 # Add the resource file to the objects

@@ -10,8 +10,18 @@
     </compatibility>
 
     <assemblyIdentity type="win32" 
-                      name="pinkflud.aion.APme" 
-                      version="0.0.0.1" 
-                      processorArchitecture="x86" 
-                      publicKeyToken="0000000000000000"/>
+                      name="APme.App" 
+                      version="1.0.0.0" 
+                      processorArchitecture="x86"/>
+    <description>APme Abyss Point Tracker</description>
+
+    <trustInfo xmlns:ms_asmv2="urn:schemas-microsoft-com:asm.v2">
+        <security>
+            <requestedPrivileges>
+                <requestedExecutionLevel
+                    level="asInvoker"
+                    uiAccess="false"/>
+            </requestedPrivileges>
+        </security>
+    </trustInfo>
 </assembly>

@@ -9,4 +9,5 @@ extern/pcre/pcreposix.h
 extern/pcre/pcre.h
 src/APme
 src/APme.exe
+src/apme.res
 *.swp
