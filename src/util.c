@@ -24,14 +24,15 @@
  * 
  * @author Mitja Horvat <pinkfluid@gmail.com>
  */
+#ifdef SYS_WINDOWS
+#include <windows.h>
+#include <winnt.h>
+#endif
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
-
-#ifdef SYS_WINDOWS
-#include <windows.h>
-#endif
 
 #include "util.h"
 #include "console.h"
@@ -177,6 +178,162 @@ error:
     return status;
 }
 
+/**
+ * Check whether we're running with elevated privileges
+ * (as Administrator)
+ *
+ * @param[out]  isadmin @p true if we're running as admin, @p false otherwise
+ *
+ * @retval      true    On success
+ * @retval      false   On error
+ */
+bool sys_is_admin(bool *isadmin)
+{
+    HANDLE proc_token;
+    BOOL ok;
+
+    /* Open the current process' token */
+    ok = OpenProcessToken(GetCurrentProcess(), TOKEN_READ, &proc_token);
+    if (!ok)
+    {
+        con_printf("OpenProcessToken() failed\n");
+        return false;
+    }
+
+    TOKEN_ELEVATION_TYPE ele_type;
+    DWORD ele_size;
+
+    ok = GetTokenInformation(proc_token,
+                             TokenElevationType,
+                             &ele_type,
+                             sizeof(ele_type),
+                             &ele_size);
+    if (!ok)
+    {
+        con_printf("GetTokenInformation() failed\n");
+        return false;
+    }
+
+    switch (ele_type)
+    {
+        case TokenElevationTypeDefault:
+            /*
+             * TokenElevationTypeDefault is apparently returned when UAC is disabled; does this
+             * also mean we have admin rights?
+             */
+        case TokenElevationTypeFull:
+        default:
+            *isadmin = true;
+            break;
+
+        case TokenElevationTypeLimited:
+            *isadmin = false;
+    }
+
+    con_printf("sys_is_admin() says admin = %s!\n", *isadmin ? "TRUE" : "FALSE");
+    return true;
+}
+
+/**
+ * Execute process @p path with admin privileges
+ *
+ * @note This function will trigger the UAC dialog
+ *
+ * @param[in]   path    Path to the executable
+ *
+ * @retval      true    If process was executed successfully
+ * @retval      false   On error, or if the user declined the UAC
+ */
+bool sys_runas_admin(char *path)
+{
+    BOOL success;
+    SHELLEXECUTEINFO shexe_info;
+
+    bool isadmin = false;
+
+    printf("Trying to execute '%s' as admin!\n", path);
+    /* Check if we're already admin */
+    if (!sys_is_admin(&isadmin))
+    {
+        con_printf("Unable to determine if we're running elevated.\n");
+        return false;
+    }
+
+    if (isadmin)
+    {
+        con_printf("Unable to execute %s as we're already elevated.\n", path);
+        return false;
+    }
+
+    /* Do the undocumented "runas" trick of ShellExecute() */
+    memset(&shexe_info, 0, sizeof(shexe_info));
+    shexe_info.cbSize = sizeof(shexe_info);
+
+    shexe_info.lpVerb = "runas";
+    shexe_info.lpFile = path;
+    shexe_info.nShow = SW_MAXIMIZE;
+
+    success = ShellExecuteEx(&shexe_info);
+    return (success == TRUE);
+}
+
+/**
+ * Find out the path to the executable of the current process
+ *
+ * @param[out]  path        The path to our executable
+ * @param[in]   pathsz      Maximum size of @p path in bytes
+ *
+ * @retval      true        On success
+ * @retval      false       On error
+ */
+bool sys_self_exe(char *path, size_t pathsz)
+{
+    char exepath[MAX_PATH];
+    DWORD retval;
+
+    retval =  GetModuleFileName(NULL, exepath, sizeof(exepath));
+    if (retval == 0)
+    {
+        con_printf("GetModuleFileName() failed.\n");
+        return false;
+    }
+
+    con_printf("Our executable path is %s\n", exepath);
+    util_strlcpy(path, exepath, pathsz);
+
+    return true;
+}
+
+/**
+ * Respawn the current process with elevated privileges
+ *
+ * @note This function will trigger the UAC dialog
+ *
+ * @retval      true        On success
+ * @retval      false       On error or user declined UAC
+ *
+ * @see sys_self_exe()
+ * @see sys_runas_admin()
+ */
+bool sys_self_elevate(void)
+{
+    char selfexe[MAX_PATH];
+
+    /* Retrieve the path of the current executable */
+    if (!sys_self_exe(selfexe, sizeof(selfexe)))
+    {
+        return false;
+    }
+
+    /* ... and run it as admin */
+    if (!sys_runas_admin(selfexe))
+    {
+        con_printf("User might have declined the UAC.\n");
+        return false;
+    }
+
+    return true;
+}
 #else /* Unix */
 
 /**
@@ -231,6 +388,20 @@ bool reg_read_key(char *key, char *val, void *buf, size_t buflen)
     return true;
 }
 
+bool sys_is_admin(bool *isadmin)
+{
+    return false;
+}
+
+bool sys_runas_admin(char *path)
+{
+    return false;
+}
+
+bool sys_self_exe(char *path, size_t pathsz)
+{
+    return false;
+}
 /**
  * @endcond
  */

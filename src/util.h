@@ -34,6 +34,10 @@
  */
 extern bool clipboard_set_text(char *text);
 extern bool clipboard_get_text(char *text, size_t text_sz);
+extern bool sys_is_admin(bool *isadmin);
+extern bool sys_runas_admin(char *path);
+extern bool sys_self_exe(char *path, size_t pathsz);
+extern bool sys_self_elevate(void);
 
 extern char* util_strsep(char **pinputstr, const char *delim);
 extern size_t util_strlcpy(char *dst, const char *src, size_t dst_size);
