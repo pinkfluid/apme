@@ -311,36 +311,7 @@ void apme_periodic(void)
 
 int main(int argc, char *argv[])
 {
-#if 0
-#if 0
-    bool isadmin;
-
-    sys_is_admin(&isadmin);
-    if (isadmin)
-#endif
-    {
-        con_init();
-        FILE *f;
-
-        con_printf("teasing\n");
-        f = sys_fopen_force("c:/Games/AION F2P/system.ovr", "r");
-        if (f == NULL)
-        {
-            printf("Error: %s\n", strerror(errno));
-        }
-        else
-        {
-            fclose(f);
-        }
-
-        con_dump();
-        apme_prompt("", "");
-    }
-
-    exit(0);
-#endif
-
-
+    /* Initialize APme */
     if (!apme_init(argc, argv))
     {
         return 1;
