@@ -143,7 +143,7 @@ void apme_screen_update(void)
     term_clear();
 
     term_setcolor(TERM_FG_YELLOW);
-    printf("***** APme version %s (by Playme @ Telemachus)\n\n", APME_VERSION_STRING);
+    printf("***** APme version %s (by Snowsong @ Nexus)\n\n", APME_VERSION_STRING);
 
     term_setcolor(TERM_FG_YELLOW);
     term_setcolor(TERM_BG_BLUE);
