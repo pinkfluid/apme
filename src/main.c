@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <errno.h>
 
 #include "console.h"
 #include "aion.h"
@@ -188,6 +189,22 @@ void apme_screen_update(void)
     fflush(stdout);
 }
 
+void apme_sys_elevate(void)
+{
+    apme_prompt("APme was unable to open the system.ovr or Chat.log file due to restricted\npermissions. In order to successfully open these files it needs administrator\nprivileges. Note, that APme will will grant full control of the system.ovr and Chat.log file to Everyone.\n\nPress ENTER to continue", "");
+
+    if (sys_self_elevate())
+    {
+        /* Just terminate the current process after a successfully elevation */
+        exit(0);
+    }
+    else
+    {
+        /* Unable to elevate the current process, or user cancelled */
+        apme_prompt("Unable to elevate the current process, APme will probably not work correctly. Press ENTER to continue.", "");
+    }
+}
+
 /**
  * This is the "catch all events" function
  *
@@ -198,8 +215,17 @@ void apme_event_handler(enum event_type ev)
 {
     (void)ev;
     
-    /* Just update the main screen on every event */
-    apme_screen_update();
+    con_printf("GOT EVENT!\n");
+    switch (ev)
+    {
+        case EVENT_SYS_ELEVATE_REQUEST:
+            apme_sys_elevate();
+            break;
+
+        default:
+            /* Just update the main screen on every other event */
+            apme_screen_update();
+    }
 }
 
 /**
@@ -221,7 +247,11 @@ bool apme_init(int argc, char* argv[])
     (void)argc;
     (void)argv;
 
+    /* First initialize the debug console */
     con_init();
+
+    /* Initialize events early, elevation is requested with events! */
+    event_register(apme_event_handler);
 
     /* Do the chatlog enable/disable stuff, warn user... */
     apme_chatlog_check();
@@ -237,8 +267,6 @@ bool apme_init(int argc, char* argv[])
         con_printf("Error initializing the Chatlog parser.\n");
         return false;
     }
-
-    event_register(apme_event_handler);
 
     return true;
 }
@@ -277,9 +305,42 @@ void apme_periodic(void)
  * @return
  * 0 on success, any other number on error.
  */
+#include <errno.h>
+#include <strings.h>
+#include <fcntl.h>
+
 int main(int argc, char *argv[])
 {
-    /* Initialize sub-systems */
+#if 0
+#if 0
+    bool isadmin;
+
+    sys_is_admin(&isadmin);
+    if (isadmin)
+#endif
+    {
+        con_init();
+        FILE *f;
+
+        con_printf("teasing\n");
+        f = sys_fopen_force("c:/Games/AION F2P/system.ovr", "r");
+        if (f == NULL)
+        {
+            printf("Error: %s\n", strerror(errno));
+        }
+        else
+        {
+            fclose(f);
+        }
+
+        con_dump();
+        apme_prompt("", "");
+    }
+
+    exit(0);
+#endif
+
+
     if (!apme_init(argc, argv))
     {
         return 1;

@@ -39,6 +39,7 @@
 #include <stdlib.h>
 #include <strings.h>
 #include <stdio.h>
+#include <errno.h>
 
 #include <pcreposix.h>
 
@@ -46,6 +47,7 @@
 #include "console.h"
 #include "regeng.h"
 #include "aion.h"
+#include "event.h"
 
 static bool aion_get_sysovr_path(char *sysovr_path, size_t sysovr_pathsz);
 
@@ -214,7 +216,7 @@ bool aion_chatlog_is_enabled(bool *isenabled)
 
     con_printf("SYSTEM.OVR full path is '%s'\n", sysovr_path);
 
-    sysovr_file = fopen(sysovr_path, "r");
+    sysovr_file = sys_fopen_force(sysovr_path, "r");
     if (sysovr_file == NULL)
     {
         /* The system.ovr file does nto exist, chatlog not enabled */
@@ -283,7 +285,7 @@ bool aion_chatlog_enable(void)
     }
 
     /* Open the file in APPEND mode */
-    sysovr_file = fopen(sysovr_path, "a");
+    sysovr_file = sys_fopen_force(sysovr_path, "a");
     if (sysovr_file == NULL)
     {
         con_printf("Unable to open system.ovr file\n");

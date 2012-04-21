@@ -27,6 +27,8 @@
 #ifndef UTIL_H_INCLUDED
 #define UTIL_H_INCLUDED
 
+#include <stdio.h>
+
 /**
  * @ingroup util
  *
@@ -38,6 +40,8 @@ extern bool sys_is_admin(bool *isadmin);
 extern bool sys_runas_admin(char *path);
 extern bool sys_self_exe(char *path, size_t pathsz);
 extern bool sys_self_elevate(void);
+extern bool sys_perm_grant(char *path);
+extern FILE* sys_fopen_force(char *path, char *mode);
 
 extern char* util_strsep(char **pinputstr, const char *delim);
 extern size_t util_strlcpy(char *dst, const char *src, size_t dst_size);

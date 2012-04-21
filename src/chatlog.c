@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <errno.h>
 #include <assert.h>
 
 #include <pcreposix.h>
@@ -640,10 +641,10 @@ bool chatlog_open(void)
     util_strlcpy(chatlog_path, "./Chat.log", sizeof(chatlog_path));
 #endif
 
-    chatlog_file = fopen(chatlog_path, "r");
+    chatlog_file = sys_fopen_force(chatlog_path, "r");
     if (chatlog_file == NULL)
     {
-        /* This can be just a temporary error */
+        /* This can be just a temporary error, so return success */
         con_printf("Error opening chat log: %s\n", chatlog_path);
         return true;
     }

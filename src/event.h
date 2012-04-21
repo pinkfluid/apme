@@ -32,10 +32,11 @@
 /** Define the event types */
 enum event_type
 {
-    EVENT_AION_GROUP_UPDATE     = 0,    /**< Group has been updated         */
-    EVENT_AION_AP_UPDATE        = 1,    /**< AP value of a member update    */
-    EVENT_AION_INVENTORY_FULL   = 2,    /**< Somebody has inventory full    */
-    EVENT_AION_LOOT_RIGHTS      = 3,    /**< New loot rights calculated     */
+    EVENT_SYS_ELEVATE_REQUEST   = 0,    /**< Request Admin Rights                           */
+    EVENT_AION_GROUP_UPDATE     = 100,  /**< Group has been updated                         */
+    EVENT_AION_AP_UPDATE        = 101,  /**< AP value of a member update                    */
+    EVENT_AION_INVENTORY_FULL   = 102,  /**< Somebody has inventory full                    */
+    EVENT_AION_LOOT_RIGHTS      = 103,  /**< New loot rights calculated                     */
 };
 
 

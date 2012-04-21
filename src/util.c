@@ -27,15 +27,18 @@
 #ifdef SYS_WINDOWS
 #include <windows.h>
 #include <winnt.h>
+#include <aclapi.h>
 #endif
 
 #include <stdbool.h>
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
+#include <errno.h>
 
 #include "util.h"
 #include "console.h"
+#include "event.h"
 
 /** 
  * @defgroup util Utilities
@@ -184,13 +187,24 @@ error:
  *
  * @param[out]  isadmin @p true if we're running as admin, @p false otherwise
  *
+ * @note This function only works if compiled under MinGW
+ *
  * @retval      true    On success
  * @retval      false   On error
  */
 bool sys_is_admin(bool *isadmin)
 {
+#ifdef OS_CYGWIN
+    /*
+     * Under Cygwin the elevation stuff does not work, and the binary crashes
+     * because it cannot find the .DLL anyway
+     */
+    return false;
+#else
     HANDLE proc_token;
     BOOL ok;
+
+    (void)isadmin;
 
     /* Open the current process' token */
     ok = OpenProcessToken(GetCurrentProcess(), TOKEN_READ, &proc_token);
@@ -231,7 +245,9 @@ bool sys_is_admin(bool *isadmin)
     }
 
     con_printf("sys_is_admin() says admin = %s!\n", *isadmin ? "TRUE" : "FALSE");
+
     return true;
+#endif
 }
 
 /**
@@ -334,6 +350,176 @@ bool sys_self_elevate(void)
 
     return true;
 }
+
+/**
+ * Grant full control permissions to everyone for the file in @p path
+ *
+ * @param[in]   path        Path to the file 
+ *
+ * @retval      true        On success
+ * @retval      false       On error
+ *
+ * @note This code is based upon <a href="http://stackoverflow.com/questions/910528/how-to-change-the-acls-from-c">
+ * this Stack Overflow post</a>
+ */
+bool sys_perm_grant(char *path)
+{
+    DWORD status;
+    BOOL ok;
+
+    bool retval = false;
+    PACL acl = NULL;
+    PSID psid_other = NULL;
+    PSECURITY_DESCRIPTOR sec_desc = NULL;
+
+    con_printf("Granting read access to everyone to the following file: %s\n", path);
+
+    /* Chant the windows security magic */
+    SID_IDENTIFIER_AUTHORITY sid_world = { SECURITY_WORLD_SID_AUTHORITY };
+
+    ok = AllocateAndInitializeSid(&sid_world, 1, SECURITY_WORLD_RID, 0, 0, 0, 0, 0, 0, 0, &psid_other);
+    if (!ok)
+    {
+        con_printf("AllocateAndinitializeSid() failed\n");
+        goto error;
+    }
+
+    /* Om om om om security magic om om om */
+    EXPLICIT_ACCESS expl_acc[1];
+
+    memset(&expl_acc, 0, sizeof(expl_acc));
+    expl_acc[0].grfAccessPermissions    = 0xFFFFFFFF;
+    expl_acc[0].grfAccessMode           = GRANT_ACCESS;
+    expl_acc[0].grfInheritance          = NO_INHERITANCE;
+    expl_acc[0].Trustee.TrusteeForm     = TRUSTEE_IS_SID;
+    expl_acc[0].Trustee.TrusteeType     = TRUSTEE_IS_WELL_KNOWN_GROUP;
+    expl_acc[0].Trustee.ptstrName       = psid_other;
+
+    /* Om om om black magic om om om */
+    status = SetEntriesInAcl(1, expl_acc, NULL, &acl);
+    if (status != ERROR_SUCCESS)
+    {
+        con_printf("Error initializing ACLs with SetEntriesInAcl()\n");
+    }
+
+    /* Om om om best security ever om om om */
+    sec_desc = LocalAlloc(LPTR, SECURITY_DESCRIPTOR_MIN_LENGTH);
+    if (sec_desc == NULL)
+    {
+        con_printf("LocalAlloc() failed when trying to allocate a security descriptor\n");
+        goto error;
+    }
+
+    ok = InitializeSecurityDescriptor(sec_desc, SECURITY_DESCRIPTOR_REVISION);
+    if (!ok)
+    {
+        con_printf("InitializeSecurityDescriptor() didn't want to cooperate\n");
+        goto error;
+    }
+
+    ok = SetSecurityDescriptorDacl(sec_desc, TRUE, acl, FALSE);
+    if (!ok)
+    {
+        con_printf("Unable set ACL on the security descriptor\n");
+        goto error;
+    }
+
+    ok = SetFileSecurity(path, DACL_SECURITY_INFORMATION, sec_desc);
+    if (!ok)
+    {
+        con_printf("Unable to set security on %s\n", path);
+    }
+
+    retval = true;
+
+error:
+    if (psid_other != NULL)
+    {
+        FreeSid(psid_other);
+    }
+
+    if (acl != NULL)
+    {
+        LocalFree(acl);
+    }
+
+    if (sec_desc != NULL)
+    {
+        LocalFree(sec_desc);
+    }
+
+    return retval;
+}
+
+/**
+ * Work hard to open the file in @p path
+ *
+ * If we don't have admin rights, and we get a permission error,
+ * request elevation.
+ *
+ * If we're admin, this function will fix the permissions of the file in @p path
+ * by granting full control access to everyone.
+ *
+ *
+ * @param[in]       path    Full path to file
+ * @param[in]       mode    fopen() mode
+ *
+ * @return
+ * This functions returns a FILE descriptor or NULL on error
+ */
+FILE *sys_fopen_force(char *path, char *mode)
+{
+    FILE *f;
+
+    bool isadmin;
+
+    /* Check if we have admin rights */
+    if (!sys_is_admin(&isadmin))
+    {
+        isadmin = false; 
+    }
+
+    con_printf("sys_force_open(): %s (admin = %s)\n", path, isadmin ? "TRUE" : "FALSE");
+
+    /* We do, fix the permissions of the file before opening it */
+    if (isadmin)
+    {
+        con_printf("Fixing permissions on %s\n", path);
+        if (!sys_perm_grant(path))
+        {
+            con_printf("Error fixing permissions on %s\n", path);
+        }
+    }
+
+    /*  If we get a permission denied, fire the "elevation request event */
+    f = fopen(path, mode);
+    if (f != NULL)
+    {
+        /* Now return the file descriptor */
+        return f;
+    }
+
+    /*
+     * If it is an "access denied" type of error, try to elevate our privileges unless
+     * we're already admin
+     */
+    if ((errno == EPERM) || (errno == EACCES))
+    {
+        if (isadmin)
+        {
+            con_printf("We're already admin and still cannot access the file.\n");
+        }
+        else
+        {
+            con_printf("Access denied when opening %s, requesting elevation\n", path);
+            /* EVENT_SYS_ELEVATE_CHATLOG is usually a point of no return */
+            event_signal(EVENT_SYS_ELEVATE_REQUEST);
+        }
+    }
+
+    return NULL;
+}
+
 #else /* Unix */
 
 /**
@@ -402,6 +588,19 @@ bool sys_self_exe(char *path, size_t pathsz)
 {
     return false;
 }
+
+bool sys_perm_grant(char *path)
+{
+    (void)path;
+
+    return false;
+}
+
+FILE *sys_fopen_force(char *path, char *mode)
+{
+    return fopen(path,mode);
+}
+
 /**
  * @endcond
  */

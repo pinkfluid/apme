@@ -26,6 +26,7 @@
  */
 #include <stdlib.h>
 
+#include "console.h"
 #include "event.h"
 
 /**
@@ -55,7 +56,11 @@ void event_register(event_callback_t *event_cb)
  */
 void event_signal(enum event_type event)
 {
-    if (event_process_cb == NULL) return;
+    if (event_process_cb == NULL)
+    {
+        con_printf("Event fired, but no event callback defined!\n");
+        return;
+    }
 
     event_process_cb(event);
 }
