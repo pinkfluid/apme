@@ -199,6 +199,7 @@ bool sys_is_admin(bool *isadmin)
      * Under Cygwin the elevation stuff does not work, and the binary crashes
      * because it cannot find the .DLL anyway
      */
+    (void)isadmin;
     return false;
 #else
     HANDLE proc_token;
