@@ -71,7 +71,12 @@ struct aion_reg_keys
 struct aion_reg_keys aion_install_reg_keys[] =
 {
     {
-        /* Pay2Win Aion from GameForge */
+        /* New GameForge Aion Registry keys! */
+        "SOFTWARE\\Gameforge\\AION-LIVE",
+        "BaseDir",
+    },
+    {
+        /* Old, are these obsolete? Pay2Win Aion from GameForge */
         "SOFTWARE\\AION Free-To-Play",
         "Path",
     },

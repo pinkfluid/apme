@@ -488,6 +488,7 @@ FILE *sys_fopen_force(char *path, char *mode)
         con_printf("Fixing permissions on %s\n", path);
         if (!sys_perm_grant(path))
         {
+            /* This might happen if the file does not exists, so log it */
             con_printf("Error fixing permissions on %s\n", path);
         }
     }
