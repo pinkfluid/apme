@@ -577,29 +577,37 @@ bool reg_read_key(char *key, char *val, void *buf, size_t buflen)
 
 bool sys_is_admin(bool *isadmin)
 {
+    (void)isadmin;
     return false;
 }
 
 bool sys_runas_admin(char *path)
 {
+    (void)path;
     return false;
 }
 
 bool sys_self_exe(char *path, size_t pathsz)
 {
+    (void)path;
+    (void)pathsz;
     return false;
+}
+
+bool sys_self_elevate(void)
+{
+    return true;
 }
 
 bool sys_perm_grant(char *path)
 {
     (void)path;
-
     return false;
 }
 
 FILE *sys_fopen_force(char *path, char *mode)
 {
-    return fopen(path,mode);
+    return fopen(path, mode);
 }
 
 /**
