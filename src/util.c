@@ -767,7 +767,7 @@ char* util_strsep(char **pinputstr, const char *delim)
 
 /**
  * This function this function removes new-lines characters
- * from the end of the string
+ * and blanks from the end of the string
  *
  * @param[in]       str     String to be chomped
  */
@@ -775,8 +775,10 @@ void util_chomp(char *str)
 {
     char *pstr;
 
+    char blanks[] = " \r\n";
+
     pstr = str + strlen(str) - 1;
-    while ((str <= pstr) && (*pstr == '\n' || *pstr == '\r') )
+    while ((str <= pstr) && (strchr(blanks, *pstr) != NULL))
     {
         *pstr-- = '\0';
     }

@@ -918,6 +918,7 @@ bool aion_aploot_fmt_set(char *fmt)
         return false;
     }
 
+    event_signal(EVENT_AION_LOOT_RIGHTS);
     con_printf("APLOOT format is now '%s'\n", fmt);
 
     return true;
@@ -956,7 +957,7 @@ bool aion_aploot_fmt_parse(char *fmt)
 
     int index = 0;
     char *pfmt = cfmt;
-    while ((str = strsep(&pfmt, "/")) != NULL)
+    while ((str = util_strsep(&pfmt, "/")) != NULL)
     {
         switch (index)
         {

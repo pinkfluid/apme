@@ -77,6 +77,8 @@ typedef bool cmd_func_t(int argc, char *argv[], char *txt);
 static bool cmd_func_translate(char *txt, int langid);
 static bool cmd_func_rtranslate(char *txt, int langid);
 
+static char* cmd_sanitize(char *str);
+
 static cmd_func_t cmd_func_help;            /**< Declaration of cmd_func_helpi()        */
 static cmd_func_t cmd_func_hello;           /**< Declaration of cmd_func_hello()        */
 static cmd_func_t cmd_func_nameset;         /**< Declaration of cmd_func_nameset()      */
@@ -85,6 +87,7 @@ static cmd_func_t cmd_func_ap_loot;         /**< Declaration of cmd_func_aploot(
 static cmd_func_t cmd_func_ap_set;          /**< Declaration of cmd_ap_set()            */
 static cmd_func_t cmd_func_ap_reset;        /**< Declaration of cmd_ap_reset()          */
 static cmd_func_t cmd_func_ap_limit;        /**< Declaration of cmd_ap_limit()          */
+static cmd_func_t cmd_func_ap_format;       /**< Declaration of cmd_ap_format()         */
 static cmd_func_t cmd_func_group_add;       /**< Declaration of cmd_func_group_add()    */
 static cmd_func_t cmd_func_group_del;       /**< Declaration of cmd_func_group_del()    */
 static cmd_func_t cmd_func_elyos;           /**< Declaration of cmd_func_elyos()        */
@@ -145,6 +148,10 @@ struct cmd_entry cmd_list[] =
     {
         .cmd_command    = "aplimit",
         .cmd_func       = cmd_func_ap_limit,
+    },
+    {
+        .cmd_command    = "apformat",
+        .cmd_func       = cmd_func_ap_format,
     },
     {
         .cmd_command    = "gradd",
@@ -439,6 +446,41 @@ bool cmd_func_ap_limit(int argc, char *argv[], char *txt)
     apvalue = strtoul(argv[1], NULL, 0);
 
     aion_aplimit_set(apvalue);
+
+    cmd_retval_set(CMD_RETVAL_OK);
+
+    return true;
+}
+
+/**
+ * This function implements the ?apformat command, it sets
+ * the aploot format
+ *
+ * @param[in]       argc        Number of arguments
+ * @param[in]       argv        Command arguments
+ *                                  - argv[0] = Command name
+ *                                  - argv[1] = New aploot format
+ * @param[in]       txt         Full chat line text with the command stripped
+ *
+ * @retval          true        On success
+ * @retval          false       If argument format error
+ *
+ * @see aion_aploot_fmt_set()
+ */
+bool cmd_func_ap_format(int argc, char *argv[], char *txt)
+{
+    (void)argv;
+
+    if (argc < 2)
+    {
+        return false;
+    }
+
+    if (!aion_aploot_fmt_set(txt))
+    {
+        cmd_retval_set("Invalid format");
+        return true;
+    }
 
     cmd_retval_set(CMD_RETVAL_OK);
 
@@ -1094,6 +1136,35 @@ void cmd_exec(char *txt)
 }
 
 /**
+ * Sanitize the string @p str:
+ *  - Remove any leading spaces and newlines
+ *  - Use only the first line if it's a multi-line string
+ *  - Remove any trailing spaces and newlines
+ */
+char* cmd_sanitize(char *str)
+{
+    char *nl;
+
+    /* Skip blanks at the beginning of the line */
+    while (strchr(" \r\n\t", *str) != 0)
+    {
+        str++;
+    }
+
+    /* If this is a multiline string, use just 1 line */
+    nl = strchr("\r\n", *str);
+    if (nl != NULL) 
+    {
+        *nl = '\0';
+    }
+
+    /* Clear any extra blanks at the end of the line */
+    util_chomp(str);
+
+    return str;
+}
+
+/**
  * Poll the clipboard, if we get some text, pass it to @ref cmd_exec().
  */
 void cmd_poll(void)
@@ -1102,7 +1173,7 @@ void cmd_poll(void)
 
     if (clipboard_get_text(txt, sizeof(txt)))
     {
-        cmd_exec(txt);
+        cmd_exec(cmd_sanitize(txt));
     }
 }
 
