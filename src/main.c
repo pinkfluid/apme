@@ -283,10 +283,16 @@ bool apme_init(int argc, char* argv[])
 void apme_env(void)
 {
     char *default_name = getenv("APME_NAME");
+    char *aploot_format = getenv("APME_FORMAT");
 
     if (default_name != NULL)
     {
         aion_player_name_set(default_name);
+    }
+
+    if (aploot_format != NULL)
+    {
+        aion_aploot_fmt_set(aploot_format);
     }
 }
 
