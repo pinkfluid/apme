@@ -1047,6 +1047,11 @@ error:
  * - @@ap is replaced with @p apval
  * - @@name is replaced with @p name
  * - @@/  is replaced with a "/"
+ * 
+ * @param[in/out]       str     String that will be used to replace apooot keywords with real data
+ * @param[in]           strsz   Size of @p str
+ * @param[in]           name    Player name, this will replace @@name
+ * @param[in]           apval   AP value, this will replace @@ap
  */
 void aion_aploot_fmt_print(char *str, size_t strsz, char *name, uint32_t apval)
 {
