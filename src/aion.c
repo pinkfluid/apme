@@ -925,6 +925,8 @@ bool aion_group_get_aplootrights(char *stats, size_t stats_sz)
             util_strlcat(stats, " | PASS:", stats_sz);
             util_strlcat(stats, stats_pass, stats_sz);
         }
+#else
+        (void)have_pass_stats;
 #endif
     }
     else

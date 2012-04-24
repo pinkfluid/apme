@@ -648,7 +648,43 @@ size_t util_strlcpy(char *dst, const char *src, size_t dst_size)
 }
 
 /**
+ * Equivalent of the strncat() except it copies the string safely while
+ * padding it with '\0'
+ *
+ * @param[in,out]   dst         String that we're appending to
+ * @param[in]       src         String that will be appended
+ * @param[in]       dst_size    Maximum size of @p dst
+ * @param[in]       nchars      Maximum number of characters to copy from @p src
+ *
+ * @return
+ * Number of bytes stored to @p dst
+ */
+size_t util_strlncat(char *dst, const char *src, size_t dst_size, size_t nchars)
+{
+    size_t src_len = strlen(src);
+    size_t dst_len = strlen(dst);
+
+    if (dst_size == 0) return 0;
+    if (dst_len >= dst_size) assert(!"Invalid string passed to util_strlcat()");
+
+    if (src_len > nchars)
+    {
+        src_len = nchars;
+    }
+
+    if (dst_size < (src_len + dst_len + 1)) src_len = dst_size - dst_len - 1;
+
+    memcpy(dst + dst_len, src, src_len);
+
+    dst[dst_len + src_len] = '\0';
+
+    return dst_len + src_len;
+}
+
+/**
  * Equivalent of the strlcat() function from the *BSD world. See @ref util_strlcpy() for the rant.
+ *
+ * @note This function is just a wrapper for util_strlncat()
  *
  * @param[in,out]   dst         String that we're appending to
  * @param[in]       src         String that will be appended
@@ -659,19 +695,42 @@ size_t util_strlcpy(char *dst, const char *src, size_t dst_size)
  */
 size_t util_strlcat(char *dst, const char *src, size_t dst_size)
 {
-    size_t src_len = strlen(src);
-    size_t dst_len = strlen(dst);
+    return util_strlncat(dst, src, dst_size, strlen(src));
+}
 
-    if (dst_size == 0) return 0;
-    if (dst_len >= dst_size) assert(!"Invalid string passed to util_strlcat()");
+/**
+ * Stirng replace: Find all occurences of string @p findstr in string @p in and replace
+ * them with the string @p replacestr. Store the result to @p out
+ *
+ * @param[out]      out         Output buffer where the result will be stored
+ * @param[in]       outsz       Maximum size of the output buffer
+ * @param[in]       in          Input string, this string will be searched for @p findstr
+ * @param[in]       findstr     String to find
+ * @param[in]       replacestr  String to replace @p findstr with
+ */
+void util_strrep(char *out, size_t outsz, char *in,  char *findstr, char *replacestr)
+{
+    char *pstr;
+    char *pin;
 
-    if (dst_size < (src_len + dst_len + 1)) src_len = dst_size - dst_len - 1;
+    size_t rlen = strlen(replacestr);
+    size_t flen = strlen(findstr);
 
-    memcpy(dst + dst_len, src, src_len);
+    *out = '\0';
+    pstr = pin = in;
 
-    dst[dst_len + src_len] = '\0';
+    while ((pstr = strstr(pin, findstr)) != NULL)
+    {
+        /* Add everything before the matched pattern */
+        util_strlncat(out, pin, outsz, pstr - pin);
+        /* Add the replace pattern */
+        util_strlncat(out, replacestr, outsz, rlen);
+        /* Move the head forward */
+        pin = pstr + flen;
+    }
 
-    return dst_len + src_len;
+    /* Add the reminder of the string */
+    util_strlncat(out, pin, outsz, strlen(pin));
 }
 
 /**
