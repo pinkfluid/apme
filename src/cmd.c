@@ -311,7 +311,7 @@ bool cmd_func_ap_stats(int argc, char *argv[], char *txt)
     (void)argv;
     (void)txt;
 
-    if (!aion_group_get_stats(buf, sizeof(buf)))
+    if (!aion_aploot_stats(buf, sizeof(buf)))
     {
         return false;
     }
@@ -340,7 +340,7 @@ bool cmd_func_ap_loot(int argc, char *argv[], char *txt)
     (void)argv;
     (void)txt;
 
-    if (!aion_group_get_aplootrights(buf, sizeof(buf)))
+    if (!aion_aploot_rights(buf, sizeof(buf)))
     {
         return false;
     }

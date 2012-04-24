@@ -44,8 +44,10 @@ extern bool sys_perm_grant(char *path);
 extern FILE* sys_fopen_force(char *path, char *mode);
 
 extern char* util_strsep(char **pinputstr, const char *delim);
+extern size_t util_strlncat(char *dst, const char *src, size_t dst_size, size_t nchars);
 extern size_t util_strlcpy(char *dst, const char *src, size_t dst_size);
 extern size_t util_strlcat(char *dst, const char *src, size_t dst_size);
+extern void util_strrep(char *out, size_t outsz, char *in,  char *findstr, char *replacestr);
 extern void util_chomp(char *str);
 
 /* Registry stuff */

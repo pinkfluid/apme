@@ -156,6 +156,19 @@ static bool aion_invfull_exclude = false;
  */
 static uint32_t aion_ap_limit = 0;
 
+/**
+ * The aploot format 
+ */
+static struct
+{
+    char roll_header[AION_CHAT_SZ];
+    char roll_list[AION_CHAT_SZ];
+    char pass_header[AION_CHAT_SZ];
+    char pass_list[AION_CHAT_SZ];
+    char invfull_header[AION_CHAT_SZ];
+    char invfull_list[AION_CHAT_SZ];
+} aion_aploot_format;
+
 static void aion_player_init(struct aion_player *player, char *name);
 static struct aion_player* aion_player_alloc(char *charname);
 static struct aion_player* aion_group_find(char *charname);
@@ -177,6 +190,13 @@ bool aion_init(void)
     aion_player_init(&aion_player_self, AION_NAME_DEFAULT);
     /* Insert the player to the group list, he's not allowed to leave :P */
     LIST_INSERT_HEAD(&aion_group, &aion_player_self, apl_group);
+
+    /* Set the default aploot format */
+    if (!aion_aploot_fmt_parse(AION_APLOOT_FORMAT_DEFAULT))
+    {
+        con_printf("Aion default loot format failed! Impossible!\n");
+        return false;
+    }
 
     /* The player should always be in the current group */
     aion_group_join(AION_NAME_DEFAULT);
@@ -549,7 +569,7 @@ void aion_group_loot(char *charname, uint32_t itemid)
     {
         char aprolls[CHATLOG_CHAT_SZ];
 
-        aion_group_get_aplootrights(aprolls, sizeof(aprolls));
+        aion_aploot_rights(aprolls, sizeof(aprolls));
         aion_clipboard_set(aprolls);
         event_signal(EVENT_AION_LOOT_RIGHTS);
     }
@@ -811,7 +831,7 @@ uint32_t aion_aplimit_get(void)
  *
  * @bug This function never returns false, should it be void?
  */
-bool aion_group_get_stats(char *stats, size_t stats_sz)
+bool aion_aploot_stats(char *stats, size_t stats_sz)
 {
     char curstat[64];
     struct aion_player *player;
@@ -828,6 +848,226 @@ bool aion_group_get_stats(char *stats, size_t stats_sz)
 }
 
 /**
+ * Set the aploot format
+ *
+ * The @p fmt parameter accepts several values:
+ *
+ * - "short" or "s"; this will use the AION_APLOOT_FORMAT_SHORT format
+ * - "default" or "d"; this will use the AION_APLOOT_FORMAT_DEFAULT format
+ * - "long" or "l"; this will use the AION_APLOOT_FORMAT_LONG format
+ * - "medium" or "m"; this will use the AION_APLOOT_FORMAT_MED format
+ * - Alternatively, if @p fmt starts with a '/' the user can define a custom format
+ *
+ * @param[in]       fmt     Aploot format, descriptive
+ *
+ * @retval          true    If setting the format was successfull
+ * @retval          false   If @p fmt was invalid
+ */
+bool aion_aploot_fmt_set(char *fmt)
+{
+    bool retval;
+
+    switch (*fmt)
+    {
+        /* Default format */
+        case 'd':
+            retval = aion_aploot_fmt_parse(AION_APLOOT_FORMAT_DEFAULT);
+            if (!retval)
+            {
+                con_printf("FATAL: Error parsing the default aploot fromat!\n");
+                return false;
+            }
+            break;
+
+        /* Short format */
+        case 's':
+            retval = aion_aploot_fmt_parse(AION_APLOOT_FORMAT_SHORT);
+            break;
+
+        /* Medium format */
+        case 'm':
+            retval = aion_aploot_fmt_parse(AION_APLOOT_FORMAT_MED);
+            break;
+
+        /* Long format */
+        case 'l':
+            retval = aion_aploot_fmt_parse(AION_APLOOT_FORMAT_LONG);
+            break;
+
+        /* Custom format */
+        case '/':
+            retval = aion_aploot_fmt_parse(fmt);
+            break;
+
+        default:
+            retval = false;
+            break;
+    }
+
+    if (!retval)
+    {
+        con_printf("Error setting aploot format to '%s', reverting back default.\n", fmt);
+        retval = aion_aploot_fmt_parse(AION_APLOOT_FORMAT_DEFAULT);
+        if (!retval)
+        {
+            con_printf("Reverting to default format failed! This is really bad.\n");
+            /* This is really bad, just dump the console */
+            con_dump();
+        }
+
+        return false;
+    }
+
+    con_printf("APLOOT format is now '%s'\n", fmt);
+
+    return true;
+}
+
+/**
+ * Parse the aploot format string and set the global structures to use it
+ *
+ * This function accepts a aploot format string, parses it and initialies the @ref aion_aploot_format
+ * structure.
+ *
+ * The aploot format string is as follows:
+ *
+ * /ROLL_HDR/ROLL_LIST/PASS_HDR/PASS_LIST/INVFULL_HDR/INVFULL_LIST/
+ *
+ * This is how the @ref aion_aploot_format members are initialized:
+ * - ROLL_HDR  -> aion_aploot_format.roll_header
+ * - ROLL_LIST -> aion_aploot_format.roll_list
+ * - PASS_HDR  -> aion_aploot_format.pass_header
+ * - PASS_LIST -> aion_aploot_format.pass_list
+ * - INVFULL_HDR -> aion_aploot_format.invfull_header
+ * - INVFULL_LIST -> aion_aploot_format.invfull_list
+ *
+ * @param[in]       fmt     Aploot format
+ *
+ * @retval          true    If @p fmt was successfully parsed
+ * @retval          false   If @p fmt is invalid
+ */
+bool aion_aploot_fmt_parse(char *fmt)
+{
+    char cfmt[AION_CHAT_SZ];
+    char *str;
+
+    /* strsep() modifies the string, make a local copy */
+    util_strlcpy(cfmt, fmt, sizeof(cfmt));
+
+    int index = 0;
+    char *pfmt = cfmt;
+    while ((str = strsep(&pfmt, "/")) != NULL)
+    {
+        switch (index)
+        {
+            case 0:
+                /* Field 0, must be empty string since format starts with "/" */
+                if (str[0] != '\0')
+                {
+                    goto error;
+                }
+                break;
+
+            case 1:
+                /* Parameter #1: Roll Header */
+                util_strlcpy(aion_aploot_format.roll_header,
+                             str,
+                             sizeof(aion_aploot_format.roll_header));
+                break;
+
+            case 2:
+                /* Parameter #2: Roll List */
+                util_strlcpy(aion_aploot_format.roll_list,
+                              str,
+                              sizeof(aion_aploot_format.roll_list));
+                break;
+
+            case 3:
+                /* Parameter #3: Pass Header */
+                util_strlcpy(aion_aploot_format.pass_header,
+                             str,
+                             sizeof(aion_aploot_format.pass_header));
+                break;
+
+            case 4:
+                /* Parameter #4: Pass List */
+                util_strlcpy(aion_aploot_format.pass_list,
+                             str,
+                             sizeof(aion_aploot_format.pass_list));
+                break;
+
+            case 5:
+                /* Parameter #5: Invfull Header */
+                util_strlcpy(aion_aploot_format.invfull_header,
+                             str,
+                             sizeof(aion_aploot_format.invfull_header));
+                break;
+
+            case 6:
+                /* Parameter #6: Invfull List */
+                util_strlcpy(aion_aploot_format.invfull_list,
+                             str,
+                             sizeof(aion_aploot_format.invfull_list));
+                break;
+
+            case 7:
+                /* And ending '/' generates an empty field, check if it is really empty */
+                if (str[0] != '\0')
+                {
+                    goto error;
+                }
+                break;
+
+            default:
+                con_printf("String somewhat long\n");
+                goto error;
+        }
+
+        index++;
+    }
+
+    con_printf("AP loot format: '%s'\n", fmt);
+    con_printf("    Roll header: '%s'\n", aion_aploot_format.roll_header);
+    con_printf("    Roll list: '%s'\n",   aion_aploot_format.roll_list);
+    con_printf("    Pass header: '%s'\n", aion_aploot_format.pass_header);
+    con_printf("    Pass list: '%s'\n",   aion_aploot_format.pass_list);
+    con_printf("    Invf header: '%s'\n", aion_aploot_format.invfull_header);
+    con_printf("    Invf list: '%s'\n",   aion_aploot_format.invfull_list);
+
+    return true;
+
+error:
+    con_printf("Invalid aploot format: %s\n", fmt);
+    return false;
+}
+
+/**
+ * Format the string str and replace the aploot keywords with real values
+ *
+ * - @@ap is replaced with @p apval
+ * - @@name is replaced with @p name
+ * - @@/  is replaced with a "/"
+ */
+void aion_aploot_fmt_print(char *str, size_t strsz, char *name, uint32_t apval)
+{
+    char out[AION_CHAT_SZ];
+
+    /* Replace @/ with / */
+    util_strrep(out, sizeof(out), str, "@/", "/");
+    util_strlcpy(str, out, strsz);
+
+    /* Replace @name with the player name */
+    util_strrep(out, sizeof(out), str, "@name", name);
+    util_strlcpy(str, out, strsz);
+
+    /* Replace @ap with the AP value */
+    char apstr[16];
+    snprintf(apstr, sizeof(apstr), "%d", apval);
+    util_strrep(out, sizeof(out), str, "@ap", apstr);
+    util_strlcpy(str, out, strsz);
+}
+
+/**
  * Get the current AP loot rights in text format.
  *
  * @note This is ued by ?aploot
@@ -839,7 +1079,7 @@ bool aion_group_get_stats(char *stats, size_t stats_sz)
  *
  * @bug This function never returns false, should it be void?
  */
-bool aion_group_get_aplootrights(char *stats, size_t stats_sz)
+bool aion_aploot_rights(char *stats, size_t stats_sz)
 {
     uint32_t lowest_ap;
     struct aion_player *player;
@@ -888,18 +1128,25 @@ bool aion_group_get_aplootrights(char *stats, size_t stats_sz)
             continue;
         }
 
-        have_roll_stats = true;
-        /* Create the " Player:AP" string (notice the whitespace at the beginning) */
-        snprintf(pstr, sizeof(pstr), " %s[%d]", player->apl_name, player->apl_apvalue);
-
         /* If the player has the lowest AP, put it on the roll stats, otherwise on the pass stats */
         if (player->apl_apvalue <= lowest_ap)
         {
+            have_roll_stats = true;
+
+            /* Format the roll list entry */
+            util_strlcpy(pstr, aion_aploot_format.roll_list, sizeof(pstr));
+            aion_aploot_fmt_print(pstr, sizeof(pstr), player->apl_name, player->apl_apvalue);
+
             util_strlcat(stats_roll, pstr, sizeof(stats_roll));
         }
         else
         {
             have_pass_stats = true;
+
+            /* Format the pass list entry */
+            util_strlcpy(pstr, aion_aploot_format.pass_list, sizeof(pstr));
+            aion_aploot_fmt_print(pstr, sizeof(pstr), player->apl_name, player->apl_apvalue);
+
             util_strlcat(stats_pass, pstr, sizeof(stats_pass));
         }
     }
@@ -909,25 +1156,18 @@ bool aion_group_get_aplootrights(char *stats, size_t stats_sz)
         /* If we're using the AP limit, display the AP limit in the roll stats */
         if (aion_ap_limit <= 0)
         {
-            util_strlcat(stats, "ROLL:", stats_sz);
+            util_strlcpy(pstr, aion_aploot_format.roll_header, sizeof(pstr));
+            aion_aploot_fmt_print(pstr, sizeof(pstr), "(none)", lowest_ap);
         }
         else
         {
-            snprintf(pstr, sizeof(pstr), "ROLL (<%dAP):", aion_ap_limit);
-            util_strlcat(stats, pstr, stats_sz);
+            /* @todo Define a beter format for this, but I don't believe this is widely used. */
+            snprintf(pstr, sizeof(pstr), "%s (<%dAP)", aion_aploot_format.roll_header, aion_ap_limit);
+            aion_aploot_fmt_print(pstr, sizeof(pstr), "(none)", lowest_ap);
         }
 
+        util_strlcat(stats, pstr, stats_sz);
         util_strlcat(stats, stats_roll, stats_sz);
-
-#if 0
-        if (have_pass_stats)
-        {
-            util_strlcat(stats, " | PASS:", stats_sz);
-            util_strlcat(stats, stats_pass, stats_sz);
-        }
-#else
-        (void)have_pass_stats;
-#endif
     }
     else
     {
@@ -938,10 +1178,25 @@ bool aion_group_get_aplootrights(char *stats, size_t stats_sz)
         util_strlcat(stats, "Free for All", stats_sz);
     }
 
+    /* Display pass statistics if we have them */
+    if (have_pass_stats)
+    {
+        util_strlcpy(pstr, aion_aploot_format.pass_header, sizeof(pstr));
+        aion_aploot_fmt_print(pstr, sizeof(pstr), "(none)", 0);
+
+        /* Append the pass header and pass stats */
+        util_strlcat(stats, pstr, stats_sz);
+        util_strlcat(stats, stats_pass, stats_sz);
+    }
+
     /* Show inventory full statistics last */
     if (have_invfull_stats)
     {
-        util_strlcat(stats, " | INV FULL:", stats_sz);
+        util_strlcpy(pstr, aion_aploot_format.invfull_header, sizeof(pstr));
+        aion_aploot_fmt_print(pstr, sizeof(pstr), "(none)", 0);
+
+        /* Append the invfull header and stats */
+        util_strlcat(stats, pstr, stats_sz);
         util_strlcat(stats, stats_invfull, stats_sz);
     }
 

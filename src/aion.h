@@ -53,6 +53,15 @@
 /** This is the number characters that Aion allowts to be paste */
 #define AION_CLIPBOARD_MAX 255
 
+/** Short aploot format */
+#define AION_APLOOT_FORMAT_SHORT    "/ROLL(@ap AP):/ @name/// | INV FULL:/ @name/"
+/** Medium aploot format, show pass list, without individual AP value */
+#define AION_APLOOT_FORMAT_MED      "/ROLL(@ap AP):/ @name/ | PASS/ @name/ | INV FULL:/ @name/"
+/** Long aploot format, show pass list, with individual AP format */
+#define AION_APLOOT_FORMAT_LONG     "/ROLL:/ @name[@ap]/ | PASS:/ @name[@ap]/ | INV FULL:/ @name/"
+/** Default format */
+#define AION_APLOOT_FORMAT_DEFAULT  AION_APLOOT_FORMAT_SHORT
+
 extern bool aion_init(void);
 extern bool aion_clipboard_set(char *text);
 
@@ -114,8 +123,10 @@ extern bool aion_group_end(struct aion_group_iter *iter);
 extern void aion_translate(char *txt, uint32_t language);
 extern void aion_rtranslate(char *txt, uint32_t language);
 
-extern bool aion_group_get_stats(char *stats, size_t stats_sz);
-extern bool aion_group_get_aplootrights(char *stats, size_t stats_sz);
+extern bool aion_aploot_stats(char *stats, size_t stats_sz);
+extern bool aion_aploot_rights(char *stats, size_t stats_sz);
+extern bool aion_aploot_fmt_parse(char *fmt);
+extern bool aion_aploot_fmt_set(char *fmt);
 
 extern char* aion_default_install_path(void);
 extern bool aion_chatlog_is_enabled(bool *isenabled);

@@ -173,7 +173,7 @@ void apme_screen_update(void)
     term_setcolor(TERM_COLOR_RESET);
     printf("\n\n");
 
-    if (aion_group_get_aplootrights(buf, sizeof(buf)))
+    if (aion_aploot_rights(buf, sizeof(buf)))
     {
         term_setcolor(TERM_FG_MAGENTA);
         printf("Current AP Relic %s\n", buf);
