@@ -189,6 +189,12 @@ void apme_screen_update(void)
     fflush(stdout);
 }
 
+/**
+ * Respawn a new instance of the current executable with Admin privileges. If this operation
+ * is successfull, the current process will terminate.
+ *
+ * @note This function will trigger the UAC prompt.
+ */
 void apme_sys_elevate(void)
 {
     apme_prompt("APme was unable to open the system.ovr or Chat.log file due to restricted\npermissions. In order to successfully open these files it needs administrator\nprivileges. Note, that APme will will grant full control of the system.ovr and Chat.log file to Everyone.\n\nPress ENTER to continue", "");
