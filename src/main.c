@@ -283,7 +283,7 @@ bool apme_init(int argc, char* argv[])
 void apme_env(void)
 {
     char *default_name = getenv("APME_NAME");
-    char *aploot_format = getenv("APME_FORMAT");
+    char *aploot_format = getenv("APME_APFORMAT");
 
     if (default_name != NULL)
     {
