@@ -75,7 +75,16 @@
 #define RE_GROUP_PLAYER_DISCONNECT  305         /**< Some player was disconnected           */
 #define RE_GROUP_PLAYER_KICK        306         /**< A player was kicked from the group     */
 #define RE_GROUP_PLAYER_OFFLINE     307         /**< A player in the group went offline     */
-#define RE_GROUP_DISBAND            310         /**< The group was disbanded                */
+#define RE_GROUP_DISBAND            308         /**< The group was disbanded                */
+
+#define RE_ALI_SELF_JOIN            350         /**< The player joined a group              */
+#define RE_ALI_SELF_LEAVE           351         /**< The player left the group              */
+#define RE_ALI_PLAYER_JOIN          353         /**< Some other player joined the group     */
+#define RE_ALI_PLAYER_LEAVE         354         /**< Some other player left the group       */
+#define RE_ALI_PLAYER_DISCONNECT    355         /**< Some player was disconnected           */
+#define RE_ALI_PLAYER_KICK          356         /**< A player was kicked from the group     */
+#define RE_ALI_PLAYER_OFFLINE       357         /**< A player in the group went offline     */
+#define RE_ALI_DISBAND              358         /**< The group was disbanded                */
 
 #define RE_CHAT_SELF                400         /**< Chat from the player itself            */
 #define RE_CHAT_GENERAL             401         /**< General chat                           */
@@ -156,6 +165,34 @@ struct regeng re_aion[] =
     {
         .re_id  = RE_GROUP_DISBAND,
         .re_exp = "^: The group has been disbanded\\.",
+    },
+    {
+        .re_id  = RE_ALI_SELF_JOIN,
+        .re_exp = "^: You have joined the alliance\\.",
+    },
+    {
+        .re_id  = RE_ALI_SELF_LEAVE,
+        .re_exp = "^: You have left the alliance\\.",
+    },
+    {
+        .re_id  = RE_ALI_PLAYER_JOIN,
+        .re_exp = "^: " RE_NAME " has joined the alliance\\.",
+    },
+    {
+        .re_id  = RE_ALI_PLAYER_LEAVE,
+        .re_exp = "^: " RE_NAME " has left the alliance\\.",
+    },
+    {
+        .re_id  = RE_ALI_PLAYER_KICK,
+        .re_exp = "^: " RE_NAME " has been kicked out of the alliance\\.",
+    },
+    {
+        .re_id  = RE_ALI_PLAYER_OFFLINE,
+        .re_exp = "^: " RE_NAME " has been offline for too long and had been automatically kicked out of the alliance\\."
+    },
+    {
+        .re_id  = RE_ALI_DISBAND,
+        .re_exp = "^: The alliance has been disbanded\\.",
     },
     {
         .re_id  = RE_CHAT_GENERAL,
@@ -525,15 +562,19 @@ void chatlog_parse(uint32_t re_id, const char* matchstr, regmatch_t *rematch, si
             break;
 
         case RE_GROUP_SELF_JOIN:
+        case RE_ALI_SELF_JOIN:
             parse_action_group_self_join();
             break;
 
         case RE_GROUP_SELF_LEAVE:
         case RE_GROUP_DISBAND:
+        case RE_ALI_SELF_LEAVE:
+        case RE_ALI_DISBAND:
             parse_action_group_self_leave();
             break;
 
         case RE_GROUP_PLAYER_JOIN:
+        case RE_ALI_PLAYER_JOIN:
             re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
             parse_action_group_player_join(name);
             break;
@@ -542,6 +583,10 @@ void chatlog_parse(uint32_t re_id, const char* matchstr, regmatch_t *rematch, si
         case RE_GROUP_PLAYER_LEAVE:
         case RE_GROUP_PLAYER_KICK:
         case RE_GROUP_PLAYER_OFFLINE:
+        case RE_ALI_PLAYER_DISCONNECT:
+        case RE_ALI_PLAYER_LEAVE:
+        case RE_ALI_PLAYER_KICK:
+        case RE_ALI_PLAYER_OFFLINE:
             re_strlcpy(name, matchstr, sizeof(name), rematch[1]);
             parse_action_group_player_leave(name);
             break;
