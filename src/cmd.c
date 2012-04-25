@@ -90,6 +90,7 @@ static cmd_func_t cmd_func_ap_limit;        /**< Declaration of cmd_ap_limit()  
 static cmd_func_t cmd_func_ap_format;       /**< Declaration of cmd_ap_format()         */
 static cmd_func_t cmd_func_group_add;       /**< Declaration of cmd_func_group_add()    */
 static cmd_func_t cmd_func_group_del;       /**< Declaration of cmd_func_group_del()    */
+static cmd_func_t cmd_func_group_leave;     /**< Declaration of cmd_func_group_leave()  */
 static cmd_func_t cmd_func_elyos;           /**< Declaration of cmd_func_elyos()        */
 static cmd_func_t cmd_func_asmo;            /**< Declaration of cmd_func_asmo()         */
 static cmd_func_t cmd_func_relyos;          /**< Declaration of cmd_func_relyos()       */
@@ -160,6 +161,10 @@ struct cmd_entry cmd_list[] =
     {
         .cmd_command    = "grdel",
         .cmd_func       = cmd_func_group_del,
+    },
+    {
+        .cmd_command    = "leave",
+        .cmd_func       = cmd_func_group_leave,
     },
     {
         .cmd_command    = "elyos",
@@ -488,7 +493,7 @@ bool cmd_func_ap_format(int argc, char *argv[], char *txt)
 }
 
 /**
- * This function implements the ?gradd command, which manually adds a player
+ * This function implements the ?gradd command, which manually adds a character
  * to the current group if it is not autodetected automatically
  *
  * @param[in]       argc        Number of arguments
@@ -515,7 +520,7 @@ bool cmd_func_group_add(int argc, char *argv[], char *txt)
 }
 
 /**
- * This function implements the ?grdeel command, which manually removes a player
+ * This function implements the ?grdeel command, which manually removes a character 
  * from the current group if it is not autodetected automatically
  *
  * @param[in]       argc        Number of arguments
@@ -541,6 +546,30 @@ bool cmd_func_group_del(int argc, char *argv[], char *txt)
     return true;
 }
 
+/**
+ * This function implements the ?leave command. The player should use
+ * this to leave the a group if it's not autodetected.
+ *
+ * @param[in]       argc        Number of arguments
+ * @param[in]       argv        Command arguments
+ *                                  - argv[0] = Command name
+ *                                  - argv[1+] = Players to remove from the group
+ * @param[in]       txt         Full chat line text with the command stripped
+ *
+ * @retval          true        Always returns true
+ */
+bool cmd_func_group_leave(int argc, char *argv[], char *txt)
+{
+    (void)argc;
+    (void)argv;
+    (void)txt;
+
+    aion_group_leave(AION_NAME_DEFAULT);
+
+    cmd_retval_set(CMD_RETVAL_OK);
+
+    return true;
+}
 /**
  * Generic translate functions, used by @ref cmd_func_elyos() 
  * and @ref cmd_func_asmo

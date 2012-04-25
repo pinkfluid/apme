@@ -146,6 +146,11 @@ struct help_entry help_commands[] =
         "Remove <PLAYER> from your group, in case it is not autodetected. Removing youreslf (?grdel You) disbands the group."
     },
     {
+        "leave",
+        "?leave",
+        "Leave the current group; use this command if APme did not detect automatically that the group was disbanded."
+    },
+    {
         "elyos",
         "?elyos <TEXT>",
         "Translate <TEXT> to elyos/from asmodian."
