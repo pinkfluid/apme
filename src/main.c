@@ -176,7 +176,7 @@ void apme_screen_update(void)
     if (aion_aploot_rights(buf, sizeof(buf)))
     {
         term_setcolor(TERM_FG_MAGENTA);
-        printf("Current AP Relic %s\n", buf);
+        printf("Current AP loot info:\n%s\n", buf);
     }
     term_setcolor(TERM_COLOR_RESET);
 
