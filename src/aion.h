@@ -54,9 +54,9 @@
 #define AION_CLIPBOARD_MAX 255
 
 /** Short aploot format */
-#define AION_APLOOT_FORMAT_SHORT    "/ROLL(@ap AP):/ @name/// | INV FULL:/ @name/"
+#define AION_APLOOT_FORMAT_SHORT    "/ROLL (@ap AP):/ @name/// | INV FULL:/ @name/"
 /** Medium aploot format, show pass list, without individual AP value */
-#define AION_APLOOT_FORMAT_MED      "/ROLL(@ap AP):/ @name/ | PASS/ @name/ | INV FULL:/ @name/"
+#define AION_APLOOT_FORMAT_MED      "/ROLL (@ap AP):/ @name/ | PASS/ @name/ | INV FULL:/ @name/"
 /** Long aploot format, show pass list, with individual AP format */
 #define AION_APLOOT_FORMAT_LONG     "/ROLL:/ @name[@ap]/ | PASS:/ @name[@ap]/ | INV FULL:/ @name/"
 /** Default format */
