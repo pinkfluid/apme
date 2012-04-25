@@ -116,6 +116,11 @@ struct help_entry help_commands[] =
         "Show current abyss relics loot rights."
     },
     {
+        "apformat",
+        "?apformat short|medium|long or custom",
+        "Changes the format of the ?aploot command. The custom format is /ROLL_H/ROLL_L/PASS_H/PASS_L/INV_H/INV_L/ where H is the header and L the list. @name s replaced by the player name and @ap by the AP value.",
+    },
+    {
         "apreset",
         "?apreset",
         "For all players, reset their accumulated AP points to 0.",

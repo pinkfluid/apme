@@ -30,6 +30,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+#include <ctype.h>
 
 #include "bsdqueue/queue.h"
 
@@ -867,7 +868,7 @@ bool aion_aploot_fmt_set(char *fmt)
 {
     bool retval;
 
-    switch (*fmt)
+    switch (tolower(*fmt))
     {
         /* Default format */
         case 'd':
