@@ -58,6 +58,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__aion.html#ga8652f72d7d7053d83d97fc8f9f7e9f12">AION_SYSOVR_FILE</a>&nbsp;&nbsp;&nbsp;&quot;system.ovr&quot;</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__aion.html#ga636d963f9f2c27dc125c2c09970ccdec">AION_SYSOVR_CHATLOG</a>&nbsp;&nbsp;&nbsp;&quot;g_chatlog&quot;</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__aion.html#ga19b04902efac8bca8968dc9cdecc712f">AION_CLIPBOARD_MAX</a>&nbsp;&nbsp;&nbsp;255</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__aion.html#ga02af10dd219dcb0eeb58d295243e5891">AION_APLOOT_FORMAT_SHORT</a>&nbsp;&nbsp;&nbsp;&quot;/ROLL (@ap AP):/ @name/&quot; &quot;/&quot; &quot;/ | INV FULL:/ @name/&quot;</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__aion.html#ga74e5ac51522b31aee6c7a0654acbf513">AION_APLOOT_FORMAT_MED</a>&nbsp;&nbsp;&nbsp;&quot;/ROLL (@ap AP):/ @name/ | PASS/ @name/ | INV FULL:/ @name/&quot;</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__aion.html#gaeb11bbe7cde816b53bc6296875917dea">AION_APLOOT_FORMAT_LONG</a>&nbsp;&nbsp;&nbsp;&quot;/ROLL:/ @name[@ap]/ | PASS:/ @name[@ap]/ | INV FULL:/ @name/&quot;</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__aion.html#ga6d5188f884f2a406aa916956fcd87e3e">AION_APLOOT_FORMAT_DEFAULT</a>&nbsp;&nbsp;&nbsp;AION_APLOOT_FORMAT_SHORT</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__aion.html#ga85f186961356f495e021962854dc1d48">LANG_ELYOS</a>&nbsp;&nbsp;&nbsp;1</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__aion.html#ga754885079bd6429b38a4c9a94daccf34">LANG_ASMODIAN</a>&nbsp;&nbsp;&nbsp;2</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__aion.html#ga11e1f6fbd0b781137532d198e2e87ac2">LANG_KRALL</a>&nbsp;&nbsp;&nbsp;3</td></tr>
@@ -90,8 +94,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__aion.html#ga3eadda310e27904c011aa5a99b814389">aion_group_end</a> (struct <a class="el" href="structaion__group__iter.html">aion_group_iter</a> *iter)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__aion.html#gab379d6504667d8d1c464fffdf8256801">aion_translate</a> (char *txt, uint32_t language)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__aion.html#ga69ab025a85c673f4328877591a4f0a19">aion_rtranslate</a> (char *txt, uint32_t language)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__aion.html#ga369920bcff26bb0ab082c3f0cd37ab33">aion_group_get_stats</a> (char *stats, size_t stats_sz)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__aion.html#gae09fad02582bb3ab772e6a8b6bdc9b6c">aion_group_get_aplootrights</a> (char *stats, size_t stats_sz)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__aion.html#ga7fbbe10b1075b040f578e3e846b51959">aion_aploot_stats</a> (char *stats, size_t stats_sz)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__aion.html#ga6432a1f0f6b616b474a3ecdd6185fe6f">aion_aploot_rights</a> (char *stats, size_t stats_sz)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__aion.html#gae3e2cd675def4ba46eefc5f562d77573">aion_aploot_fmt_parse</a> (char *fmt)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__aion.html#ga87603c38fc7818808385b609344b990f">aion_aploot_fmt_set</a> (char *fmt)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__aion.html#ga2f35015ba3149c23026895d635f11058">aion_default_install_path</a> (void)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__aion.html#ga73469190873d7f0c6e2a5424f0adec2a">aion_chatlog_is_enabled</a> (bool *isenabled)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__aion.html#ga14578ada7029747f348e25d71c45ecdb">aion_chatlog_enable</a> (void)</td></tr>
@@ -114,7 +120,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </iframe>
 </div>
 
-<hr class="footer"/><address style="text-align: right;"><small>Generated on Tue Apr 3 22:50:16 2012 by&nbsp;
+<hr class="footer"/><address style="text-align: right;"><small>Generated on Thu Apr 26 14:11:28 2012 by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.6.3 </small></address>
 </body>

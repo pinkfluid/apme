@@ -50,10 +50,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table border="0" cellpadding="0" cellspacing="0">
 <tr><td colspan="2"><p><a class="anchor" id="amgrpd41d8cd98f00b204e9800998ecf8427e"></a> </p>
 <br/><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="event_8h.html#a430b444c74dd3fd1472a31714ec5f1ce">event_type</a> { <a class="el" href="event_8h.html#a430b444c74dd3fd1472a31714ec5f1ceabaea3727b6e8c0bae1245f8ee36af75c">EVENT_AION_GROUP_UPDATE</a> =  0, 
-<a class="el" href="event_8h.html#a430b444c74dd3fd1472a31714ec5f1ceadf933eb7601bfa5a4a78ae586a115423">EVENT_AION_AP_UPDATE</a> =  1, 
-<a class="el" href="event_8h.html#a430b444c74dd3fd1472a31714ec5f1cea3151d5fc3b9b69d60ebf606f5c2781a8">EVENT_AION_INVENTORY_FULL</a> =  2, 
-<a class="el" href="event_8h.html#a430b444c74dd3fd1472a31714ec5f1cea8fcd282bbeb1dcecfa92f86ed15cad20">EVENT_AION_LOOT_RIGHTS</a> =  3
+<tr><td class="memItemLeft" align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="event_8h.html#a430b444c74dd3fd1472a31714ec5f1ce">event_type</a> { <br/>
+&nbsp;&nbsp;<a class="el" href="event_8h.html#a430b444c74dd3fd1472a31714ec5f1cea25435bc1b35655ab4306455fbb36bbf5">EVENT_SYS_ELEVATE_REQUEST</a> =  0, 
+<a class="el" href="event_8h.html#a430b444c74dd3fd1472a31714ec5f1ceabaea3727b6e8c0bae1245f8ee36af75c">EVENT_AION_GROUP_UPDATE</a> =  100, 
+<a class="el" href="event_8h.html#a430b444c74dd3fd1472a31714ec5f1ceadf933eb7601bfa5a4a78ae586a115423">EVENT_AION_AP_UPDATE</a> =  101, 
+<a class="el" href="event_8h.html#a430b444c74dd3fd1472a31714ec5f1cea3151d5fc3b9b69d60ebf606f5c2781a8">EVENT_AION_INVENTORY_FULL</a> =  102, 
+<br/>
+&nbsp;&nbsp;<a class="el" href="event_8h.html#a430b444c74dd3fd1472a31714ec5f1cea8fcd282bbeb1dcecfa92f86ed15cad20">EVENT_AION_LOOT_RIGHTS</a> =  103
+<br/>
  }</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">typedef void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="event_8h.html#a02a4d91d823fa3cdfcc68533a63b671d">event_callback_t</a> (enum <a class="el" href="event_8h.html#a430b444c74dd3fd1472a31714ec5f1ce">event_type</a> ev)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__event.html#ga2b01a82da3a6ef8c7101e10a546d7325">event_register</a> (<a class="el" href="event_8h.html#a02a4d91d823fa3cdfcc68533a63b671d">event_callback_t</a> *event_cb)</td></tr>
@@ -88,6 +92,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="memdoc">
 <p>Define the event types </p>
 <dl><dt><b>Enumerator: </b></dt><dd><table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em><a class="anchor" id="a430b444c74dd3fd1472a31714ec5f1cea25435bc1b35655ab4306455fbb36bbf5"></a><!-- doxytag: member="EVENT_SYS_ELEVATE_REQUEST" ref="a430b444c74dd3fd1472a31714ec5f1cea25435bc1b35655ab4306455fbb36bbf5" args="" -->EVENT_SYS_ELEVATE_REQUEST</em>&nbsp;</td><td>
+<p>Request Admin Rights </p>
+</td></tr>
 <tr><td valign="top"><em><a class="anchor" id="a430b444c74dd3fd1472a31714ec5f1ceabaea3727b6e8c0bae1245f8ee36af75c"></a><!-- doxytag: member="EVENT_AION_GROUP_UPDATE" ref="a430b444c74dd3fd1472a31714ec5f1ceabaea3727b6e8c0bae1245f8ee36af75c" args="" -->EVENT_AION_GROUP_UPDATE</em>&nbsp;</td><td>
 <p>Group has been updated </p>
 </td></tr>
@@ -121,7 +128,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </iframe>
 </div>
 
-<hr class="footer"/><address style="text-align: right;"><small>Generated on Tue Apr 3 22:50:16 2012 by&nbsp;
+<hr class="footer"/><address style="text-align: right;"><small>Generated on Thu Apr 26 14:11:28 2012 by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.6.3 </small></address>
 </body>

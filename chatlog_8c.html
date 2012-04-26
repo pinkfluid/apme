@@ -50,6 +50,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <code>#include &lt;stdlib.h&gt;</code><br/>
 <code>#include &lt;stdio.h&gt;</code><br/>
 <code>#include &lt;string.h&gt;</code><br/>
+<code>#include &lt;errno.h&gt;</code><br/>
 <code>#include &lt;assert.h&gt;</code><br/>
 <code>#include &lt;pcreposix.h&gt;</code><br/>
 <code>#include &quot;<a class="el" href="regeng_8h_source.html">regeng.h</a>&quot;</code><br/>
@@ -75,7 +76,15 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga2ecb197e692972d386d5acb49fda03a1">RE_GROUP_PLAYER_DISCONNECT</a>&nbsp;&nbsp;&nbsp;305</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#gab93cd46ba25e0b0a493cf734bfc54c81">RE_GROUP_PLAYER_KICK</a>&nbsp;&nbsp;&nbsp;306</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga0eff943ba3af8a1e838d4af9912b82c1">RE_GROUP_PLAYER_OFFLINE</a>&nbsp;&nbsp;&nbsp;307</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga08c8c79c94ad3847fc7050895c958e5b">RE_GROUP_DISBAND</a>&nbsp;&nbsp;&nbsp;310</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga08c8c79c94ad3847fc7050895c958e5b">RE_GROUP_DISBAND</a>&nbsp;&nbsp;&nbsp;308</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga96c3ae25aeec525a242101c772432250">RE_ALI_SELF_JOIN</a>&nbsp;&nbsp;&nbsp;350</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga5cf624c47dafff76b42d4288dd5155e5">RE_ALI_SELF_LEAVE</a>&nbsp;&nbsp;&nbsp;351</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#gadec6a3a011c46a151fd35e6af0f60eff">RE_ALI_PLAYER_JOIN</a>&nbsp;&nbsp;&nbsp;353</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#gaebf2bd6310b1587e09a7ffc12a90140e">RE_ALI_PLAYER_LEAVE</a>&nbsp;&nbsp;&nbsp;354</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga046e1c3b12f26eb981ab5e6c7d621d7d">RE_ALI_PLAYER_DISCONNECT</a>&nbsp;&nbsp;&nbsp;355</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#gaabf67d4322f586056bf79e027b02f5cb">RE_ALI_PLAYER_KICK</a>&nbsp;&nbsp;&nbsp;356</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#gaf196a7f3a5858c1046343e1189cc08e6">RE_ALI_PLAYER_OFFLINE</a>&nbsp;&nbsp;&nbsp;357</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga478c5b0101c85b325b9e31002f5111b6">RE_ALI_DISBAND</a>&nbsp;&nbsp;&nbsp;358</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga57a201cbb53f4cec1dae327fd712e0c1">RE_CHAT_SELF</a>&nbsp;&nbsp;&nbsp;400</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#gaa48da3ab900af4b71ec0b8aac0e6e85a">RE_CHAT_GENERAL</a>&nbsp;&nbsp;&nbsp;401</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga2c898beb57bc62c8217648877dac9c5a">RE_CHAT_WHISPER</a>&nbsp;&nbsp;&nbsp;402</td></tr>
@@ -140,7 +149,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </iframe>
 </div>
 
-<hr class="footer"/><address style="text-align: right;"><small>Generated on Tue Apr 3 22:50:16 2012 by&nbsp;
+<hr class="footer"/><address style="text-align: right;"><small>Generated on Thu Apr 26 14:11:28 2012 by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.6.3 </small></address>
 </body>

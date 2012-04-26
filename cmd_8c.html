@@ -76,6 +76,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <tr><td colspan="2"><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">static bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#ga6a7e2e0c163862b2e026f1ed2def0181">cmd_func_translate</a> (char *txt, int langid)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">static bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#gae285bcba4577575fc3aed230c0636aae">cmd_func_rtranslate</a> (char *txt, int langid)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">static char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#ga463b9766e569dac33604f2b79d7b6cf7">cmd_sanitize</a> (char *str)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#ga9cfb3a69cda158123d9a83762337ab6b">cmd_retval_printf</a> (char *fmt,...)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#gadfc80020971319268840562d2fdc4976">cmd_retval_set</a> (const char *txt)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#ga30eecfbc3363a0304e91706fc36a94cf">cmd_func_help</a> (int argc, char *argv[], char *txt)</td></tr>
@@ -86,8 +87,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#gafeef5c9627772a94c2b2d8178bd014f7">cmd_func_ap_set</a> (int argc, char *argv[], char *txt)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#ga7206708fc6c69fce6877ba8fa02a398f">cmd_func_ap_reset</a> (int argc, char *argv[], char *txt)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#ga9304ec8a49e995f0c51fed2fd2cfa10c">cmd_func_ap_limit</a> (int argc, char *argv[], char *txt)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#ga9c28781c3f7f9ada813618bf5c988bf5">cmd_func_ap_format</a> (int argc, char *argv[], char *txt)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#ga67de9092cfcba3a3971993aaa6f4fbd8">cmd_func_group_add</a> (int argc, char *argv[], char *txt)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#ga96c341a978384ef080d9b5bbdac49198">cmd_func_group_del</a> (int argc, char *argv[], char *txt)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#ga60b75d9541e0c49c7848f53a75ade489">cmd_func_group_leave</a> (int argc, char *argv[], char *txt)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#gab34a74672dafeb3fb8983e5cdca51d70">cmd_func_elyos</a> (int argc, char *argv[], char *txt)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#ga3717203c24bfdd2a887e7de036f51243">cmd_func_asmo</a> (int argc, char *argv[], char *txt)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#ga0ceeaf59993619d4ce127f1e327f83df">cmd_func_relyos</a> (int argc, char *argv[], char *txt)</td></tr>
@@ -110,8 +113,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <tr><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__cmd.html#ga425f957ccc0be1769d201160cb8bd3ea">cmd_func_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#gaba315b6ee174bc56e37fde44dda2b79c">cmd_func_ap_set</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__cmd.html#ga425f957ccc0be1769d201160cb8bd3ea">cmd_func_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#gaebea98a8dda4f03ec277e8760ebbecbc">cmd_func_ap_reset</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__cmd.html#ga425f957ccc0be1769d201160cb8bd3ea">cmd_func_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#gadd8edba298c15ee95335cb4b54acc7f3">cmd_func_ap_limit</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__cmd.html#ga425f957ccc0be1769d201160cb8bd3ea">cmd_func_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#gad5a81ff13ab84ab3bbd5cb023d2e0d10">cmd_func_ap_format</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__cmd.html#ga425f957ccc0be1769d201160cb8bd3ea">cmd_func_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#gad0eb1cc21adfee58189ba4c2429fb700">cmd_func_group_add</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__cmd.html#ga425f957ccc0be1769d201160cb8bd3ea">cmd_func_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#gad4b9ed7591225248325551d7dcc139d0">cmd_func_group_del</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__cmd.html#ga425f957ccc0be1769d201160cb8bd3ea">cmd_func_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#ga41bad451571686ee2fc902d4e757b21f">cmd_func_group_leave</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__cmd.html#ga425f957ccc0be1769d201160cb8bd3ea">cmd_func_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#ga79e4fd3e1dca84ac19318500cb907152">cmd_func_elyos</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__cmd.html#ga425f957ccc0be1769d201160cb8bd3ea">cmd_func_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#gae2245ea989f4bca3792fc900b126eb68">cmd_func_asmo</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__cmd.html#ga425f957ccc0be1769d201160cb8bd3ea">cmd_func_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cmd.html#ga055932f3f01b4c8fe61834f82a11b398">cmd_func_relyos</a></td></tr>
@@ -141,7 +146,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </iframe>
 </div>
 
-<hr class="footer"/><address style="text-align: right;"><small>Generated on Tue Apr 3 22:50:16 2012 by&nbsp;
+<hr class="footer"/><address style="text-align: right;"><small>Generated on Thu Apr 26 14:11:28 2012 by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.6.3 </small></address>
 </body>

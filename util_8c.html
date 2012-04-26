@@ -49,12 +49,16 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <code>#include &lt;stdio.h&gt;</code><br/>
 <code>#include &lt;assert.h&gt;</code><br/>
 <code>#include &lt;string.h&gt;</code><br/>
+<code>#include &lt;errno.h&gt;</code><br/>
 <code>#include &quot;<a class="el" href="util_8h_source.html">util.h</a>&quot;</code><br/>
 <code>#include &quot;console.h&quot;</code><br/>
+<code>#include &quot;<a class="el" href="event_8h_source.html">event.h</a>&quot;</code><br/>
 <table border="0" cellpadding="0" cellspacing="0">
 <tr><td colspan="2"><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">size_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga79569539f995dbceb7e8af9861a41168">util_strlcpy</a> (char *dst, const char *src, size_t dst_size)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">size_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#gacbdf4465fff344185374ccdbbbecb217">util_strlncat</a> (char *dst, const char *src, size_t dst_size, size_t nchars)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">size_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#gad6494c4cced98e0d0d68abf3fe206ec4">util_strlcat</a> (char *dst, const char *src, size_t dst_size)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#gaeddce37c3ee8d5e06f29bef57cf46fd0">util_strrep</a> (char *out, size_t outsz, char *in, char *findstr, char *replacestr)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga61777acdc7f92c75350e4196d38d0770">util_strsep</a> (char **pinputstr, const char *delim)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga73aa7e4d18796244be605af72cc819d0">util_chomp</a> (char *str)</td></tr>
 </table>
@@ -76,7 +80,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </iframe>
 </div>
 
-<hr class="footer"/><address style="text-align: right;"><small>Generated on Tue Apr 3 22:50:16 2012 by&nbsp;
+<hr class="footer"/><address style="text-align: right;"><small>Generated on Thu Apr 26 14:11:28 2012 by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.6.3 </small></address>
 </body>

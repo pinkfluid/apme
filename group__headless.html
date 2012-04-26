@@ -47,6 +47,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__headless.html#ga74ab135f8f41cfa23c492a0bca794207">apme_prompt</a> (char *prompt, char *answer)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__headless.html#ga21843b3f90aa896f5440e6f1b434c5a4">apme_chatlog_check</a> (void)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__headless.html#gadbab18c29b0e9e04a19ee38000c351a4">apme_screen_update</a> (void)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__headless.html#ga6976127b44355296626162d1d745921a">apme_sys_elevate</a> (void)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__headless.html#gad4c4fb08a049e43a276f825cfeadd364">apme_event_handler</a> (enum <a class="el" href="event_8h.html#a430b444c74dd3fd1472a31714ec5f1ce">event_type</a> ev)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__headless.html#ga49d806823385df701020d5ab8c174de7">apme_init</a> (int argc, char *argv[])</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__headless.html#ga2a03fd71e7a43682a09a2a5b8107cda5">apme_env</a> (void)</td></tr>
@@ -241,6 +242,26 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 </div>
 </div>
+<a class="anchor" id="ga6976127b44355296626162d1d745921a"></a><!-- doxytag: member="main.c::apme_sys_elevate" ref="ga6976127b44355296626162d1d745921a" args="(void)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void apme_sys_elevate </td>
+          <td>(</td>
+          <td class="paramtype">void&nbsp;</td>
+          <td class="paramname"></td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Respawn a new instance of the current executable with Admin privileges. If this operation is successfull, the current process will terminate.</p>
+<dl class="note"><dt><b>Note:</b></dt><dd>This function will trigger the UAC prompt. </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ga0ddf1224851353fc92bfbff6f499fa97"></a><!-- doxytag: member="main.c::main" ref="ga0ddf1224851353fc92bfbff6f499fa97" args="(int argc, char *argv[])" -->
 <div class="memitem">
 <div class="memproto">
@@ -292,7 +313,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </iframe>
 </div>
 
-<hr class="footer"/><address style="text-align: right;"><small>Generated on Tue Apr 3 22:50:19 2012 by&nbsp;
+<hr class="footer"/><address style="text-align: right;"><small>Generated on Thu Apr 26 14:11:31 2012 by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.6.3 </small></address>
 </body>

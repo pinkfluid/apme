@@ -45,7 +45,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table border="0" cellpadding="0" cellspacing="0">
 <tr><td colspan="2"><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">size_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga79569539f995dbceb7e8af9861a41168">util_strlcpy</a> (char *dst, const char *src, size_t dst_size)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">size_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#gacbdf4465fff344185374ccdbbbecb217">util_strlncat</a> (char *dst, const char *src, size_t dst_size, size_t nchars)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">size_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#gad6494c4cced98e0d0d68abf3fe206ec4">util_strlcat</a> (char *dst, const char *src, size_t dst_size)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#gaeddce37c3ee8d5e06f29bef57cf46fd0">util_strrep</a> (char *out, size_t outsz, char *in, char *findstr, char *replacestr)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga61777acdc7f92c75350e4196d38d0770">util_strsep</a> (char **pinputstr, const char *delim)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga73aa7e4d18796244be605af72cc819d0">util_chomp</a> (char *str)</td></tr>
 <tr><td colspan="2"><p><a class="anchor" id="amgrpd41d8cd98f00b204e9800998ecf8427e"></a> </p>
@@ -54,6 +56,18 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>clipboard_set_text</b> (char *text)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga22e696d377a963e286b16a3be9752ccf"></a><!-- doxytag: member="util::clipboard_get_text" ref="ga22e696d377a963e286b16a3be9752ccf" args="(char *text, size_t text_sz)" -->
 bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>clipboard_get_text</b> (char *text, size_t text_sz)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga8752d2a74ac3b3332df8cb3aa8c47002"></a><!-- doxytag: member="util::sys_is_admin" ref="ga8752d2a74ac3b3332df8cb3aa8c47002" args="(bool *isadmin)" -->
+bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>sys_is_admin</b> (bool *isadmin)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga774fe3c03117d891f22a4a853a58ae43"></a><!-- doxytag: member="util::sys_runas_admin" ref="ga774fe3c03117d891f22a4a853a58ae43" args="(char *path)" -->
+bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>sys_runas_admin</b> (char *path)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaa3720ccb104c48efb4d319b8add03de9"></a><!-- doxytag: member="util::sys_self_exe" ref="gaa3720ccb104c48efb4d319b8add03de9" args="(char *path, size_t pathsz)" -->
+bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>sys_self_exe</b> (char *path, size_t pathsz)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaa7627e38eb62030376b47fcd2f2e0354"></a><!-- doxytag: member="util::sys_self_elevate" ref="gaa7627e38eb62030376b47fcd2f2e0354" args="(void)" -->
+bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>sys_self_elevate</b> (void)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga1c38d4a238dd8f8925986b5fbb554f24"></a><!-- doxytag: member="util::sys_perm_grant" ref="ga1c38d4a238dd8f8925986b5fbb554f24" args="(char *path)" -->
+bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>sys_perm_grant</b> (char *path)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gacf5ba3af311188adf804fbcfc122a9fe"></a><!-- doxytag: member="util::sys_fopen_force" ref="gacf5ba3af311188adf804fbcfc122a9fe" args="(char *path, char *mode)" -->
+FILE *&nbsp;</td><td class="memItemRight" valign="bottom"><b>sys_fopen_force</b> (char *path, char *mode)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga6b41115e6392b8afe5b79f7093cae68d"></a><!-- doxytag: member="util::reg_read_key" ref="ga6b41115e6392b8afe5b79f7093cae68d" args="(char *key, char *val, void *buf, size_t buflen)" -->
 bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>reg_read_key</b> (char *key, char *val, void *buf, size_t buflen)</td></tr>
 </table>
@@ -76,7 +90,7 @@ bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>reg_read_key</b> (cha
       </table>
 </div>
 <div class="memdoc">
-<p>This function this function removes new-lines characters from the end of the string</p>
+<p>This function this function removes new-lines characters and blanks from the end of the string</p>
 <dl><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>str</em>&nbsp;</td><td>String to be chomped </td></tr>
@@ -117,6 +131,7 @@ bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>reg_read_key</b> (cha
 </div>
 <div class="memdoc">
 <p>Equivalent of the strlcat() function from the *BSD world. See <a class="el" href="group__util.html#ga79569539f995dbceb7e8af9861a41168">util_strlcpy()</a> for the rant.</p>
+<dl class="note"><dt><b>Note:</b></dt><dd>This function is just a wrapper for <a class="el" href="group__util.html#gacbdf4465fff344185374ccdbbbecb217">util_strlncat()</a></dd></dl>
 <dl><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in,out]</tt>&nbsp;</td><td valign="top"><em>dst</em>&nbsp;</td><td>String that we're appending to </td></tr>
@@ -174,6 +189,112 @@ bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>reg_read_key</b> (cha
 
 </div>
 </div>
+<a class="anchor" id="gacbdf4465fff344185374ccdbbbecb217"></a><!-- doxytag: member="util.c::util_strlncat" ref="gacbdf4465fff344185374ccdbbbecb217" args="(char *dst, const char *src, size_t dst_size, size_t nchars)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t util_strlncat </td>
+          <td>(</td>
+          <td class="paramtype">char *&nbsp;</td>
+          <td class="paramname"> <em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&nbsp;</td>
+          <td class="paramname"> <em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&nbsp;</td>
+          <td class="paramname"> <em>dst_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&nbsp;</td>
+          <td class="paramname"> <em>nchars</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Equivalent of the strncat() except it copies the string safely while padding it with '\0'</p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in,out]</tt>&nbsp;</td><td valign="top"><em>dst</em>&nbsp;</td><td>String that we're appending to </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>src</em>&nbsp;</td><td>String that will be appended </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>dst_size</em>&nbsp;</td><td>Maximum size of <code>dst</code> </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>nchars</em>&nbsp;</td><td>Maximum number of characters to copy from <code>src</code> </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Number of bytes stored to <code>dst</code> </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gaeddce37c3ee8d5e06f29bef57cf46fd0"></a><!-- doxytag: member="util.c::util_strrep" ref="gaeddce37c3ee8d5e06f29bef57cf46fd0" args="(char *out, size_t outsz, char *in, char *findstr, char *replacestr)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void util_strrep </td>
+          <td>(</td>
+          <td class="paramtype">char *&nbsp;</td>
+          <td class="paramname"> <em>out</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&nbsp;</td>
+          <td class="paramname"> <em>outsz</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&nbsp;</td>
+          <td class="paramname"> <em>in</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&nbsp;</td>
+          <td class="paramname"> <em>findstr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&nbsp;</td>
+          <td class="paramname"> <em>replacestr</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Stirng replace: Find all occurences of string <code>findstr</code> in string <code>in</code> and replace them with the string <code>replacestr</code>. Store the result to <code>out</code> </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>out</em>&nbsp;</td><td>Output buffer where the result will be stored </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>outsz</em>&nbsp;</td><td>Maximum size of the output buffer </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>in</em>&nbsp;</td><td>Input string, this string will be searched for <code>findstr</code> </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>findstr</em>&nbsp;</td><td>String to find </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>replacestr</em>&nbsp;</td><td>String to replace <code>findstr</code> with </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="ga61777acdc7f92c75350e4196d38d0770"></a><!-- doxytag: member="util.c::util_strsep" ref="ga61777acdc7f92c75350e4196d38d0770" args="(char **pinputstr, const char *delim)" -->
 <div class="memitem">
 <div class="memproto">
@@ -225,7 +346,7 @@ bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>reg_read_key</b> (cha
 </iframe>
 </div>
 
-<hr class="footer"/><address style="text-align: right;"><small>Generated on Tue Apr 3 22:50:19 2012 by&nbsp;
+<hr class="footer"/><address style="text-align: right;"><small>Generated on Thu Apr 26 14:11:31 2012 by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.6.3 </small></address>
 </body>
