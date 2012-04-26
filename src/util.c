@@ -649,7 +649,7 @@ size_t util_strlcpy(char *dst, const char *src, size_t dst_size)
 
 /**
  * Equivalent of the strncat() except it copies the string safely while
- * padding it with '\0'
+ * padding it with '@\0'
  *
  * @param[in,out]   dst         String that we're appending to
  * @param[in]       src         String that will be appended

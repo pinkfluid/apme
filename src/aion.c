@@ -1048,9 +1048,9 @@ error:
  *
  * - @@ap is replaced with @p apval
  * - @@name is replaced with @p name
- * - @@/  is replaced with a "/"
+ * - @@/ is replaced with a "/"
  * 
- * @param[in/out]       str     String that will be used to replace apooot keywords with real data
+ * @param[in,out]       str     String that will be used to replace apooot keywords with real data
  * @param[in]           strsz   Size of @p str
  * @param[in]           name    Player name, this will replace @@name
  * @param[in]           apval   AP value, this will replace @@ap
