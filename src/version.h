@@ -32,9 +32,9 @@
 /** Minor version number        */
 #define APME_VERSION_MINOR      5
 /** Revision number             */
-#define APME_VERSION_REVISION   0
+#define APME_VERSION_REVISION   99
 /** Version codename            */
-#define APME_VERSION_NAME       "Smarna"
+#define APME_VERSION_NAME       "Development"
 
 /** Convert parameter to string */
 #define __APM_STR(x)            #x
