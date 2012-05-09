@@ -40,6 +40,10 @@ endif
 ifneq ($(findstring DragonFly, $(UNAME)),)
     SYS_CFLAGS      :=  -DSYS_UNIX -DOS_DRAGONFLY
     BUILTIN_PCRE    :=  true
+
+    XBUILD          :=  $(XBUILD_DRAGONFLY)
+    XBUILD_TARGET   ?=  i686-w64-mingw32
+    XBUILD_ERROR    :=  Unable to find the 32-bit MinGW compiler. 
 endif
 
 ifneq ($(findstring Linux, $(UNAME)),)
@@ -47,7 +51,6 @@ ifneq ($(findstring Linux, $(UNAME)),)
 
 # Linux actually has these available
     XBUILD          :=  $(XBUILD_LINUX)
-
     XBUILD_TARGET   ?=  i686-w64-mingw32
     XBUILD_ERROR    :=  Unable to find the 32-bit MinGW compiler. Please install the gcc-mingw-w64 package
 endif
@@ -63,6 +66,8 @@ ifdef XBUILD
     XBUILD_LD           ?=  $(XBUILD_TARGET)-gcc
     XBUILD_STRIP        ?=  $(XBUILD_TARGET)-strip
     XBUILD_WINDRES      ?=  $(XBUILD_TARGET)-windres
+    # This will be used for the --build flag to configure; auto-guess it using the -dumpmachine option of GCC
+    XBUILD_GUEST        ?=  $(shell gcc -dumpmachine)
 
     ifneq ($(findstring GCC,$(shell $(XBUILD_CC) --version)),GCC)
         $(error $(XBUILD_ERROR))
@@ -72,7 +77,7 @@ ifdef XBUILD
     LD                  :=  $(XBUILD_LD)
     STRIP               :=  $(XBUILD_STRIP)
     WINDRES             :=  $(XBUILD_WINDRES)
-    PCRE_EXTRA_CONFIG   := --host=$(XBUILD_TARGET)
+    PCRE_EXTRA_CONFIG   := --host=$(XBUILD_TARGET) --build=$(XBUILD_GUEST)
     EXE                 := .exe
 endif
 

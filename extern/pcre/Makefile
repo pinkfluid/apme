@@ -62,7 +62,7 @@ $(PCRE_EXTRACT_DONE): $(PCRE_FETCH_DONE)
 # Also use --disable-shared so pcre-config returns the static linking 
 # options
 $(PCRE_CONFIG_DONE): $(PCRE_EXTRACT_DONE)
-	cd "$(PCRE_BUILD)" ; ./configure $(PCRE_EXTRA_CONFIG) --libdir=$(EXTERN_DIR)/pcre --includedir=$(EXTERN_DIR)/pcre --disable-shared --disable-cpp
+	cd "$(PCRE_BUILD)" ; ./configure $(PCRE_EXTRA_CONFIG) --libdir=$(EXTERN_DIR)/pcre --includedir=$(EXTERN_DIR)/pcre --disable-shared --disable-cpp --enable-utf8 --enable-unicode-properties
 	@touch "$(PCRE_CONFIG_DONE)"
 
 $(PCRE_BUILD_DONE): $(PCRE_CONFIG_DONE)

@@ -34,7 +34,9 @@
 /**
  * Default name for the player's character
  */
-#define AION_NAME_DEFAULT   "You"
+#define AION_NAME_DEFAULT       "You"
+#define AION_NAME_FR_DEFAULT    "Vous"
+
 /**
  * Maximum chat line size in bytes
  */

@@ -58,7 +58,7 @@
  * @{
  */
 
-#define RE_NAME     "([0-9a-zA-Z_]+)"           /**< Character name regex pattern           */
+#define RE_NAME     "([[:alnum]]+)"             /**< Character name regex pattern           */
 #define RE_ITEM     "([0-9]+)"                  /**< Item number regex pattern              */
 #define RE_NUM_ROLL "[0-9\\.]+"                 /**< Item link regex pattern                */
 
@@ -118,6 +118,8 @@ static re_callback_t chatlog_parse; /**< Declaration of chatlog_parse()     */
  */
 struct regeng re_aion[] =
 {
+#if 0
+    /* The following patterns are not used  */
     {
         .re_id  = RE_DAMAGE_INFLICT,
         .re_exp = "^: " RE_NAME " inflicted ([0-9.]+) damage on ([A-Za-z ]+) by using ([A-Za-z ]+)\\.",
@@ -126,109 +128,250 @@ struct regeng re_aion[] =
         .re_id  = RE_DAMAGE_CRITICAL,
         .re_exp = "^: Critical Hit! You inflicted ([0-9.]+) critical damage on ([A-Za-z ]+)\\.",
     },
-    {
-        .re_id  = RE_ITEM_LOOT_SELF,
-        .re_exp = "^: You have acquired \\[item:" RE_ITEM "\\]",
-    },
-    {
-        .re_id  = RE_ITEM_LOOT_PLAYER,
-        .re_exp = "^: " RE_NAME " has acquired \\[item:" RE_ITEM "\\]",
-    },
-    {
-        .re_id  = RE_GROUP_SELF_JOIN,
-        .re_exp = "^: You have joined the group\\.",
-    },
-    {
-        .re_id  = RE_GROUP_SELF_LEAVE,
-        .re_exp = "^: You left the group\\.",
-    },
-    {
-        .re_id  = RE_GROUP_PLAYER_JOIN,
-        .re_exp = "^: " RE_NAME " has joined your group\\.",
-    },
-    {
-        .re_id  = RE_GROUP_PLAYER_LEAVE,
-        .re_exp = "^: " RE_NAME " has left your group\\.",
-    },
-    {
-        .re_id  = RE_GROUP_PLAYER_DISCONNECT,
-        .re_exp = "^: " RE_NAME " has been disconnected\\.",
-    },
-    {
-        .re_id  = RE_GROUP_PLAYER_KICK,
-        .re_exp = "^: " RE_NAME " has been kicked out of your group\\.",
-    },
-    {
-        .re_id  = RE_GROUP_PLAYER_OFFLINE,
-        .re_exp = "^: " RE_NAME " has been offline for too long and is automatically excluded from the group\\.",
-    },
-    {
-        .re_id  = RE_GROUP_DISBAND,
-        .re_exp = "^: The group has been disbanded\\.",
-    },
-    {
-        .re_id  = RE_ALI_SELF_JOIN,
-        .re_exp = "^: You have joined the alliance\\.",
-    },
-    {
-        .re_id  = RE_ALI_SELF_LEAVE,
-        .re_exp = "^: You have left the alliance\\.",
-    },
-    {
-        .re_id  = RE_ALI_PLAYER_JOIN,
-        .re_exp = "^: " RE_NAME " has joined the alliance\\.",
-    },
-    {
-        .re_id  = RE_ALI_PLAYER_LEAVE,
-        .re_exp = "^: " RE_NAME " has left the alliance\\.",
-    },
-    {
-        .re_id  = RE_ALI_PLAYER_KICK,
-        .re_exp = "^: " RE_NAME " has been kicked out of the alliance\\.",
-    },
-    {
-        .re_id  = RE_ALI_PLAYER_OFFLINE,
-        .re_exp = "^: " RE_NAME " has been offline for too long and had been automatically kicked out of the alliance\\."
-    },
-    {
-        .re_id  = RE_ALI_DISBAND,
-        .re_exp = "^: The alliance has been disbanded\\.",
-    },
-    {
-        .re_id  = RE_CHAT_GENERAL,
-        .re_exp = "^: \\[charname:" RE_NAME ";.*\\]: (.*)$",
-    },
-    {
-        .re_id  = RE_CHAT_WHISPER,
-        .re_exp = "^: \\[charname:" RE_NAME ";.*\\] Whispers: (.*)$",
-    },
-    {
-        .re_id  = RE_CHAT_SHOUT,
-        .re_exp = "^: \\[charname:" RE_NAME ";.*\\] Shouts: (.*)$",
-    },
-#if 0
     /* XXX Chat self is not reliable, disabling for the moment. */
     {
         .re_id  = RE_CHAT_SELF,
         .re_exp = "^: " RE_NAME ": (.*)$",
     },
 #endif
+
+    /* Item looted by the player */
+    {
+        .re_id  = RE_ITEM_LOOT_SELF,
+        .re_exp = "^: You have acquired \\[item:" RE_ITEM "\\]",
+    },
+    {
+        .re_id  = RE_ITEM_LOOT_SELF,
+        .re_exp = "^: Vous avez gagné \\[item:" RE_ITEM "\\]",
+    },
+
+    /* Item lootd by another player */
+    {
+        .re_id  = RE_ITEM_LOOT_PLAYER,
+        .re_exp = "^: " RE_NAME " has acquired \\[item:" RE_ITEM "\\]",
+    },
+    {
+        .re_id  = RE_ITEM_LOOT_PLAYER,
+        .re_exp = "^: " RE_NAME " a gagné \\[item:" RE_ITEM "\\]",
+    },
+
+    /* The player joined a group */
+    {
+        .re_id  = RE_GROUP_SELF_JOIN,
+        .re_exp = "^: You have joined the group\\.",
+    },
+    {
+        .re_id  = RE_GROUP_SELF_JOIN,
+        .re_exp = "^: Vous avez rejoint le groupe\\.",
+    },
+
+    /* The player has left the group */
+    {
+        .re_id  = RE_GROUP_SELF_LEAVE,
+        .re_exp = "^: You left the group\\.",
+    },
+    {
+        .re_id  = RE_GROUP_SELF_LEAVE,
+        .re_exp = "^: Vous avez quitté le groupe\\.",
+    },
+
+    /* Another player has joined the group */
+    {
+        .re_id  = RE_GROUP_PLAYER_JOIN,
+        .re_exp = "^: " RE_NAME " has joined your group\\.",
+    },
+    {
+        .re_id  = RE_GROUP_PLAYER_JOIN,
+        .re_exp = "^: " RE_NAME " a rejoint votre groupe\\.",
+    },
+
+    /* Another player has left the gruop */
+    {
+        .re_id  = RE_GROUP_PLAYER_LEAVE,
+        .re_exp = "^: " RE_NAME " has left your group\\.",
+    },
+    {
+        .re_id  = RE_GROUP_PLAYER_LEAVE,
+        .re_exp = "^: " RE_NAME " a quitté votre groupe\\.",
+    },
+
+    /* Another player has been disconnected */
+    {
+        .re_id  = RE_GROUP_PLAYER_DISCONNECT,
+        .re_exp = "^: " RE_NAME " has been disconnected\\.",
+    },
+    {
+        .re_id  = RE_GROUP_PLAYER_DISCONNECT,
+        .re_exp = "^: " RE_NAME " a quitté Atréia.\\.",
+    },
+
+    /* A player has ben kicked from the group */
+    {
+        .re_id  = RE_GROUP_PLAYER_KICK,
+        .re_exp = "^: " RE_NAME " has been kicked out of your group\\.",
+    },
+    {
+        .re_id  = RE_GROUP_PLAYER_KICK,
+        .re_exp = "^: " RE_NAME " a été exclue de votre groupe\\.",
+    },
+
+    /* Another player has been offlie for too long */
+    {
+        .re_id  = RE_GROUP_PLAYER_OFFLINE,
+        .re_exp = "^: " RE_NAME " has been offline for too long and is automatically excluded from the group\\.",
+    },
+    {
+        .re_id  = RE_GROUP_PLAYER_OFFLINE,
+        .re_exp = "^: " RE_NAME " est déconnecté depuis trop longtemps et a été automatiquement exclu du groupe\\.",
+    },
+
+    /* The group has been disbanded */
+    {
+        .re_id  = RE_GROUP_DISBAND,
+        .re_exp = "^: The group has been disbanded\\.",
+    },
+    {
+        .re_id  = RE_GROUP_DISBAND,
+        .re_exp = "^: Le groupe a été dissous.\\.",
+    },
+
+    /* The player joined an alliance */
+    {
+        .re_id  = RE_ALI_SELF_JOIN,
+        .re_exp = "^: You have joined the alliance\\.",
+    },
+    {
+        .re_id  = RE_ALI_SELF_JOIN,
+        .re_exp = "^: Vous avez rejoint la cohorte\\.",
+    },
+
+    /* The player left the alliance */
+    {
+        .re_id  = RE_ALI_SELF_LEAVE,
+        .re_exp = "^: You have left the alliance\\.",
+    },
+    {
+        .re_id  = RE_ALI_SELF_LEAVE,
+        .re_exp = "^: Vous avez quitté la cohorte\\.",
+    },
+
+    /* Another player joined the alliance */
+    {
+        .re_id  = RE_ALI_PLAYER_JOIN,
+        .re_exp = "^: " RE_NAME " has joined the alliance\\.",
+    },
+    {
+        .re_id  = RE_ALI_PLAYER_JOIN,
+        .re_exp = "^: " RE_NAME " a rejoint la cohorte\\.",
+    },
+
+    /* Another player has left the alliance */
+    {
+        .re_id  = RE_ALI_PLAYER_LEAVE,
+        .re_exp = "^: " RE_NAME " has left the alliance\\.",
+    },
+    {
+        .re_id  = RE_ALI_PLAYER_LEAVE,
+        .re_exp = "^: " RE_NAME " a quitté la cohorte\\.",
+    },
+
+    /* A player has been kicked from the alliance */
+    {
+        .re_id  = RE_ALI_PLAYER_KICK,
+        .re_exp = "^: " RE_NAME " has been kicked out of the alliance\\.",
+    },
+    {
+        .re_id  = RE_ALI_PLAYER_KICK,
+        .re_exp = "^: " RE_NAME " a été expulsé de la cohorte\\.",
+    },
+
+    /* A player has been offline for too long and has been kicked out of the alliance */
+    {
+        .re_id  = RE_ALI_PLAYER_OFFLINE,
+        .re_exp = "^: " RE_NAME " has been offline for too long and had been automatically kicked out of the alliance\\."
+    },
+    {
+        .re_id  = RE_ALI_PLAYER_OFFLINE,
+        .re_exp = "^: " RE_NAME " a passé trop de temps hors connexion. Expulsion automatique de la Cohorte\\."
+    },
+
+    /* The alliance has been disbanded */
+    {
+        .re_id  = RE_ALI_DISBAND,
+        .re_exp = "^: The alliance has been disbanded\\.",
+    },
+    {
+        .re_id  = RE_ALI_DISBAND,
+        .re_exp = "^: La cohorte a été dissoute\\.",
+    },
+
+    /* General chat -- this seems to be the same in French and English*/
+    {
+        .re_id  = RE_CHAT_GENERAL,
+        .re_exp = "^: \\[charname:" RE_NAME ";.*\\]: (.*)$",
+    },
+
+    /* Whisper */
+    {
+        .re_id  = RE_CHAT_WHISPER,
+        .re_exp = "^: \\[charname:" RE_NAME ";.*\\] Whispers: (.*)$",
+    },
+    {
+        .re_id  = RE_CHAT_WHISPER,
+        .re_exp = "^: \\[charname:" RE_NAME ";.*\\] murmure : (.*)$",
+    },
+
+    /* Shouts */
+    {
+        .re_id  = RE_CHAT_SHOUT,
+        .re_exp = "^: \\[charname:" RE_NAME ";.*\\] Shouts: (.*)$",
+    },
+    {
+        .re_id  = RE_CHAT_SHOUT,
+        .re_exp = "^: \\[charname:" RE_NAME ";.*\\] crie : (.*)$",
+    },
+
+    /* The player rolled for an item */
     {
         .re_id  = RE_ROLL_ITEM_SELF,
         .re_exp = "^: You rolled the dice and got " RE_NUM_ROLL " \\(max\\. " RE_NUM_ROLL "\\)\\.",
     },
     {
+        .re_id  = RE_ROLL_ITEM_SELF,
+        .re_exp = "^: Vous avez lancé les dés et obtenu " RE_NUM_ROLL " \\(max\\. " RE_NUM_ROLL "\\)\\.",
+    },
+
+    /* Another player rolled for an item */
+    {
         .re_id  = RE_ROLL_ITEM_PLAYER,
         .re_exp = "^: " RE_NAME " rolled the dice and got " RE_NUM_ROLL " \\(max\\. " RE_NUM_ROLL "\\)\\.",
     },
+    {
+        .re_id  = RE_ROLL_ITEM_PLAYER,
+        .re_exp = "^: " RE_NAME " a lancé les dés et a obtenu " RE_NUM_ROLL " \\(max\\. " RE_NUM_ROLL "\\)\\.",
+    },
+
+    /* The or another player passed on an item */
     {
         .re_id  = RE_ROLL_ITEM_PASS,
         .re_exp = "^: " RE_NAME " gave up rolling the dice",
     },
     {
+        .re_id  = RE_ROLL_ITEM_PASS,
+        .re_exp = "^: " RE_NAME " a renoncé à lancer les dés",
+    },
+
+    /* Somebody rolled the highest */
+    {
         .re_id  = RE_ROLL_ITEM_HIGHEST,
         .re_exp = "^: " RE_NAME " rolled the highest",
     },
+    {
+        .re_id  = RE_ROLL_ITEM_HIGHEST,
+        .re_exp = "^: " RE_NAME " a obtenu le meilleur score",
+    },
+
+    /* The two events below do not have a French equivalent, unfortunately */
     {
         /* The onlly difference between this and RE_ROLL_ITEM_SELF is in the "got a" vs "got" text */
         .re_id  = RE_ROLL_DICE_SELF,
