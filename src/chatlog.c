@@ -58,7 +58,7 @@
  * @{
  */
 
-#define RE_NAME     "([[:alnum]]+)"             /**< Character name regex pattern           */
+#define RE_NAME     "([[:alnum:]]+)"            /**< Character name regex pattern           */
 #define RE_ITEM     "([0-9]+)"                  /**< Item number regex pattern              */
 #define RE_NUM_ROLL "[0-9\\.]+"                 /**< Item link regex pattern                */
 
