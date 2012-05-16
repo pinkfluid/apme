@@ -785,5 +785,43 @@ void util_chomp(char *str)
 }
 
 /**
+ * Convert a string from the CP-1252(aka Windows-1252, Latin1) codeset
+ * to UTF8, yay!
+ *
+ * @param[in]       cp1252      Input string in the CP-1252 encoding
+ * @param[out]      utf8        Output UTF8 string
+ * @param[out]      utf8_sz     Maximum size of the UTF8 string
+ */
+void util_cp1252_to_utf8(char *utf8, ssize_t utf8_sz, char *cp1252)
+{
+    char *putf8 = utf8;
+    char *pcp1252;
+
+    for (pcp1252 = cp1252; *pcp1252 != 0x00; pcp1252++)
+    {
+        if (*(unsigned char *)pcp1252 < 0x80)
+        {
+            if ((putf8 - utf8) + 1 >= utf8_sz) break;
+
+            *putf8++ = *pcp1252;
+        }
+        else if (*(unsigned char *)pcp1252 < 0xC0)
+        {
+            if ((putf8 - utf8) + 2 >= utf8_sz) break;
+            *putf8++ = '\xC2';
+            *putf8++ = *pcp1252;
+        }
+        else
+        {
+            if ((putf8 - utf8) + 2 >= utf8_sz) break;
+            *putf8++ = '\xC3';
+            *putf8++ = *pcp1252 - 64;
+        }
+    }
+
+    *putf8 = '\0';
+}
+
+/**
  * @}
  */

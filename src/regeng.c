@@ -167,6 +167,7 @@ bool re_parse(re_callback_t re_callback, struct regeng *re_array, char *str)
     {
         if (regexec(&reptr->re_comp, str, RE_REMATCH_MAX, rematch, 0) == 0)
         {
+            con_printf("RE: '%s' matched by '%s', id:%d\n", str, reptr->re_exp, reptr->re_id);
             re_callback(reptr->re_id, str, rematch, RE_REMATCH_MAX);
             return true;
         }

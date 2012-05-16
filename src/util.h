@@ -53,6 +53,9 @@ extern void util_chomp(char *str);
 /* Registry stuff */
 extern bool reg_read_key(char *key, char *val, void *buf, size_t buflen);
 
+/* Codepage stuff */
+void util_cp1252_to_utf8(char *utf8, ssize_t utf8_sz, char *cp1252);
+
 /**
  * @}
  */

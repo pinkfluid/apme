@@ -559,11 +559,11 @@ void aion_group_loot(char *charname, uint32_t itemid)
             update_stats = true;
         }
 
-        con_printf("LOOT: %s -> %s (%u AP)\n", player, item->item_name, item->item_ap);
+        con_printf("LOOT: %s -> %s (%u AP)\n", charname, item->item_name, item->item_ap);
     }
     else
     {
-        con_printf("LOOT: %s -> %u\n", player, itemid);
+        con_printf("LOOT: %s -> %u\n", charname, itemid);
     }
 
     /* Update loot statistics */

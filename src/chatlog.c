@@ -59,7 +59,7 @@
  */
 
 #define RE_NAME     "([[:alnum:]]+)"            /**< Character name regex pattern           */
-#define RE_ITEM     "([0-9]+)"                  /**< Item number regex pattern              */
+#define RE_ITEM     "([[:digit:]]+)"            /**< Item number regex pattern              */
 #define RE_NUM_ROLL "[0-9\\.]+"                 /**< Item link regex pattern                */
 
 #define RE_ITEM_LOOT_SELF           100         /**< Event, item looted by player           */
@@ -881,7 +881,9 @@ bool chatlog_init()
  */
 bool chatlog_readstr(char *chatstr)
 {
-    char *pchat; 
+    char *pchat;
+    char uchat[CHATLOG_CHAT_SZ]; 
+
     /* Skip the timestamp, check if we're at the ':' character */
     pchat = chatstr + CHATLOG_PREFIX_LEN;
 
@@ -891,7 +893,11 @@ bool chatlog_readstr(char *chatstr)
         return true;
     }
 
-    return re_parse(chatlog_parse, re_aion, pchat);
+    /* Convert the string to UTF8 */
+    util_cp1252_to_utf8(uchat, sizeof(uchat), pchat);
+
+    /* Process it */
+    return re_parse(chatlog_parse, re_aion, uchat);
 }
 
 /**
