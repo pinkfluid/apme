@@ -1,26 +1,26 @@
-PCRE_DIR:=$(EXTERN_DIR)/pcre
+PCRE_PKGDIR:=$(EXTERN_DIR)/pcre/pkg
 
 ifneq ($(BUILTIN_PCRE),)
-    PCRE_CONFIG:=$(PCRE_DIR)/pcre-config
+    PCRE_PKGCONFIG:=$(PCRE_PKGDIR)/pcre-config
     # If pcre-config exists, use that to extract flags
-    ifneq ($(wildcard $PCRE_CONFIG), )
-        PCRE_CFLAGS:=$(shell $(PCRE_CONFIG) --cflags-posix)
-        PCRE_LDFLAGS:=$(shell $(PCRE_CONFIG) --libs-posix)
+    ifneq ($(wildcard $PCRE_PKGCONFIG), )
+        PCRE_CFLAGS:=$(shell $(PCRE_PKGCONFIG) --cflags-posix)
+        PCRE_LDFLAGS:=$(shell $(PCRE_PKGCONFIG) --libs-posix)
     else
-        PCRE_CFLAGS:=-DPCRE_STATIC -I$(EXTERN_DIR)/pcre
-        PCRE_LDFLAGS:=-L$(PCRE_DIR) -lpcreposix -lpcre
+        PCRE_CFLAGS:=-DPCRE_STATIC -I$(PCRE_PKGDIR)
+        PCRE_LDFLAGS:=-L$(PCRE_PKGDIR) -lpcreposix -lpcre
     endif
 else
     PCRE_CFLAGS:=
     PCRE_LDFLAGS:=-lpcreposix -lpcre
 endif 
 
-PCRE_DEP:=$(PCRE_DIR)/.pcre_install_done
+PCRE_DEP:=$(PCRE_PKGDIR)
 
 define PCRE_INCLUDE
 CFLAGS+=$(PCRE_CFLAGS)
 LDFLAGS+=$(PCRE_LDFLAGS)
 
 $(PCRE_DEP):
-	$(MAKE) -C "$(PCRE_DIR)"
+	$(MAKE) -C "$(EXTERN_DIR)/pcre"
 endef

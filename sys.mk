@@ -67,7 +67,7 @@ ifdef XBUILD
     XBUILD_STRIP        ?=  $(XBUILD_TARGET)-strip
     XBUILD_WINDRES      ?=  $(XBUILD_TARGET)-windres
     # This will be used for the --build flag to configure; auto-guess it using the -dumpmachine option of GCC
-    XBUILD_GUEST        ?=  $(shell gcc -dumpmachine)
+    XBUILD_MACH         ?=  $(shell gcc -dumpmachine)
 
     ifneq ($(findstring GCC,$(shell $(XBUILD_CC) --version)),GCC)
         $(error $(XBUILD_ERROR))
@@ -77,7 +77,6 @@ ifdef XBUILD
     LD                  :=  $(XBUILD_LD)
     STRIP               :=  $(XBUILD_STRIP)
     WINDRES             :=  $(XBUILD_WINDRES)
-    PCRE_EXTRA_CONFIG   := --host=$(XBUILD_TARGET) --build=$(XBUILD_GUEST)
     EXE                 := .exe
 endif
 
