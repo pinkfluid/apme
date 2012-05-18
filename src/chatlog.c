@@ -146,6 +146,10 @@ struct regeng re_aion[] =
         .re_id  = RE_ITEM_LOOT_SELF,
         .re_exp = "^: Vous avez gagné \\[item:" RE_ITEM "\\]",
     },
+    {
+        .re_id  = RE_ITEM_LOOT_SELF,
+        .re_exp = "^: Ihr habt \\[item:" RE_ITEM "\\] erhalten\\.",
+    },
 
     /* Item lootd by another player */
     {
@@ -155,6 +159,10 @@ struct regeng re_aion[] =
     {
         .re_id  = RE_ITEM_LOOT_PLAYER,
         .re_exp = "^: " RE_NAME " a gagné \\[item:" RE_ITEM "\\]",
+    },
+    {
+        .re_id  = RE_ITEM_LOOT_PLAYER,
+        .re_exp = "^: " RE_NAME " hat \\[item:" RE_ITEM "\\] erhalten\\."
     },
 
     /* The player joined a group */
@@ -166,6 +174,10 @@ struct regeng re_aion[] =
         .re_id  = RE_GROUP_SELF_JOIN,
         .re_exp = "^: Vous avez rejoint le groupe\\.",
     },
+    {
+        .re_id  = RE_GROUP_SELF_JOIN,
+        .re_exp = "^: Ihr seid der Gruppe beigetreten\\.",
+    },
 
     /* The player has left the group */
     {
@@ -175,6 +187,10 @@ struct regeng re_aion[] =
     {
         .re_id  = RE_GROUP_SELF_LEAVE,
         .re_exp = "^: Vous avez quitté le groupe\\.",
+    },
+    {
+        .re_id  = RE_GROUP_SELF_LEAVE,
+        .re_exp = "^: Ihr habt die Gruppe verlassen\\.",
     },
 
     /* The player has been kicked */
@@ -186,6 +202,10 @@ struct regeng re_aion[] =
         .re_id  = RE_GROUP_SELF_KICK,
         .re_exp = "^: Vous avez été exclue du groupe\\.",
     },
+    {
+        .re_id  = RE_GROUP_SELF_KICK,
+        .re_exp = "^: Ihr wurdet aus der Gruppe geworfen\\.",
+    },
 
     /* Another player has joined the group */
     {
@@ -196,6 +216,10 @@ struct regeng re_aion[] =
         .re_id  = RE_GROUP_PLAYER_JOIN,
         .re_exp = "^: " RE_NAME " a rejoint votre groupe\\.",
     },
+    {
+        .re_id  = RE_GROUP_PLAYER_JOIN,
+        .re_exp = "^: " RE_PLAYER " ist Eurer Gruppe beigetreten."
+    },
 
     /* Another player has left the gruop */
     {
@@ -205,6 +229,10 @@ struct regeng re_aion[] =
     {
         .re_id  = RE_GROUP_PLAYER_LEAVE,
         .re_exp = "^: " RE_NAME " a quitté votre groupe\\.",
+    },
+    {
+        .re_id  = RE_GROUP_PLAYER_LEAVE,
+        .re_exp = "^: " RE_NAME " hat Eure Gruppe verlassen\\."
     },
 
     /* Another player has been disconnected */
@@ -226,6 +254,10 @@ struct regeng re_aion[] =
         .re_id  = RE_GROUP_PLAYER_KICK,
         .re_exp = "^: " RE_NAME " a été exclue de votre groupe\\.",
     },
+    {
+        .re_id  = RE_GROUP_PLAYER_KICK,
+        .re_exp = "^: " RE_NAME " wurde aus Eurer Gruppe geworfen\\.",
+    },
 
     /* Another player has been offlie for too long */
     {
@@ -246,6 +278,10 @@ struct regeng re_aion[] =
         .re_id  = RE_GROUP_DISBAND,
         .re_exp = "^: Le groupe a été dissous.\\.",
     },
+    {
+        .re_id  = RE_GROUP_DISBAND,
+        .re_exp = "^: Die Gruppe wurde aufgelöst\\.",
+    },
 
     /* The player joined an alliance */
     {
@@ -255,6 +291,10 @@ struct regeng re_aion[] =
     {
         .re_id  = RE_ALI_SELF_JOIN,
         .re_exp = "^: Vous avez rejoint la cohorte\\.",
+    },
+    {
+        .re_id  = RE_ALI_SELF_JOIN,
+        .re_exp = "^: Ihr seid der Allianz beigetreten\\.",
     },
 
     /* The player left the alliance */
@@ -266,6 +306,10 @@ struct regeng re_aion[] =
         .re_id  = RE_ALI_SELF_LEAVE,
         .re_exp = "^: Vous avez quitté la cohorte\\.",
     },
+    {
+        .re_id  = RE_ALI_SELF_LEAVE,
+        .re_exp = "^: Ihr habt die Allianz verlassen\\.",
+    },
 
     /* The player has been kicked from the alliance */
     {
@@ -275,6 +319,10 @@ struct regeng re_aion[] =
     {
         .re_id  = RE_ALI_SELF_KICK,
         .re_exp = "^: Vous avez été expulsée de la cohorte\\.",
+    },
+    {
+        .re_id  = RE_ALI_SELF_KICK,
+        .re_exp = "^: Ihr wurdet aus der Allianz geworfen\\.",
     },
 
     /* Another player joined the alliance */
@@ -286,6 +334,10 @@ struct regeng re_aion[] =
         .re_id  = RE_ALI_PLAYER_JOIN,
         .re_exp = "^: " RE_NAME " a rejoint la cohorte\\.",
     },
+    {
+        .re_id  = RE_ALI_PLAYER_JOIN,
+        .re_exp = "^: " RE_NAME " ist der Allianz beigetreten\\.",
+    },
 
     /* Another player has left the alliance */
     {
@@ -296,6 +348,10 @@ struct regeng re_aion[] =
         .re_id  = RE_ALI_PLAYER_LEAVE,
         .re_exp = "^: " RE_NAME " a quitté la cohorte\\.",
     },
+    {
+        .re_id  = RE_ALI_PLAYER_LEAVE,
+        .re_exp = "^: " RE_NAME " hat die Allianz verlassen\\.",
+    },
 
     /* A player has been kicked from the alliance */
     {
@@ -305,6 +361,10 @@ struct regeng re_aion[] =
     {
         .re_id  = RE_ALI_PLAYER_KICK,
         .re_exp = "^: " RE_NAME " a été expulsé de la cohorte\\.",
+    },
+    {
+        .re_id  = RE_ALI_PLAYER_KICK,
+        .re_exp = "^: " RE_NAME " wurde aus der Allianz geworfen\\.",
     },
 
     /* A player has been offline for too long and has been kicked out of the alliance */
@@ -326,8 +386,12 @@ struct regeng re_aion[] =
         .re_id  = RE_ALI_DISBAND,
         .re_exp = "^: La cohorte a été dissoute\\.",
     },
+    {
+        .re_id  = RE_ALI_DISBAND,
+        .re_exp = "^: Die Allianz wurde aufgelöst\\.",
+    },
 
-    /* General chat -- this seems to be the same in French and English*/
+    /* General chat -- this seems to be the same in French, German and English */
     {
         .re_id  = RE_CHAT_GENERAL,
         .re_exp = "^: \\[charname:" RE_NAME ";.*\\]: (.*)$",
@@ -342,6 +406,10 @@ struct regeng re_aion[] =
         .re_id  = RE_CHAT_WHISPER,
         .re_exp = "^: \\[charname:" RE_NAME ";.*\\] murmure : (.*)$",
     },
+    {
+        .re_id  = RE_CHAT_WHISPER,
+        .re_exp = "^: \\[charname:" RE_NAME ";.*\\] flüstert: (.*)$",
+    },
 
     /* Shouts */
     {
@@ -351,6 +419,10 @@ struct regeng re_aion[] =
     {
         .re_id  = RE_CHAT_SHOUT,
         .re_exp = "^: \\[charname:" RE_NAME ";.*\\] crie : (.*)$",
+    },
+    {
+        .re_id  = RE_CHAT_SHOUT,
+        .re_exp = "^: \\[charname:" RE_NAME ";.*\\] ruft: (.*)$",
     },
 
     /* The player rolled for an item */
@@ -362,6 +434,10 @@ struct regeng re_aion[] =
         .re_id  = RE_ROLL_ITEM_SELF,
         .re_exp = "^: Vous avez lancé les dés et obtenu " RE_NUM_ROLL " \\(max\\. " RE_NUM_ROLL "\\)\\.",
     },
+    {
+        .re_id  = RE_ROLL_ITEM_SELF,
+        .re_exp = "^: Ihr habt eine " RE_NUM_ROLL " gewürfelt \\(max\\. " RE_NUM_ROLL "\\)\\.",
+    },
 
     /* Another player rolled for an item */
     {
@@ -371,6 +447,10 @@ struct regeng re_aion[] =
     {
         .re_id  = RE_ROLL_ITEM_PLAYER,
         .re_exp = "^: " RE_NAME " a lancé les dés et a obtenu " RE_NUM_ROLL " \\(max\\. " RE_NUM_ROLL "\\)\\.",
+    },
+    {
+        .re_id  = RE_ROLL_ITEM_PLAYER,
+        .re_exp = "^: " RE_NAME " hat eine " RE_NUM_ROLL " gewürfelt \\(max\\. " RE_NUM_ROLL "\\)\\.",
     },
 
     /* The or another player passed on an item */
@@ -382,6 +462,11 @@ struct regeng re_aion[] =
         .re_id  = RE_ROLL_ITEM_PASS,
         .re_exp = "^: " RE_NAME " a renoncé à lancer les dés",
     },
+    {
+        .re_id  = RE_ROLL_ITEM_PASS,
+        .re_exp = "^: " RE_NAME " hat aufgehört zu würfeln\\.",
+    },
+
 
     /* Somebody rolled the highest */
     {
@@ -391,6 +476,10 @@ struct regeng re_aion[] =
     {
         .re_id  = RE_ROLL_ITEM_HIGHEST,
         .re_exp = "^: " RE_NAME " a obtenu le meilleur score",
+    },
+    {
+        .re_id  = RE_ROLL_ITEM_HIGHEST,
+        .re_exp = "^: " RE_NAME " hat den höchsten Wert gewürfelt",
     },
 
     /* The two events below do not have a French equivalent, unfortunately */
