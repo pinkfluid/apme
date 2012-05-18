@@ -2,11 +2,9 @@
 *.a
 doc/html/
 doc/latex/
-extern/build/
-extern/pcre/.pcre_install_done
-extern/pcre/pcre-config
-extern/pcre/pcreposix.h
-extern/pcre/pcre.h
+extern/pcre/pcre-*.tar.gz
+extern/pcre/pcre-*/
+extern/pcre/pkg/
 src/APme
 src/APme.exe
 src/apme.res

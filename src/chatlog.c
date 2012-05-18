@@ -70,6 +70,7 @@
 
 #define RE_GROUP_SELF_JOIN          300         /**< The player joined a group              */
 #define RE_GROUP_SELF_LEAVE         301         /**< The player left the group              */
+#define RE_GROUP_SELF_KICK          302         /**< The player has been kicked             */
 #define RE_GROUP_PLAYER_JOIN        303         /**< Some other player joined the group     */
 #define RE_GROUP_PLAYER_LEAVE       304         /**< Some other player left the group       */
 #define RE_GROUP_PLAYER_DISCONNECT  305         /**< Some player was disconnected           */
@@ -79,6 +80,7 @@
 
 #define RE_ALI_SELF_JOIN            350         /**< The player joined a group              */
 #define RE_ALI_SELF_LEAVE           351         /**< The player left the group              */
+#define RE_ALI_SELF_KICK            352         /**< The player has been kicked from the ali*/
 #define RE_ALI_PLAYER_JOIN          353         /**< Some other player joined the group     */
 #define RE_ALI_PLAYER_LEAVE         354         /**< Some other player left the group       */
 #define RE_ALI_PLAYER_DISCONNECT    355         /**< Some player was disconnected           */
@@ -175,6 +177,16 @@ struct regeng re_aion[] =
         .re_exp = "^: Vous avez quitté le groupe\\.",
     },
 
+    /* The player has been kicked */
+    {
+        .re_id  = RE_GROUP_SELF_KICK,
+        .re_exp = "^: You have been kicked out of the group\\.",
+    },
+    {
+        .re_id  = RE_GROUP_SELF_KICK,
+        .re_exp = "^: Vous avez été exclue du groupe\\.",
+    },
+
     /* Another player has joined the group */
     {
         .re_id  = RE_GROUP_PLAYER_JOIN,
@@ -253,6 +265,16 @@ struct regeng re_aion[] =
     {
         .re_id  = RE_ALI_SELF_LEAVE,
         .re_exp = "^: Vous avez quitté la cohorte\\.",
+    },
+
+    /* The player has been kicked from the alliance */
+    {
+        .re_id  = RE_ALI_SELF_KICK,
+        .re_exp = "^: You have been kicked out of the alliance\\.",
+    },
+    {
+        .re_id  = RE_ALI_SELF_KICK,
+        .re_exp = "^: Vous avez été expulsée de la cohorte\\.",
     },
 
     /* Another player joined the alliance */
@@ -710,8 +732,10 @@ void chatlog_parse(uint32_t re_id, const char* matchstr, regmatch_t *rematch, si
             break;
 
         case RE_GROUP_SELF_LEAVE:
+        case RE_GROUP_SELF_KICK:
         case RE_GROUP_DISBAND:
         case RE_ALI_SELF_LEAVE:
+        case RE_ALI_SELF_KICK:
         case RE_ALI_DISBAND:
             parse_action_group_self_leave();
             break;
