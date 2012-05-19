@@ -218,7 +218,7 @@ struct regeng re_aion[] =
     },
     {
         .re_id  = RE_GROUP_PLAYER_JOIN,
-        .re_exp = "^: " RE_PLAYER " ist Eurer Gruppe beigetreten."
+        .re_exp = "^: " RE_NAME " ist Eurer Gruppe beigetreten.",
     },
 
     /* Another player has left the gruop */
