@@ -79,7 +79,7 @@ $$($1_TARGET_DONE): $$($1_TARGET_INSTALL)
 
 
 # Some variables used by the standard targets
-$1_MAKE ?= (cd "$$($1_BUILD)" && $(MAKE) all)
+$1_MAKE ?= (cd "$$($1_BUILD)" && $(MAKE))
 $1_MAKE_INSTALL ?= (cd "$$($1_BUILD)" && $(MAKE) install)
 # This line effectively squashes the installation to a single directory
 $1_CONFIGURE ?= (cd "$$($1_BUILD)" && ./configure $$($1_BASE_CONFIG) $$(SYS_EXTRA_CONFIG) $($1_CONFIG))

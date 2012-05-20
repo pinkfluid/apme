@@ -5,7 +5,12 @@ doc/latex/
 extern/pcre/pcre-*.tar.gz
 extern/pcre/pcre-*/
 extern/pcre/pkg/
+extern/iniparser/iniparser-*.tar.gz
+extern/iniparser/iniparser-*/
+extern/iniparser/pkg/
 src/APme
 src/APme.exe
 src/apme.res
 *.swp
+APme*.zip
+APme*.zip.sha256

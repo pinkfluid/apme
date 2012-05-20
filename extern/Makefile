@@ -1,5 +1,5 @@
 
-SUB_DIRS:=pcre
+SUB_DIRS:=pcre iniparser
 
 all: sub-all 
 

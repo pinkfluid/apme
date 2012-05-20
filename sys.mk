@@ -81,6 +81,7 @@ ifdef XBUILD
 endif
 
 include $(EXTERN_DIR)/pcre/sys_pcre.mk
+include $(EXTERN_DIR)/iniparser/sys_iniparser.mk
 
 CFLAGS+=-I$(EXTERN_DIR) $(SYS_CFLAGS)
 
