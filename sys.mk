@@ -1,4 +1,3 @@
-
 # Extract the top directory 
 TOP_DIR_SHORT:=$(dir $(lastword $(MAKEFILE_LIST)))
 TOP_DIR:=$(abspath $(TOP_DIR_SHORT))
@@ -62,10 +61,11 @@ ifdef XBUILD
     USE_MANIFEST        :=  true
     BUILTIN_PCRE        :=  true
 
-    XBUILD_CC           ?=  $(XBUILD_TARGET)-gcc
-    XBUILD_LD           ?=  $(XBUILD_TARGET)-gcc
-    XBUILD_STRIP        ?=  $(XBUILD_TARGET)-strip
-    XBUILD_WINDRES      ?=  $(XBUILD_TARGET)-windres
+    XBUILD_CC           :=  $(XBUILD_TARGET)-gcc
+    XBUILD_LD           :=  $(XBUILD_TARGET)-gcc
+    XBUILD_AR           :=  $(XBUILD_TARGET)-ar
+    XBUILD_STRIP        :=  $(XBUILD_TARGET)-strip
+    XBUILD_WINDRES      :=  $(XBUILD_TARGET)-windres
     # This will be used for the --build flag to configure; auto-guess it using the -dumpmachine option of GCC
     XBUILD_MACH         ?=  $(shell gcc -dumpmachine)
 
@@ -75,6 +75,7 @@ ifdef XBUILD
 
     CC                  :=  $(XBUILD_CC)
     LD                  :=  $(XBUILD_LD)
+    AR                  :=  $(XBUILD_AR)
     STRIP               :=  $(XBUILD_STRIP)
     WINDRES             :=  $(XBUILD_WINDRES)
     EXE                 := .exe

@@ -28,7 +28,9 @@ apme.res : apme.rc apme.manifest
 OBJ += apme.res
 endif
 
+# Add external dependencies
 $(eval $(PCRE_INCLUDE))
+$(eval $(INIPARSER_INCLUDE))
 
 APme$(EXE): $(PCRE_DEP) $(OBJ)
 	$(CC) $(OBJ) -o $@ $(LDFLAGS)
