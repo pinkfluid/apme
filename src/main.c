@@ -304,17 +304,18 @@ bool apme_init(int argc, char* argv[])
  */
 void apme_cfg_apply(void)
 {
-    char *default_name = getenv("APME_NAME");
-    char *aploot_format = getenv("APME_APFORMAT");
+    char cfg[1024];
 
-    if (default_name != NULL)
+    if (cfg_get_string(CFG_SEC_APP, "name", cfg, sizeof(cfg)))
     {
-        aion_player_name_set(default_name);
+        con_printf("MAIN: CFG name = %s\n", cfg);
+        aion_player_name_set(cfg);
     }
 
-    if (aploot_format != NULL)
+    if (cfg_get_string(CFG_SEC_APP, "apformat", cfg, sizeof(cfg)))
     {
-        aion_aploot_fmt_set(aploot_format);
+        con_printf("MAIN: CFG apformat = %s\n", cfg);
+        aion_aploot_fmt_set(cfg);
     }
 }
 

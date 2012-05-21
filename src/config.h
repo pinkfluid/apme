@@ -43,7 +43,8 @@
 extern bool cfg_init(void);
 extern bool cfg_load(void);
 extern bool cfg_store(void);
-extern void cfg_set_string(char *section, char *name, char *value);
-extern void cfg_set_int(char *section, char *key, int value);
+extern bool cfg_set_string(char *section, char *name, char *value);
+extern bool cfg_set_int(char *section, char *key, int value);
+extern bool cfg_get_string(char *section, char *name, char *value, size_t valuesz);
 
 #endif /* CONFIG_H_INCLUDE */

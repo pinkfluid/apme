@@ -60,24 +60,27 @@ bool cfg_init(void)
 bool cfg_load(void)
 {
     char inifile[UTIL_MAX_PATH];
-    dictionary *dini;
+
+    if (cfg_db != NULL)
+    {
+        con_printf("Configuration already loaded, reloading\n");
+        iniparser_freedict(cfg_db);
+        cfg_db = NULL;
+    }
 
     con_printf("Loading configuration.\n");
 
     if (!cfg_ini_path(inifile, sizeof(inifile)))
     {
-        con_printf("cfg_load() was unable to deterimine the inifile path");
+        con_printf("cfg_load() was unable to deterimine the inifile path\n");
     }
 
-    dini = iniparser_load(inifile);
-    if (dini == NULL)
+    cfg_db = iniparser_load(inifile);
+    if (cfg_db == NULL)
     {
         con_printf("iniparser_load() failed on '%s'\n", inifile);
         return false;
     }
-
-    /* Parse the values */
-    iniparser_freedict(dini);
 
     con_printf("Configuration loaded successfully.\n");
 
@@ -98,16 +101,16 @@ bool cfg_store(void)
     return true;
 }
 
-void cfg_set_string(char *section, char *name, char *value)
+bool cfg_set_string(char *section, char *name, char *value)
 {
     char key[CFG_KEYSZ];
 
-    con_printf("cfg_set_string(): Storing %s:%s -> %s\n", section, key, value);
+    con_printf("CFG: Storing string %s:%s -> %s\n", section, key, value);
 
     if (cfg_db == NULL)
     {
         con_printf("No configuration loaded.\n");
-        return;
+        return false;
     }
 
     key[0] = '\0';
@@ -117,17 +120,53 @@ void cfg_set_string(char *section, char *name, char *value)
 
     if (iniparser_set(cfg_db, key, value) != 0)
     {
-        con_printf("cfg_set_string(): iniparser_set() failed\n");
+        con_printf("CFG: iniparser_set() failed\n");
+        return false;
     }
+
+    return true;
 }
 
-void cfg_set_int(char *section, char *key, int value)
+bool cfg_set_int(char *section, char *key, int value)
 {
     char strval[64];
 
+    con_printf("CFG: Storing int %s:%s -> %d\n", section, key, value);
     snprintf(strval, sizeof(strval), "%d", value);
 
-    cfg_set_string(section, key, strval);
+    return cfg_set_string(section, key, strval);
+}
+
+bool cfg_get_string(char *section, char *name, char *value, size_t valuesz)
+{
+    char key[CFG_KEYSZ];
+    char *kval;
+
+    con_printf("CFG: Looking up %s:%s\n", section, name);
+
+    if (cfg_db == NULL)
+    {
+        con_printf("CFG: Configuration not loaded.\n");
+        return false;
+    }
+
+    key[0] = '\0';
+    util_strlcat(key, section, sizeof(key));
+    util_strlcat(key, ":", sizeof(key));
+    util_strlcat(key, name, sizeof(key));
+
+    kval = iniparser_getstring(cfg_db, key, NULL);
+    if (kval == NULL)
+    {
+        con_printf("CFG: Key not found\n");
+        return false;
+    }
+
+    con_printf("CFG: Key '%s' -> '%s'\n", key, kval);
+
+    util_strlcpy(value, kval, valuesz);
+
+    return true;
 }
 
 /**
@@ -156,7 +195,7 @@ bool cfg_ini_path(char *inifile, size_t inifile_sz)
     con_printf("INI file path: %s\n", inifile);
 
     /* Create the file if it does not exist */
-    fini = fopen(inifile, "w+");
+    fini = fopen(inifile, "a+");
     if (fini == NULL)
     {
         con_printf("Unable to create the ini file: %s\n", strerror(errno));
