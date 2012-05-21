@@ -34,6 +34,17 @@
  *
  * @{
  */
+
+#ifdef SYS_WINDOWS
+/** Max path on Windows */
+#include <windows.h>
+#define UTIL_MAX_PATH   MAX_PATH
+#else
+/** Max path on Unix */
+#include <limits.h>
+#define UTIL_MAX_PATH   PATH_MAX
+#endif
+
 extern bool clipboard_set_text(char *text);
 extern bool clipboard_get_text(char *text, size_t text_sz);
 extern bool sys_is_admin(bool *isadmin);
@@ -42,6 +53,7 @@ extern bool sys_self_exe(char *path, size_t pathsz);
 extern bool sys_self_elevate(void);
 extern bool sys_perm_grant(char *path);
 extern FILE* sys_fopen_force(char *path, char *mode);
+extern bool sys_appdata_path(char *path, size_t pathsz);
 
 extern char* util_strsep(char **pinputstr, const char *delim);
 extern size_t util_strlncat(char *dst, const char *src, size_t dst_size, size_t nchars);

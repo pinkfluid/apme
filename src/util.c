@@ -28,6 +28,7 @@
 #include <windows.h>
 #include <winnt.h>
 #include <aclapi.h>
+#include <shlobj.h>
 #endif
 
 #include <stdbool.h>
@@ -522,6 +523,57 @@ FILE *sys_fopen_force(char *path, char *mode)
     return NULL;
 }
 
+/**
+ * Return the local APPDATA directory for APme.
+ *
+ * Create the folder if it does not exist.
+ *
+ * @param[out]      path    Path to the APPDATA directory
+ * @param[in]       pathsz  Maximum number of characters that @p path can hold
+ *
+ * @retval          true    On success
+ * @Retval          false   On error
+ */
+bool sys_appdata_path(char *path, size_t pathsz)
+{
+    char appdata_path[MAX_PATH];
+    char *pstr;
+    HRESULT hres;
+    
+    /* Retrieve the APP data path */
+    hres = SHGetFolderPath(NULL, CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE, NULL, 0, appdata_path);
+    if (!SUCCEEDED(hres))
+    {
+        con_printf("Error retrieving the LOCAL APPDATA path\n");
+        return false;
+    }
+
+    /* Replace '\' with '/' */
+    pstr = appdata_path;
+    while (*pstr != '\0')
+    {
+        if (*pstr == '\\') *pstr = '/';
+    }
+
+    util_strlcat(appdata_path, "/APme", sizeof(appdata_path));
+
+    con_printf("APPDATA directory: %s\n", appdata_path);
+
+    /* Check if the directory exists, otherwise create it */
+    if (!CreateDirectory(appdata_path, NULL))
+    {
+        if (GetLastError() != ERROR_ALREADY_EXISTS)
+        {
+            con_printf("Create directory on '%s' failed\n", appdata_path);
+            return false;
+        }
+    }
+
+    util_strlcpy(path, appdata_path, pathsz);
+
+    return true;
+}
+
 #else /* Unix */
 
 /**
@@ -609,6 +661,12 @@ bool sys_perm_grant(char *path)
 FILE *sys_fopen_force(char *path, char *mode)
 {
     return fopen(path, mode);
+}
+
+bool sys_appdata_path(char *path, size_t pathsz)
+{
+    util_strlcpy(path, "./", pathsz);
+    return true;
 }
 
 /**

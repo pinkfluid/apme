@@ -5,6 +5,7 @@ all: APme$(EXE)
 SRC := main.c \
        help.c \
        chatlog.c \
+       config.c \
        regeng.c \
        util.c \
        items.c \

@@ -42,6 +42,7 @@
 #include "event.h"
 #include "version.h"
 #include "term.h"
+#include "config.h"
 
 /**
  * @defgroup headless Headless Main
@@ -49,6 +50,15 @@
  *
  * @{
  */ 
+
+static bool apme_prompt(char *prompt, char *answer);
+static void apme_chatlog_check(void);
+static void apme_screen_update(void);
+static void apme_sys_elevate(void);
+static void apme_event_handler(enum event_type ev);
+static bool apme_init(int argc, char* argv[]);
+static void apme_cfg_apply(void);
+static void apme_periodic(void);
 
 /**
  * Simple "prompt a question and wait for an answer" function
@@ -274,13 +284,25 @@ bool apme_init(int argc, char* argv[])
         return false;
     }
 
+    /* Initialize the configuration file */
+    if (!cfg_init())
+    {
+        con_printf("Error initializing the config subsystem.\n");
+        /* Non-fatal for now -- we'll revert to defaults */
+    }
+    else
+    {
+        /* Apply the loaded configuration */
+        apme_cfg_apply();
+    }
+
     return true;
 }
 
 /**
  * Check the environment and set the environment name
  */
-void apme_env(void)
+void apme_cfg_apply(void)
 {
     char *default_name = getenv("APME_NAME");
     char *aploot_format = getenv("APME_APFORMAT");
@@ -328,9 +350,6 @@ int main(int argc, char *argv[])
     {
         return 1;
     }
-
-    /* Get some stuff from the environment */
-    apme_env();
 
     /* Show screen */
     apme_screen_update();
