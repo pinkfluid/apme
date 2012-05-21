@@ -553,6 +553,7 @@ bool sys_appdata_path(char *path, size_t pathsz)
     while (*pstr != '\0')
     {
         if (*pstr == '\\') *pstr = '/';
+        pstr++;
     }
 
     util_strlcat(appdata_path, "/APme", sizeof(appdata_path));
