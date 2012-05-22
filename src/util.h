@@ -28,6 +28,7 @@
 #define UTIL_H_INCLUDED
 
 #include <stdio.h>
+#include <stdint.h>
 
 /**
  * @ingroup util
