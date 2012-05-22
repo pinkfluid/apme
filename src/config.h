@@ -35,7 +35,7 @@
 #define CFG_APME_INI "apme.ini"
 
 /** The application section string */
-#define CFG_SEC_APP "APP"
+#define CFG_SEC_APP "apme"
 
 /** Maximum CFG key size (section + ':' + name) */
 #define CFG_KEYSZ   256
