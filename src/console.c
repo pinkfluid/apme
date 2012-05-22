@@ -1,4 +1,3 @@
-#define CON_DEBUG
 /*
  * console.h - APme: Aion Automatic Abyss Point Tracker
  *
