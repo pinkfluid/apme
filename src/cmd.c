@@ -39,6 +39,7 @@
 #include "console.h"
 #include "help.h"
 #include "version.h"
+#include "config.h"
 
 /**
  * @defgroup cmd Command Processing and Chat History
@@ -299,6 +300,9 @@ bool cmd_func_nameset(int argc, char *argv[], char *txt)
 
     aion_player_name_set(argv[1]);
 
+    /* Save to the configuration */
+    cfg_set_string(CFG_SEC_APP, "name", argv[1]);
+
     cmd_retval_printf("You are now known as %s.", argv[1]);
 
     return true;
@@ -486,6 +490,8 @@ bool cmd_func_ap_format(int argc, char *argv[], char *txt)
         cmd_retval_set("Invalid format");
         return true;
     }
+
+    cfg_set_string(CFG_SEC_APP, "apformat", txt);
 
     cmd_retval_set(CMD_RETVAL_OK);
 

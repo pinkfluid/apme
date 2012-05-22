@@ -54,6 +54,7 @@ extern bool sys_self_elevate(void);
 extern bool sys_perm_grant(char *path);
 extern FILE* sys_fopen_force(char *path, char *mode);
 extern bool sys_appdata_path(char *path, size_t pathsz);
+extern uint64_t sys_monotime(void);
 
 extern char* util_strsep(char **pinputstr, const char *delim);
 extern size_t util_strlncat(char *dst, const char *src, size_t dst_size, size_t nchars);

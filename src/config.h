@@ -47,4 +47,6 @@ extern bool cfg_set_string(char *section, char *name, char *value);
 extern bool cfg_set_int(char *section, char *key, int value);
 extern bool cfg_get_string(char *section, char *name, char *value, size_t valuesz);
 
+extern void cfg_periodic(void);
+
 #endif /* CONFIG_H_INCLUDE */

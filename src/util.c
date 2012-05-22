@@ -25,13 +25,24 @@
  * @author Mitja Horvat <pinkfluid@gmail.com>
  */
 #ifdef SYS_WINDOWS
+
+/* Needed for GetTickCount64() */
+#define _WIN32_WINNT    0x600
+
 #include <windows.h>
+#include <winbase.h>
 #include <winnt.h>
 #include <aclapi.h>
 #include <shlobj.h>
+
+#else /* UNIX */
+
+#include <sys/time.h>
+
 #endif
 
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
@@ -575,6 +586,19 @@ bool sys_appdata_path(char *path, size_t pathsz)
     return true;
 }
 
+/**
+ * Return some sort of monotonic time in miliseconds
+ *
+ * This is an ever increasing time counter.
+ *
+ * @return
+ * This function returns a 64-bit timer, the resolution is in miliseconds
+ */
+uint64_t sys_monotime(void)
+{
+    return GetTickCount64();
+}
+
 #else /* Unix */
 
 /**
@@ -668,6 +692,15 @@ bool sys_appdata_path(char *path, size_t pathsz)
 {
     util_strlcpy(path, "./", pathsz);
     return true;
+}
+
+uint64_t sys_monotime(void)
+{
+    struct timespec tv;
+
+    clock_gettime(CLOCK_MONOTONIC, &tv);
+
+    return (uint64_t)tv.tv_sec * 1000  + (uint64_t)tv.tv_nsec / 1000000;
 }
 
 /**

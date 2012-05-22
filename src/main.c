@@ -329,6 +329,7 @@ void apme_periodic(void)
 {
     cmd_poll();
     chatlog_poll();
+    cfg_periodic();
 }
 
 /**
