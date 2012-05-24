@@ -30,11 +30,11 @@
 /** Major version number        */
 #define APME_VERSION_MAJOR      0
 /** Minor version number        */
-#define APME_VERSION_MINOR      5
+#define APME_VERSION_MINOR      6
 /** Revision number             */
-#define APME_VERSION_REVISION   99
+#define APME_VERSION_REVISION   0
 /** Version codename            */
-#define APME_VERSION_NAME       "Development"
+#define APME_VERSION_NAME       "Ablanca"
 
 /** Convert parameter to string */
 #define __APM_STR(x)            #x
