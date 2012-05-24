@@ -9,8 +9,8 @@ all:
 endif
 	
 PCRE_PREFIX     := $(PCRE_PKGDIR)
-PCRE_VER        := 8.12
-PCRE_URL        := http://noom.ath.cx/mitja/pcre-$(PCRE_VER).tar.gz
+PCRE_VER        := 8.30
+PCRE_URL        := ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-$(PCRE_VER).tar.bz2
 
 PCRE_CONFIG     := --disable-shared
 PCRE_CONFIG     += --disable-cpp
