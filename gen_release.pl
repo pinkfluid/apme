@@ -168,7 +168,7 @@ sub apme_package()
     my ($zip_file) = sprintf("APme-%d.%d.%d.zip", $ver_maj, $ver_min, $ver_rev);
     system("cp -v $apme_exe .");
     system("zip -m '$zip_file' APme.exe RELEASE.txt");
-    system("sha256sum '$zip_file' > '$zip_file.sha256'");
+    system("sha256 '$zip_file' > '$zip_file.sha256'");
 }
 
 if ($ARGV[0] eq "--notes")
