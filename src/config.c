@@ -201,7 +201,7 @@ void cfg_periodic(void)
  * @note This function will not update the configuration file, use @ref cfg_store()
  * to update it.
  *
- * @param[in]       secition    The parameter section
+ * @param[in]       section     The parameter section
  * @param[in]       name        Parameter name
  * @param[in]       value       Parameter value
  *
@@ -244,7 +244,7 @@ bool cfg_set_string(char *section, char *name, char *value)
  * @note This function will not update the configuration file, use @ref cfg_store()
  * to update it.
  *
- * @param[in]       secition    The parameter section
+ * @param[in]       section     The parameter section
  * @param[in]       name        Parameter name
  * @param[in]       value       Parameter value
  *

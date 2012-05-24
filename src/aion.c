@@ -257,6 +257,7 @@ bool aion_player_is_self(char *charname)
     if (charname == NULL) return true;
     if (strcasecmp(charname, AION_NAME_DEFAULT) == 0) return true;
     if (strcasecmp(charname, AION_NAME_FR_DEFAULT) == 0) return true;
+    if (strcasecmp(charname, AION_NAME_DE_DEFAULT) == 0) return true;
     if (strcasecmp(aion_player_self.apl_name, charname) == 0) return true;
 
     return false;
