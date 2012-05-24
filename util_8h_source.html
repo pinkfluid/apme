@@ -67,27 +67,43 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00028"></a>00028 <span class="preprocessor"></span><span class="preprocessor">#define UTIL_H_INCLUDED</span>
 <a name="l00029"></a>00029 <span class="preprocessor"></span>
 <a name="l00030"></a>00030 <span class="preprocessor">#include &lt;stdio.h&gt;</span>
-<a name="l00031"></a>00031 
-<a name="l00037"></a>00037 <span class="keyword">extern</span> <span class="keywordtype">bool</span> clipboard_set_text(<span class="keywordtype">char</span> *text);
-<a name="l00038"></a>00038 <span class="keyword">extern</span> <span class="keywordtype">bool</span> clipboard_get_text(<span class="keywordtype">char</span> *text, <span class="keywordtype">size_t</span> text_sz);
-<a name="l00039"></a>00039 <span class="keyword">extern</span> <span class="keywordtype">bool</span> sys_is_admin(<span class="keywordtype">bool</span> *isadmin);
-<a name="l00040"></a>00040 <span class="keyword">extern</span> <span class="keywordtype">bool</span> sys_runas_admin(<span class="keywordtype">char</span> *path);
-<a name="l00041"></a>00041 <span class="keyword">extern</span> <span class="keywordtype">bool</span> sys_self_exe(<span class="keywordtype">char</span> *path, <span class="keywordtype">size_t</span> pathsz);
-<a name="l00042"></a>00042 <span class="keyword">extern</span> <span class="keywordtype">bool</span> sys_self_elevate(<span class="keywordtype">void</span>);
-<a name="l00043"></a>00043 <span class="keyword">extern</span> <span class="keywordtype">bool</span> sys_perm_grant(<span class="keywordtype">char</span> *path);
-<a name="l00044"></a>00044 <span class="keyword">extern</span> FILE* sys_fopen_force(<span class="keywordtype">char</span> *path, <span class="keywordtype">char</span> *mode);
-<a name="l00045"></a>00045 
-<a name="l00046"></a>00046 <span class="keyword">extern</span> <span class="keywordtype">char</span>* <a class="code" href="group__util.html#ga61777acdc7f92c75350e4196d38d0770">util_strsep</a>(<span class="keywordtype">char</span> **pinputstr, <span class="keyword">const</span> <span class="keywordtype">char</span> *delim);
-<a name="l00047"></a>00047 <span class="keyword">extern</span> <span class="keywordtype">size_t</span> <a class="code" href="group__util.html#gacbdf4465fff344185374ccdbbbecb217">util_strlncat</a>(<span class="keywordtype">char</span> *dst, <span class="keyword">const</span> <span class="keywordtype">char</span> *src, <span class="keywordtype">size_t</span> dst_size, <span class="keywordtype">size_t</span> nchars);
-<a name="l00048"></a>00048 <span class="keyword">extern</span> <span class="keywordtype">size_t</span> <a class="code" href="group__util.html#ga79569539f995dbceb7e8af9861a41168">util_strlcpy</a>(<span class="keywordtype">char</span> *dst, <span class="keyword">const</span> <span class="keywordtype">char</span> *src, <span class="keywordtype">size_t</span> dst_size);
-<a name="l00049"></a>00049 <span class="keyword">extern</span> <span class="keywordtype">size_t</span> <a class="code" href="group__util.html#gad6494c4cced98e0d0d68abf3fe206ec4">util_strlcat</a>(<span class="keywordtype">char</span> *dst, <span class="keyword">const</span> <span class="keywordtype">char</span> *src, <span class="keywordtype">size_t</span> dst_size);
-<a name="l00050"></a>00050 <span class="keyword">extern</span> <span class="keywordtype">void</span> <a class="code" href="group__util.html#gaeddce37c3ee8d5e06f29bef57cf46fd0">util_strrep</a>(<span class="keywordtype">char</span> *out, <span class="keywordtype">size_t</span> outsz, <span class="keywordtype">char</span> *in,  <span class="keywordtype">char</span> *findstr, <span class="keywordtype">char</span> *replacestr);
-<a name="l00051"></a>00051 <span class="keyword">extern</span> <span class="keywordtype">void</span> <a class="code" href="group__util.html#ga73aa7e4d18796244be605af72cc819d0">util_chomp</a>(<span class="keywordtype">char</span> *str);
-<a name="l00052"></a>00052 
-<a name="l00053"></a>00053 <span class="comment">/* Registry stuff */</span>
-<a name="l00054"></a>00054 <span class="keyword">extern</span> <span class="keywordtype">bool</span> reg_read_key(<span class="keywordtype">char</span> *key, <span class="keywordtype">char</span> *val, <span class="keywordtype">void</span> *buf, <span class="keywordtype">size_t</span> buflen);
-<a name="l00055"></a>00055 
-<a name="l00059"></a>00059 <span class="preprocessor">#endif // UTIL_H_INCLUDED</span>
+<a name="l00031"></a>00031 <span class="preprocessor">#include &lt;stdint.h&gt;</span>
+<a name="l00032"></a>00032 
+<a name="l00039"></a>00039 <span class="preprocessor">#ifdef SYS_WINDOWS</span>
+<a name="l00040"></a>00040 <span class="preprocessor"></span>
+<a name="l00041"></a>00041 <span class="preprocessor">#include &lt;windows.h&gt;</span>
+<a name="l00042"></a>00042 <span class="preprocessor">#define UTIL_MAX_PATH   MAX_PATH</span>
+<a name="l00043"></a>00043 <span class="preprocessor"></span><span class="preprocessor">#else</span>
+<a name="l00044"></a>00044 <span class="preprocessor"></span>
+<a name="l00045"></a>00045 <span class="preprocessor">#include &lt;limits.h&gt;</span>
+<a name="l00046"></a><a class="code" href="group__util.html#ga82c4f676f813785956af7bbfe8e07e13">00046</a> <span class="preprocessor">#define UTIL_MAX_PATH   PATH_MAX</span>
+<a name="l00047"></a>00047 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
+<a name="l00048"></a>00048 <span class="preprocessor"></span>
+<a name="l00049"></a>00049 <span class="keyword">extern</span> <span class="keywordtype">bool</span> clipboard_set_text(<span class="keywordtype">char</span> *text);
+<a name="l00050"></a>00050 <span class="keyword">extern</span> <span class="keywordtype">bool</span> clipboard_get_text(<span class="keywordtype">char</span> *text, <span class="keywordtype">size_t</span> text_sz);
+<a name="l00051"></a>00051 <span class="keyword">extern</span> <span class="keywordtype">bool</span> sys_is_admin(<span class="keywordtype">bool</span> *isadmin);
+<a name="l00052"></a>00052 <span class="keyword">extern</span> <span class="keywordtype">bool</span> sys_runas_admin(<span class="keywordtype">char</span> *path);
+<a name="l00053"></a>00053 <span class="keyword">extern</span> <span class="keywordtype">bool</span> sys_self_exe(<span class="keywordtype">char</span> *path, <span class="keywordtype">size_t</span> pathsz);
+<a name="l00054"></a>00054 <span class="keyword">extern</span> <span class="keywordtype">bool</span> sys_self_elevate(<span class="keywordtype">void</span>);
+<a name="l00055"></a>00055 <span class="keyword">extern</span> <span class="keywordtype">bool</span> sys_perm_grant(<span class="keywordtype">char</span> *path);
+<a name="l00056"></a>00056 <span class="keyword">extern</span> FILE* sys_fopen_force(<span class="keywordtype">char</span> *path, <span class="keywordtype">char</span> *mode);
+<a name="l00057"></a>00057 <span class="keyword">extern</span> <span class="keywordtype">bool</span> sys_appdata_path(<span class="keywordtype">char</span> *path, <span class="keywordtype">size_t</span> pathsz);
+<a name="l00058"></a>00058 <span class="keyword">extern</span> uint64_t sys_monotime(<span class="keywordtype">void</span>);
+<a name="l00059"></a>00059 
+<a name="l00060"></a>00060 <span class="keyword">extern</span> <span class="keywordtype">char</span>* <a class="code" href="group__util.html#ga61777acdc7f92c75350e4196d38d0770">util_strsep</a>(<span class="keywordtype">char</span> **pinputstr, <span class="keyword">const</span> <span class="keywordtype">char</span> *delim);
+<a name="l00061"></a>00061 <span class="keyword">extern</span> <span class="keywordtype">size_t</span> <a class="code" href="group__util.html#gacbdf4465fff344185374ccdbbbecb217">util_strlncat</a>(<span class="keywordtype">char</span> *dst, <span class="keyword">const</span> <span class="keywordtype">char</span> *src, <span class="keywordtype">size_t</span> dst_size, <span class="keywordtype">size_t</span> nchars);
+<a name="l00062"></a>00062 <span class="keyword">extern</span> <span class="keywordtype">size_t</span> <a class="code" href="group__util.html#ga79569539f995dbceb7e8af9861a41168">util_strlcpy</a>(<span class="keywordtype">char</span> *dst, <span class="keyword">const</span> <span class="keywordtype">char</span> *src, <span class="keywordtype">size_t</span> dst_size);
+<a name="l00063"></a>00063 <span class="keyword">extern</span> <span class="keywordtype">size_t</span> <a class="code" href="group__util.html#gad6494c4cced98e0d0d68abf3fe206ec4">util_strlcat</a>(<span class="keywordtype">char</span> *dst, <span class="keyword">const</span> <span class="keywordtype">char</span> *src, <span class="keywordtype">size_t</span> dst_size);
+<a name="l00064"></a>00064 <span class="keyword">extern</span> <span class="keywordtype">void</span> <a class="code" href="group__util.html#gaeddce37c3ee8d5e06f29bef57cf46fd0">util_strrep</a>(<span class="keywordtype">char</span> *out, <span class="keywordtype">size_t</span> outsz, <span class="keywordtype">char</span> *in,  <span class="keywordtype">char</span> *findstr, <span class="keywordtype">char</span> *replacestr);
+<a name="l00065"></a>00065 <span class="keyword">extern</span> <span class="keywordtype">void</span> <a class="code" href="group__util.html#ga73aa7e4d18796244be605af72cc819d0">util_chomp</a>(<span class="keywordtype">char</span> *str);
+<a name="l00066"></a>00066 
+<a name="l00067"></a>00067 <span class="comment">/* Registry stuff */</span>
+<a name="l00068"></a>00068 <span class="keyword">extern</span> <span class="keywordtype">bool</span> reg_read_key(<span class="keywordtype">char</span> *key, <span class="keywordtype">char</span> *val, <span class="keywordtype">void</span> *buf, <span class="keywordtype">size_t</span> buflen);
+<a name="l00069"></a>00069 
+<a name="l00070"></a>00070 <span class="comment">/* Codepage stuff */</span>
+<a name="l00071"></a>00071 <span class="keywordtype">void</span> <a class="code" href="group__util.html#gad8506053c2ca38075acc33485a374faa">util_cp1252_to_utf8</a>(<span class="keywordtype">char</span> *utf8, ssize_t utf8_sz, <span class="keywordtype">char</span> *cp1252);
+<a name="l00072"></a>00072 
+<a name="l00076"></a>00076 <span class="preprocessor">#endif // UTIL_H_INCLUDED</span>
 </pre></div></div>
 <!--- window showing the filter options -->
 <div id="MSearchSelectWindow"
@@ -103,7 +119,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </iframe>
 </div>
 
-<hr class="footer"/><address style="text-align: right;"><small>Generated on Thu Apr 26 14:11:27 2012 by&nbsp;
+<hr class="footer"/><address style="text-align: right;"><small>Generated on Thu May 24 15:46:47 2012 by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.6.3 </small></address>
 </body>

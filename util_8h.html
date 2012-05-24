@@ -46,13 +46,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 <div class="contents">
 <h1>src/util.h File Reference</h1><code>#include &lt;stdio.h&gt;</code><br/>
+<code>#include &lt;stdint.h&gt;</code><br/>
+<code>#include &lt;limits.h&gt;</code><br/>
 
 <p><a href="util_8h_source.html">Go to the source code of this file.</a></p>
 <table border="0" cellpadding="0" cellspacing="0">
-<tr><td colspan="2"><h2>Functions</h2></td></tr>
-<tr><td colspan="2"><div class="groupHeader"></div></td></tr>
-<tr><td colspan="2"><div class="groupText"><p><a class="anchor" id="amgrpd41d8cd98f00b204e9800998ecf8427e"></a> </p>
-</div></td></tr>
+<tr><td colspan="2"><p><a class="anchor" id="amgrpd41d8cd98f00b204e9800998ecf8427e"></a> </p>
+<br/><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga82c4f676f813785956af7bbfe8e07e13">UTIL_MAX_PATH</a>&nbsp;&nbsp;&nbsp;PATH_MAX</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaf00c6443c41b9b5a74d8b36def965bd9"></a><!-- doxytag: member="util.h::clipboard_set_text" ref="gaf00c6443c41b9b5a74d8b36def965bd9" args="(char *text)" -->
 bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>clipboard_set_text</b> (char *text)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga22e696d377a963e286b16a3be9752ccf"></a><!-- doxytag: member="util.h::clipboard_get_text" ref="ga22e696d377a963e286b16a3be9752ccf" args="(char *text, size_t text_sz)" -->
@@ -69,6 +70,10 @@ bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>sys_self_elevate</b> 
 bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>sys_perm_grant</b> (char *path)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gacf5ba3af311188adf804fbcfc122a9fe"></a><!-- doxytag: member="util.h::sys_fopen_force" ref="gacf5ba3af311188adf804fbcfc122a9fe" args="(char *path, char *mode)" -->
 FILE *&nbsp;</td><td class="memItemRight" valign="bottom"><b>sys_fopen_force</b> (char *path, char *mode)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga7a1627d18b0f6a6fdf36eadad732fff4"></a><!-- doxytag: member="util.h::sys_appdata_path" ref="ga7a1627d18b0f6a6fdf36eadad732fff4" args="(char *path, size_t pathsz)" -->
+bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>sys_appdata_path</b> (char *path, size_t pathsz)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga42260285fd9c3076fc14ba4961e4480f"></a><!-- doxytag: member="util.h::sys_monotime" ref="ga42260285fd9c3076fc14ba4961e4480f" args="(void)" -->
+uint64_t&nbsp;</td><td class="memItemRight" valign="bottom"><b>sys_monotime</b> (void)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga61777acdc7f92c75350e4196d38d0770">util_strsep</a> (char **pinputstr, const char *delim)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">size_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#gacbdf4465fff344185374ccdbbbecb217">util_strlncat</a> (char *dst, const char *src, size_t dst_size, size_t nchars)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">size_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga79569539f995dbceb7e8af9861a41168">util_strlcpy</a> (char *dst, const char *src, size_t dst_size)</td></tr>
@@ -77,6 +82,7 @@ FILE *&nbsp;</td><td class="memItemRight" valign="bottom"><b>sys_fopen_force</b>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga73aa7e4d18796244be605af72cc819d0">util_chomp</a> (char *str)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga6b41115e6392b8afe5b79f7093cae68d"></a><!-- doxytag: member="util.h::reg_read_key" ref="ga6b41115e6392b8afe5b79f7093cae68d" args="(char *key, char *val, void *buf, size_t buflen)" -->
 bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>reg_read_key</b> (char *key, char *val, void *buf, size_t buflen)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#gad8506053c2ca38075acc33485a374faa">util_cp1252_to_utf8</a> (char *utf8, ssize_t utf8_sz, char *cp1252)</td></tr>
 </table>
 <hr/><a name="_details"></a><h2>Detailed Description</h2>
 <p>Utilities</p>
@@ -96,7 +102,7 @@ bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>reg_read_key</b> (cha
 </iframe>
 </div>
 
-<hr class="footer"/><address style="text-align: right;"><small>Generated on Thu Apr 26 14:11:28 2012 by&nbsp;
+<hr class="footer"/><address style="text-align: right;"><small>Generated on Thu May 24 15:46:47 2012 by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.6.3 </small></address>
 </body>

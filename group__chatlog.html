@@ -44,8 +44,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#_details">More...</a></p>
 <table border="0" cellpadding="0" cellspacing="0">
 <tr><td colspan="2"><h2>Defines</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a>&nbsp;&nbsp;&nbsp;&quot;([0-9a-zA-Z_]+)&quot;</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga00bbf2d5580d35cf7a80874c121750df">RE_ITEM</a>&nbsp;&nbsp;&nbsp;&quot;([0-9]+)&quot;</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a>&nbsp;&nbsp;&nbsp;&quot;([[:alnum:]]+)&quot;</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga00bbf2d5580d35cf7a80874c121750df">RE_ITEM</a>&nbsp;&nbsp;&nbsp;&quot;([[:digit:]]+)&quot;</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga5e2f2fbb6310eafb2021555832dcd367">RE_NUM_ROLL</a>&nbsp;&nbsp;&nbsp;&quot;[0-9\\.]+&quot;</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga005b2375a6d58b26699fcc1e2abadedd">RE_ITEM_LOOT_SELF</a>&nbsp;&nbsp;&nbsp;100</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga81378e5b08ee6b776077435411771f18">RE_ITEM_LOOT_PLAYER</a>&nbsp;&nbsp;&nbsp;101</td></tr>
@@ -53,6 +53,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga855bcb92174bc99724325a93e939be69">RE_DAMAGE_CRITICAL</a>&nbsp;&nbsp;&nbsp;201</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga84a9c52c414e80ab729e5c7fea3d6944">RE_GROUP_SELF_JOIN</a>&nbsp;&nbsp;&nbsp;300</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga7822663561a6449fc822e3d2d7233466">RE_GROUP_SELF_LEAVE</a>&nbsp;&nbsp;&nbsp;301</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga3fe93caa52158d9b72a300284cdcea1c">RE_GROUP_SELF_KICK</a>&nbsp;&nbsp;&nbsp;302</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga88e9d67844a7a33b948b5f493e7766e9">RE_GROUP_PLAYER_JOIN</a>&nbsp;&nbsp;&nbsp;303</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#gaffca978ac20a9a1f0ff52764006c7d0e">RE_GROUP_PLAYER_LEAVE</a>&nbsp;&nbsp;&nbsp;304</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga2ecb197e692972d386d5acb49fda03a1">RE_GROUP_PLAYER_DISCONNECT</a>&nbsp;&nbsp;&nbsp;305</td></tr>
@@ -61,6 +62,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga08c8c79c94ad3847fc7050895c958e5b">RE_GROUP_DISBAND</a>&nbsp;&nbsp;&nbsp;308</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga96c3ae25aeec525a242101c772432250">RE_ALI_SELF_JOIN</a>&nbsp;&nbsp;&nbsp;350</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga5cf624c47dafff76b42d4288dd5155e5">RE_ALI_SELF_LEAVE</a>&nbsp;&nbsp;&nbsp;351</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga63f40e05fae9f2fb1541d32a94e3042c">RE_ALI_SELF_KICK</a>&nbsp;&nbsp;&nbsp;352</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#gadec6a3a011c46a151fd35e6af0f60eff">RE_ALI_PLAYER_JOIN</a>&nbsp;&nbsp;&nbsp;353</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#gaebf2bd6310b1587e09a7ffc12a90140e">RE_ALI_PLAYER_LEAVE</a>&nbsp;&nbsp;&nbsp;354</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga046e1c3b12f26eb981ab5e6c7d621d7d">RE_ALI_PLAYER_DISCONNECT</a>&nbsp;&nbsp;&nbsp;355</td></tr>
@@ -213,6 +215,20 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 <div class="memdoc">
 <p>The player joined a group </p>
+
+</div>
+</div>
+<a class="anchor" id="ga63f40e05fae9f2fb1541d32a94e3042c"></a><!-- doxytag: member="chatlog.c::RE_ALI_SELF_KICK" ref="ga63f40e05fae9f2fb1541d32a94e3042c" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define RE_ALI_SELF_KICK&nbsp;&nbsp;&nbsp;352</td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>The player has been kicked from the ali </p>
 
 </div>
 </div>
@@ -412,6 +428,20 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 </div>
 </div>
+<a class="anchor" id="ga3fe93caa52158d9b72a300284cdcea1c"></a><!-- doxytag: member="chatlog.c::RE_GROUP_SELF_KICK" ref="ga3fe93caa52158d9b72a300284cdcea1c" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define RE_GROUP_SELF_KICK&nbsp;&nbsp;&nbsp;302</td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>The player has been kicked </p>
+
+</div>
+</div>
 <a class="anchor" id="ga7822663561a6449fc822e3d2d7233466"></a><!-- doxytag: member="chatlog.c::RE_GROUP_SELF_LEAVE" ref="ga7822663561a6449fc822e3d2d7233466" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -431,7 +461,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define RE_ITEM&nbsp;&nbsp;&nbsp;&quot;([0-9]+)&quot;</td>
+          <td class="memname">#define RE_ITEM&nbsp;&nbsp;&nbsp;&quot;([[:digit:]]+)&quot;</td>
         </tr>
       </table>
 </div>
@@ -473,7 +503,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define RE_NAME&nbsp;&nbsp;&nbsp;&quot;([0-9a-zA-Z_]+)&quot;</td>
+          <td class="memname">#define RE_NAME&nbsp;&nbsp;&nbsp;&quot;([[:alnum:]]+)&quot;</td>
         </tr>
       </table>
 </div>
@@ -1252,117 +1282,369 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="memdoc">
 <b>Initial value:</b><div class="fragment"><pre class="fragment">
 {
-    {
-        .re_id  = <a class="code" href="group__chatlog.html#gadfad74d0fe443d8a1f9ee4ea2132ac86">RE_DAMAGE_INFLICT</a>,
-        .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; inflicted ([0-9.]+) damage on ([A-Za-z ]+) by using ([A-Za-z ]+)\\.&quot;</span>,
-    },
-    {
-        .re_id  = <a class="code" href="group__chatlog.html#ga855bcb92174bc99724325a93e939be69">RE_DAMAGE_CRITICAL</a>,
-        .re_exp = <span class="stringliteral">&quot;^: Critical Hit! You inflicted ([0-9.]+) critical damage on ([A-Za-z ]+)\\.&quot;</span>,
-    },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
     {
         .re_id  = <a class="code" href="group__chatlog.html#ga005b2375a6d58b26699fcc1e2abadedd">RE_ITEM_LOOT_SELF</a>,
         .re_exp = <span class="stringliteral">&quot;^: You have acquired \\[item:&quot;</span> <a class="code" href="group__chatlog.html#ga00bbf2d5580d35cf7a80874c121750df">RE_ITEM</a> <span class="stringliteral">&quot;\\]&quot;</span>,
     },
     {
+        .re_id  = <a class="code" href="group__chatlog.html#ga005b2375a6d58b26699fcc1e2abadedd">RE_ITEM_LOOT_SELF</a>,
+        .re_exp = <span class="stringliteral">&quot;^: Vous avez gagné \\[item:&quot;</span> <a class="code" href="group__chatlog.html#ga00bbf2d5580d35cf7a80874c121750df">RE_ITEM</a> <span class="stringliteral">&quot;\\]&quot;</span>,
+    },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga005b2375a6d58b26699fcc1e2abadedd">RE_ITEM_LOOT_SELF</a>,
+        .re_exp = <span class="stringliteral">&quot;^: Ihr habt \\[item:&quot;</span> <a class="code" href="group__chatlog.html#ga00bbf2d5580d35cf7a80874c121750df">RE_ITEM</a> <span class="stringliteral">&quot;\\] erhalten\\.&quot;</span>,
+    },
+
+    
+    {
         .re_id  = <a class="code" href="group__chatlog.html#ga81378e5b08ee6b776077435411771f18">RE_ITEM_LOOT_PLAYER</a>,
         .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; has acquired \\[item:&quot;</span> <a class="code" href="group__chatlog.html#ga00bbf2d5580d35cf7a80874c121750df">RE_ITEM</a> <span class="stringliteral">&quot;\\]&quot;</span>,
     },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga81378e5b08ee6b776077435411771f18">RE_ITEM_LOOT_PLAYER</a>,
+        .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; a gagné \\[item:&quot;</span> <a class="code" href="group__chatlog.html#ga00bbf2d5580d35cf7a80874c121750df">RE_ITEM</a> <span class="stringliteral">&quot;\\]&quot;</span>,
+    },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga81378e5b08ee6b776077435411771f18">RE_ITEM_LOOT_PLAYER</a>,
+        .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; hat \\[item:&quot;</span> <a class="code" href="group__chatlog.html#ga00bbf2d5580d35cf7a80874c121750df">RE_ITEM</a> <span class="stringliteral">&quot;\\] erhalten\\.&quot;</span>
+    },
+
+    
     {
         .re_id  = <a class="code" href="group__chatlog.html#ga84a9c52c414e80ab729e5c7fea3d6944">RE_GROUP_SELF_JOIN</a>,
         .re_exp = <span class="stringliteral">&quot;^: You have joined the group\\.&quot;</span>,
     },
     {
+        .re_id  = <a class="code" href="group__chatlog.html#ga84a9c52c414e80ab729e5c7fea3d6944">RE_GROUP_SELF_JOIN</a>,
+        .re_exp = <span class="stringliteral">&quot;^: Vous avez rejoint le groupe\\.&quot;</span>,
+    },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga84a9c52c414e80ab729e5c7fea3d6944">RE_GROUP_SELF_JOIN</a>,
+        .re_exp = <span class="stringliteral">&quot;^: Ihr seid der Gruppe beigetreten\\.&quot;</span>,
+    },
+
+    
+    {
         .re_id  = <a class="code" href="group__chatlog.html#ga7822663561a6449fc822e3d2d7233466">RE_GROUP_SELF_LEAVE</a>,
         .re_exp = <span class="stringliteral">&quot;^: You left the group\\.&quot;</span>,
     },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga7822663561a6449fc822e3d2d7233466">RE_GROUP_SELF_LEAVE</a>,
+        .re_exp = <span class="stringliteral">&quot;^: Vous avez quitté le groupe\\.&quot;</span>,
+    },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga7822663561a6449fc822e3d2d7233466">RE_GROUP_SELF_LEAVE</a>,
+        .re_exp = <span class="stringliteral">&quot;^: Ihr habt die Gruppe verlassen\\.&quot;</span>,
+    },
+
+    
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga3fe93caa52158d9b72a300284cdcea1c">RE_GROUP_SELF_KICK</a>,
+        .re_exp = <span class="stringliteral">&quot;^: You have been kicked out of the group\\.&quot;</span>,
+    },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga3fe93caa52158d9b72a300284cdcea1c">RE_GROUP_SELF_KICK</a>,
+        .re_exp = <span class="stringliteral">&quot;^: Vous avez été exclue du groupe\\.&quot;</span>,
+    },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga3fe93caa52158d9b72a300284cdcea1c">RE_GROUP_SELF_KICK</a>,
+        .re_exp = <span class="stringliteral">&quot;^: Ihr wurdet aus der Gruppe geworfen\\.&quot;</span>,
+    },
+
+    
     {
         .re_id  = <a class="code" href="group__chatlog.html#ga88e9d67844a7a33b948b5f493e7766e9">RE_GROUP_PLAYER_JOIN</a>,
         .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; has joined your group\\.&quot;</span>,
     },
     {
+        .re_id  = <a class="code" href="group__chatlog.html#ga88e9d67844a7a33b948b5f493e7766e9">RE_GROUP_PLAYER_JOIN</a>,
+        .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; a rejoint votre groupe\\.&quot;</span>,
+    },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga88e9d67844a7a33b948b5f493e7766e9">RE_GROUP_PLAYER_JOIN</a>,
+        .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; ist Eurer Gruppe beigetreten.&quot;</span>,
+    },
+
+    
+    {
         .re_id  = <a class="code" href="group__chatlog.html#gaffca978ac20a9a1f0ff52764006c7d0e">RE_GROUP_PLAYER_LEAVE</a>,
         .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; has left your group\\.&quot;</span>,
     },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#gaffca978ac20a9a1f0ff52764006c7d0e">RE_GROUP_PLAYER_LEAVE</a>,
+        .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; a quitté votre groupe\\.&quot;</span>,
+    },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#gaffca978ac20a9a1f0ff52764006c7d0e">RE_GROUP_PLAYER_LEAVE</a>,
+        .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; hat Eure Gruppe verlassen\\.&quot;</span>
+    },
+
+    
     {
         .re_id  = <a class="code" href="group__chatlog.html#ga2ecb197e692972d386d5acb49fda03a1">RE_GROUP_PLAYER_DISCONNECT</a>,
         .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; has been disconnected\\.&quot;</span>,
     },
     {
+        .re_id  = <a class="code" href="group__chatlog.html#ga2ecb197e692972d386d5acb49fda03a1">RE_GROUP_PLAYER_DISCONNECT</a>,
+        .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; a quitté Atréia.\\.&quot;</span>,
+    },
+
+    
+    {
         .re_id  = <a class="code" href="group__chatlog.html#gab93cd46ba25e0b0a493cf734bfc54c81">RE_GROUP_PLAYER_KICK</a>,
         .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; has been kicked out of your group\\.&quot;</span>,
     },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#gab93cd46ba25e0b0a493cf734bfc54c81">RE_GROUP_PLAYER_KICK</a>,
+        .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; a été exclue de votre groupe\\.&quot;</span>,
+    },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#gab93cd46ba25e0b0a493cf734bfc54c81">RE_GROUP_PLAYER_KICK</a>,
+        .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; wurde aus Eurer Gruppe geworfen\\.&quot;</span>,
+    },
+
+    
     {
         .re_id  = <a class="code" href="group__chatlog.html#ga0eff943ba3af8a1e838d4af9912b82c1">RE_GROUP_PLAYER_OFFLINE</a>,
         .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; has been offline for too long and is automatically excluded from the group\\.&quot;</span>,
     },
     {
+        .re_id  = <a class="code" href="group__chatlog.html#ga0eff943ba3af8a1e838d4af9912b82c1">RE_GROUP_PLAYER_OFFLINE</a>,
+        .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; est déconnecté depuis trop longtemps et a été automatiquement exclu du groupe\\.&quot;</span>,
+    },
+
+    
+    {
         .re_id  = <a class="code" href="group__chatlog.html#ga08c8c79c94ad3847fc7050895c958e5b">RE_GROUP_DISBAND</a>,
         .re_exp = <span class="stringliteral">&quot;^: The group has been disbanded\\.&quot;</span>,
     },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga08c8c79c94ad3847fc7050895c958e5b">RE_GROUP_DISBAND</a>,
+        .re_exp = <span class="stringliteral">&quot;^: Le groupe a été dissous.\\.&quot;</span>,
+    },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga08c8c79c94ad3847fc7050895c958e5b">RE_GROUP_DISBAND</a>,
+        .re_exp = <span class="stringliteral">&quot;^: Die Gruppe wurde aufgelöst\\.&quot;</span>,
+    },
+
+    
     {
         .re_id  = <a class="code" href="group__chatlog.html#ga96c3ae25aeec525a242101c772432250">RE_ALI_SELF_JOIN</a>,
         .re_exp = <span class="stringliteral">&quot;^: You have joined the alliance\\.&quot;</span>,
     },
     {
+        .re_id  = <a class="code" href="group__chatlog.html#ga96c3ae25aeec525a242101c772432250">RE_ALI_SELF_JOIN</a>,
+        .re_exp = <span class="stringliteral">&quot;^: Vous avez rejoint la cohorte\\.&quot;</span>,
+    },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga96c3ae25aeec525a242101c772432250">RE_ALI_SELF_JOIN</a>,
+        .re_exp = <span class="stringliteral">&quot;^: Ihr seid der Allianz beigetreten\\.&quot;</span>,
+    },
+
+    
+    {
         .re_id  = <a class="code" href="group__chatlog.html#ga5cf624c47dafff76b42d4288dd5155e5">RE_ALI_SELF_LEAVE</a>,
         .re_exp = <span class="stringliteral">&quot;^: You have left the alliance\\.&quot;</span>,
     },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga5cf624c47dafff76b42d4288dd5155e5">RE_ALI_SELF_LEAVE</a>,
+        .re_exp = <span class="stringliteral">&quot;^: Vous avez quitté la cohorte\\.&quot;</span>,
+    },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga5cf624c47dafff76b42d4288dd5155e5">RE_ALI_SELF_LEAVE</a>,
+        .re_exp = <span class="stringliteral">&quot;^: Ihr habt die Allianz verlassen\\.&quot;</span>,
+    },
+
+    
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga63f40e05fae9f2fb1541d32a94e3042c">RE_ALI_SELF_KICK</a>,
+        .re_exp = <span class="stringliteral">&quot;^: You have been kicked out of the alliance\\.&quot;</span>,
+    },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga63f40e05fae9f2fb1541d32a94e3042c">RE_ALI_SELF_KICK</a>,
+        .re_exp = <span class="stringliteral">&quot;^: Vous avez été expulsée de la cohorte\\.&quot;</span>,
+    },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga63f40e05fae9f2fb1541d32a94e3042c">RE_ALI_SELF_KICK</a>,
+        .re_exp = <span class="stringliteral">&quot;^: Ihr wurdet aus der Allianz geworfen\\.&quot;</span>,
+    },
+
+    
     {
         .re_id  = <a class="code" href="group__chatlog.html#gadec6a3a011c46a151fd35e6af0f60eff">RE_ALI_PLAYER_JOIN</a>,
         .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; has joined the alliance\\.&quot;</span>,
     },
     {
+        .re_id  = <a class="code" href="group__chatlog.html#gadec6a3a011c46a151fd35e6af0f60eff">RE_ALI_PLAYER_JOIN</a>,
+        .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; a rejoint la cohorte\\.&quot;</span>,
+    },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#gadec6a3a011c46a151fd35e6af0f60eff">RE_ALI_PLAYER_JOIN</a>,
+        .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; ist der Allianz beigetreten\\.&quot;</span>,
+    },
+
+    
+    {
         .re_id  = <a class="code" href="group__chatlog.html#gaebf2bd6310b1587e09a7ffc12a90140e">RE_ALI_PLAYER_LEAVE</a>,
         .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; has left the alliance\\.&quot;</span>,
     },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#gaebf2bd6310b1587e09a7ffc12a90140e">RE_ALI_PLAYER_LEAVE</a>,
+        .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; a quitté la cohorte\\.&quot;</span>,
+    },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#gaebf2bd6310b1587e09a7ffc12a90140e">RE_ALI_PLAYER_LEAVE</a>,
+        .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; hat die Allianz verlassen\\.&quot;</span>,
+    },
+
+    
     {
         .re_id  = <a class="code" href="group__chatlog.html#gaabf67d4322f586056bf79e027b02f5cb">RE_ALI_PLAYER_KICK</a>,
         .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; has been kicked out of the alliance\\.&quot;</span>,
     },
     {
+        .re_id  = <a class="code" href="group__chatlog.html#gaabf67d4322f586056bf79e027b02f5cb">RE_ALI_PLAYER_KICK</a>,
+        .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; a été expulsé de la cohorte\\.&quot;</span>,
+    },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#gaabf67d4322f586056bf79e027b02f5cb">RE_ALI_PLAYER_KICK</a>,
+        .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; wurde aus der Allianz geworfen\\.&quot;</span>,
+    },
+
+    
+    {
         .re_id  = <a class="code" href="group__chatlog.html#gaf196a7f3a5858c1046343e1189cc08e6">RE_ALI_PLAYER_OFFLINE</a>,
         .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; has been offline for too long and had been automatically kicked out of the alliance\\.&quot;</span>
     },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#gaf196a7f3a5858c1046343e1189cc08e6">RE_ALI_PLAYER_OFFLINE</a>,
+        .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; a passé trop de temps hors connexion. Expulsion automatique de la Cohorte\\.&quot;</span>
+    },
+
+    
     {
         .re_id  = <a class="code" href="group__chatlog.html#ga478c5b0101c85b325b9e31002f5111b6">RE_ALI_DISBAND</a>,
         .re_exp = <span class="stringliteral">&quot;^: The alliance has been disbanded\\.&quot;</span>,
     },
     {
+        .re_id  = <a class="code" href="group__chatlog.html#ga478c5b0101c85b325b9e31002f5111b6">RE_ALI_DISBAND</a>,
+        .re_exp = <span class="stringliteral">&quot;^: La cohorte a été dissoute\\.&quot;</span>,
+    },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga478c5b0101c85b325b9e31002f5111b6">RE_ALI_DISBAND</a>,
+        .re_exp = <span class="stringliteral">&quot;^: Die Allianz wurde aufgelöst\\.&quot;</span>,
+    },
+
+    
+    {
         .re_id  = <a class="code" href="group__chatlog.html#gaa48da3ab900af4b71ec0b8aac0e6e85a">RE_CHAT_GENERAL</a>,
         .re_exp = <span class="stringliteral">&quot;^: \\[charname:&quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot;;.*\\]: (.*)$&quot;</span>,
     },
+
+    
     {
         .re_id  = <a class="code" href="group__chatlog.html#ga2c898beb57bc62c8217648877dac9c5a">RE_CHAT_WHISPER</a>,
         .re_exp = <span class="stringliteral">&quot;^: \\[charname:&quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot;;.*\\] Whispers: (.*)$&quot;</span>,
     },
     {
+        .re_id  = <a class="code" href="group__chatlog.html#ga2c898beb57bc62c8217648877dac9c5a">RE_CHAT_WHISPER</a>,
+        .re_exp = <span class="stringliteral">&quot;^: \\[charname:&quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot;;.*\\] murmure : (.*)$&quot;</span>,
+    },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga2c898beb57bc62c8217648877dac9c5a">RE_CHAT_WHISPER</a>,
+        .re_exp = <span class="stringliteral">&quot;^: \\[charname:&quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot;;.*\\] flüstert: (.*)$&quot;</span>,
+    },
+
+    
+    {
         .re_id  = <a class="code" href="group__chatlog.html#ga71a7b4c58d45c1277d01eb5ffd60d202">RE_CHAT_SHOUT</a>,
         .re_exp = <span class="stringliteral">&quot;^: \\[charname:&quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot;;.*\\] Shouts: (.*)$&quot;</span>,
     },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga71a7b4c58d45c1277d01eb5ffd60d202">RE_CHAT_SHOUT</a>,
+        .re_exp = <span class="stringliteral">&quot;^: \\[charname:&quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot;;.*\\] crie : (.*)$&quot;</span>,
+    },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga71a7b4c58d45c1277d01eb5ffd60d202">RE_CHAT_SHOUT</a>,
+        .re_exp = <span class="stringliteral">&quot;^: \\[charname:&quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot;;.*\\] ruft: (.*)$&quot;</span>,
+    },
 
-
-
-
-
-
-
+    
     {
         .re_id  = <a class="code" href="group__chatlog.html#ga5b4b71afdfea165599b398906f91c5ad">RE_ROLL_ITEM_SELF</a>,
         .re_exp = <span class="stringliteral">&quot;^: You rolled the dice and got &quot;</span> <a class="code" href="group__chatlog.html#ga5e2f2fbb6310eafb2021555832dcd367">RE_NUM_ROLL</a> <span class="stringliteral">&quot; \\(max\\. &quot;</span> <a class="code" href="group__chatlog.html#ga5e2f2fbb6310eafb2021555832dcd367">RE_NUM_ROLL</a> <span class="stringliteral">&quot;\\)\\.&quot;</span>,
     },
     {
+        .re_id  = <a class="code" href="group__chatlog.html#ga5b4b71afdfea165599b398906f91c5ad">RE_ROLL_ITEM_SELF</a>,
+        .re_exp = <span class="stringliteral">&quot;^: Vous avez lancé les dés et obtenu &quot;</span> <a class="code" href="group__chatlog.html#ga5e2f2fbb6310eafb2021555832dcd367">RE_NUM_ROLL</a> <span class="stringliteral">&quot; \\(max\\. &quot;</span> <a class="code" href="group__chatlog.html#ga5e2f2fbb6310eafb2021555832dcd367">RE_NUM_ROLL</a> <span class="stringliteral">&quot;\\)\\.&quot;</span>,
+    },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga5b4b71afdfea165599b398906f91c5ad">RE_ROLL_ITEM_SELF</a>,
+        .re_exp = <span class="stringliteral">&quot;^: Ihr habt eine &quot;</span> <a class="code" href="group__chatlog.html#ga5e2f2fbb6310eafb2021555832dcd367">RE_NUM_ROLL</a> <span class="stringliteral">&quot; gewürfelt \\(max\\. &quot;</span> <a class="code" href="group__chatlog.html#ga5e2f2fbb6310eafb2021555832dcd367">RE_NUM_ROLL</a> <span class="stringliteral">&quot;\\)\\.&quot;</span>,
+    },
+
+    
+    {
         .re_id  = <a class="code" href="group__chatlog.html#ga9e0ee1afb4ffe25b61d7621263e3392c">RE_ROLL_ITEM_PLAYER</a>,
         .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; rolled the dice and got &quot;</span> <a class="code" href="group__chatlog.html#ga5e2f2fbb6310eafb2021555832dcd367">RE_NUM_ROLL</a> <span class="stringliteral">&quot; \\(max\\. &quot;</span> <a class="code" href="group__chatlog.html#ga5e2f2fbb6310eafb2021555832dcd367">RE_NUM_ROLL</a> <span class="stringliteral">&quot;\\)\\.&quot;</span>,
     },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga9e0ee1afb4ffe25b61d7621263e3392c">RE_ROLL_ITEM_PLAYER</a>,
+        .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; a lancé les dés et a obtenu &quot;</span> <a class="code" href="group__chatlog.html#ga5e2f2fbb6310eafb2021555832dcd367">RE_NUM_ROLL</a> <span class="stringliteral">&quot; \\(max\\. &quot;</span> <a class="code" href="group__chatlog.html#ga5e2f2fbb6310eafb2021555832dcd367">RE_NUM_ROLL</a> <span class="stringliteral">&quot;\\)\\.&quot;</span>,
+    },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga9e0ee1afb4ffe25b61d7621263e3392c">RE_ROLL_ITEM_PLAYER</a>,
+        .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; hat eine &quot;</span> <a class="code" href="group__chatlog.html#ga5e2f2fbb6310eafb2021555832dcd367">RE_NUM_ROLL</a> <span class="stringliteral">&quot; gewürfelt \\(max\\. &quot;</span> <a class="code" href="group__chatlog.html#ga5e2f2fbb6310eafb2021555832dcd367">RE_NUM_ROLL</a> <span class="stringliteral">&quot;\\)\\.&quot;</span>,
+    },
+
+    
     {
         .re_id  = <a class="code" href="group__chatlog.html#ga20bc0a7c893c1560bd02cd216004f2d8">RE_ROLL_ITEM_PASS</a>,
         .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; gave up rolling the dice&quot;</span>,
     },
     {
+        .re_id  = <a class="code" href="group__chatlog.html#ga20bc0a7c893c1560bd02cd216004f2d8">RE_ROLL_ITEM_PASS</a>,
+        .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; a renoncé à lancer les dés&quot;</span>,
+    },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga20bc0a7c893c1560bd02cd216004f2d8">RE_ROLL_ITEM_PASS</a>,
+        .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; hat aufgehört zu würfeln\\.&quot;</span>,
+    },
+
+
+    
+    {
         .re_id  = <a class="code" href="group__chatlog.html#ga66d587590bffc9d1fa94b39e57b27f08">RE_ROLL_ITEM_HIGHEST</a>,
         .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; rolled the highest&quot;</span>,
     },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga66d587590bffc9d1fa94b39e57b27f08">RE_ROLL_ITEM_HIGHEST</a>,
+        .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; a obtenu le meilleur score&quot;</span>,
+    },
+    {
+        .re_id  = <a class="code" href="group__chatlog.html#ga66d587590bffc9d1fa94b39e57b27f08">RE_ROLL_ITEM_HIGHEST</a>,
+        .re_exp = <span class="stringliteral">&quot;^: &quot;</span> <a class="code" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a> <span class="stringliteral">&quot; hat den höchsten Wert gewürfelt&quot;</span>,
+    },
+
+    
     {
         
         .re_id  = <a class="code" href="group__chatlog.html#gaef998ed0c32765dbb2c5df730305a780">RE_ROLL_DICE_SELF</a>,
@@ -1399,7 +1681,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </iframe>
 </div>
 
-<hr class="footer"/><address style="text-align: right;"><small>Generated on Thu Apr 26 14:11:31 2012 by&nbsp;
+<hr class="footer"/><address style="text-align: right;"><small>Generated on Thu May 24 15:46:48 2012 by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.6.3 </small></address>
 </body>

@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<title>Class Members</title>
+<title>src/config.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javaScript" src="search/search.js"></script>
@@ -40,72 +40,38 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="tabs">
     <ul>
       <li><a href="files.html"><span>File&nbsp;List</span></a></li>
-      <li class="current"><a href="globals.html"><span>File&nbsp;Members</span></a></li>
-    </ul>
-  </div>
-  <div class="tabs">
-    <ul>
-      <li class="current"><a href="globals.html"><span>All</span></a></li>
-      <li><a href="globals_func.html"><span>Functions</span></a></li>
-      <li><a href="globals_vars.html"><span>Variables</span></a></li>
-      <li><a href="globals_type.html"><span>Typedefs</span></a></li>
-      <li><a href="globals_enum.html"><span>Enumerations</span></a></li>
-      <li><a href="globals_eval.html"><span>Enumerator</span></a></li>
-      <li><a href="globals_defs.html"><span>Defines</span></a></li>
-    </ul>
-  </div>
-  <div class="tabs">
-    <ul>
-      <li><a href="globals.html#index__"><span>_</span></a></li>
-      <li><a href="globals_0x61.html#index_a"><span>a</span></a></li>
-      <li><a href="globals_0x63.html#index_c"><span>c</span></a></li>
-      <li><a href="globals_0x65.html#index_e"><span>e</span></a></li>
-      <li class="current"><a href="globals_0x68.html#index_h"><span>h</span></a></li>
-      <li><a href="globals_0x69.html#index_i"><span>i</span></a></li>
-      <li><a href="globals_0x6c.html#index_l"><span>l</span></a></li>
-      <li><a href="globals_0x6d.html#index_m"><span>m</span></a></li>
-      <li><a href="globals_0x70.html#index_p"><span>p</span></a></li>
-      <li><a href="globals_0x72.html#index_r"><span>r</span></a></li>
-      <li><a href="globals_0x74.html#index_t"><span>t</span></a></li>
-      <li><a href="globals_0x75.html#index_u"><span>u</span></a></li>
+      <li><a href="globals.html"><span>File&nbsp;Members</span></a></li>
     </ul>
   </div>
 </div>
 <div class="contents">
-Here is a list of all documented file members with links to the documentation:
-
-<h3><a class="anchor" id="index_h">- h -</a></h3><ul>
-<li>help_chatlog_enable_error
-: <a class="el" href="group__help.html#ga014ce8ac255d1ede89fdd0cf0e8d72db">help.c</a>
-</li>
-<li>help_chatlog_enabled
-: <a class="el" href="group__help.html#ga4a26d26ddfdcf8e12c1ca836eb334759">help.c</a>
-</li>
-<li>help_chatlog_warning
-: <a class="el" href="group__help.html#ga45a1d9d37941af4acdadc66c60f53abf">help.c</a>
-</li>
-<li>help_cmd()
-: <a class="el" href="group__help.html#gad64bebf79e6673d4e91107bc49959c49">help.c</a>
-</li>
-<li>help_commands
-: <a class="el" href="group__help.html#gaf746fc036d4ac4af4b2d1ee9b7ac2850">help.c</a>
-</li>
-<li>help_find()
-: <a class="el" href="group__help.html#ga740cdce0001a271e4413408c756601c3">help.c</a>
-</li>
-<li>help_invfull_off
-: <a class="el" href="group__help.html#ga24c3548d319acbf3bb13c4fa6f18d7c4">help.c</a>
-</li>
-<li>help_invfull_on
-: <a class="el" href="group__help.html#ga5085c4f60e62e4417bfbe650e4c877ae">help.c</a>
-</li>
-<li>help_mainscreen
-: <a class="el" href="group__help.html#ga446ac5c3432aa6f69d39fc48fc672eb0">help.c</a>
-</li>
-<li>help_usage()
-: <a class="el" href="group__help.html#gad21f9bd7e72918d88ac3a247eb32e7b2">help.c</a>
-</li>
-</ul>
+<h1>src/config.c File Reference</h1><code>#include &lt;stdbool.h&gt;</code><br/>
+<code>#include &lt;stdint.h&gt;</code><br/>
+<code>#include &lt;errno.h&gt;</code><br/>
+<code>#include &quot;iniparser.h&quot;</code><br/>
+<code>#include &quot;<a class="el" href="config_8h_source.html">config.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="util_8h_source.html">util.h</a>&quot;</code><br/>
+<code>#include &quot;console.h&quot;</code><br/>
+<code>#include &quot;<a class="el" href="aion_8h_source.html">aion.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="version_8h_source.html">version.h</a>&quot;</code><br/>
+<table border="0" cellpadding="0" cellspacing="0">
+<tr><td colspan="2"><h2>Functions</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">static bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__config.html#ga94eeee45256ab42bbf5002a5dc03eeb9">cfg_ini_path</a> (char *inifile, size_t inifile_sz)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">static void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__config.html#gae3522f286f0dd8e301c44c4486275e9d">cfg_set_dirty</a> (void)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__config.html#gaf89492adf732ada972dd35f7dadf332f">cfg_init</a> (void)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__config.html#ga4538462871720943668ae5993ed8a0cf">cfg_load</a> (void)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__config.html#ga4a3387116784b257297260f51a62d2aa">cfg_store</a> (void)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__config.html#gad729f7d5caa154190dfde002ef6b30f4">cfg_periodic</a> (void)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__config.html#ga4d5e3708a27f78ce43f55a24f9d3a2dd">cfg_set_string</a> (char *section, char *name, char *value)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__config.html#gab6d5624429256c1d75f1394433639629">cfg_set_int</a> (char *section, char *name, int value)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__config.html#ga21c8125b69bce71a5e08368f068dd61b">cfg_get_string</a> (char *section, char *name, char *value, size_t valuesz)</td></tr>
+<tr><td colspan="2"><h2>Variables</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">static dictionary *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__config.html#gad082ff927722fe45f76e7cd622beaa5b">cfg_db</a> = NULL</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">static uint64_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__config.html#gacada8368ff17d192085841b43e842f00">cfg_timestamp</a> = 0</td></tr>
+</table>
+<hr/><a name="_details"></a><h2>Detailed Description</h2>
+<p>Configuration related functions</p>
+<dl class="author"><dt><b>Author:</b></dt><dd>Mitja Horvat &lt;<a href="mailto:pinkfluid@gmail.com">pinkfluid@gmail.com</a>&gt; </dd></dl>
 </div>
 <!--- window showing the filter options -->
 <div id="MSearchSelectWindow"
@@ -121,7 +87,7 @@ Here is a list of all documented file members with links to the documentation:
 </iframe>
 </div>
 
-<hr class="footer"/><address style="text-align: right;"><small>Generated on Thu May 24 15:46:48 2012 by&nbsp;
+<hr class="footer"/><address style="text-align: right;"><small>Generated on Thu May 24 15:46:47 2012 by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.6.3 </small></address>
 </body>

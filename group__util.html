@@ -50,6 +50,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#gaeddce37c3ee8d5e06f29bef57cf46fd0">util_strrep</a> (char *out, size_t outsz, char *in, char *findstr, char *replacestr)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga61777acdc7f92c75350e4196d38d0770">util_strsep</a> (char **pinputstr, const char *delim)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga73aa7e4d18796244be605af72cc819d0">util_chomp</a> (char *str)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#gad8506053c2ca38075acc33485a374faa">util_cp1252_to_utf8</a> (char *utf8, ssize_t utf8_sz, char *cp1252)</td></tr>
 <tr><td colspan="2"><p><a class="anchor" id="amgrpd41d8cd98f00b204e9800998ecf8427e"></a> </p>
 <br/><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaf00c6443c41b9b5a74d8b36def965bd9"></a><!-- doxytag: member="util::clipboard_set_text" ref="gaf00c6443c41b9b5a74d8b36def965bd9" args="(char *text)" -->
@@ -68,12 +69,32 @@ bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>sys_self_elevate</b> 
 bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>sys_perm_grant</b> (char *path)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gacf5ba3af311188adf804fbcfc122a9fe"></a><!-- doxytag: member="util::sys_fopen_force" ref="gacf5ba3af311188adf804fbcfc122a9fe" args="(char *path, char *mode)" -->
 FILE *&nbsp;</td><td class="memItemRight" valign="bottom"><b>sys_fopen_force</b> (char *path, char *mode)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga7a1627d18b0f6a6fdf36eadad732fff4"></a><!-- doxytag: member="util::sys_appdata_path" ref="ga7a1627d18b0f6a6fdf36eadad732fff4" args="(char *path, size_t pathsz)" -->
+bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>sys_appdata_path</b> (char *path, size_t pathsz)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga42260285fd9c3076fc14ba4961e4480f"></a><!-- doxytag: member="util::sys_monotime" ref="ga42260285fd9c3076fc14ba4961e4480f" args="(void)" -->
+uint64_t&nbsp;</td><td class="memItemRight" valign="bottom"><b>sys_monotime</b> (void)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga6b41115e6392b8afe5b79f7093cae68d"></a><!-- doxytag: member="util::reg_read_key" ref="ga6b41115e6392b8afe5b79f7093cae68d" args="(char *key, char *val, void *buf, size_t buflen)" -->
 bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>reg_read_key</b> (char *key, char *val, void *buf, size_t buflen)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__util.html#ga82c4f676f813785956af7bbfe8e07e13">UTIL_MAX_PATH</a>&nbsp;&nbsp;&nbsp;PATH_MAX</td></tr>
 </table>
 <hr/><a name="_details"></a><h2>Detailed Description</h2>
 <p>Collection of verious utilities that do not have a place of their own, yet. </p>
 <dl class="note"><dt><b>Note:</b></dt><dd>Only Windows specific functions are documented </dd></dl>
+<hr/><h2>Define Documentation</h2>
+<a class="anchor" id="ga82c4f676f813785956af7bbfe8e07e13"></a><!-- doxytag: member="util.h::UTIL_MAX_PATH" ref="ga82c4f676f813785956af7bbfe8e07e13" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define UTIL_MAX_PATH&nbsp;&nbsp;&nbsp;PATH_MAX</td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Max path on Unix </p>
+
+</div>
+</div>
 <hr/><h2>Function Documentation</h2>
 <a class="anchor" id="ga73aa7e4d18796244be605af72cc819d0"></a><!-- doxytag: member="util.c::util_chomp" ref="ga73aa7e4d18796244be605af72cc819d0" args="(char *str)" -->
 <div class="memitem">
@@ -94,6 +115,48 @@ bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>reg_read_key</b> (cha
 <dl><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>str</em>&nbsp;</td><td>String to be chomped </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="gad8506053c2ca38075acc33485a374faa"></a><!-- doxytag: member="util.c::util_cp1252_to_utf8" ref="gad8506053c2ca38075acc33485a374faa" args="(char *utf8, ssize_t utf8_sz, char *cp1252)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void util_cp1252_to_utf8 </td>
+          <td>(</td>
+          <td class="paramtype">char *&nbsp;</td>
+          <td class="paramname"> <em>utf8</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ssize_t&nbsp;</td>
+          <td class="paramname"> <em>utf8_sz</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&nbsp;</td>
+          <td class="paramname"> <em>cp1252</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Convert a string from the CP-1252(aka Windows-1252, Latin1) codeset to UTF8, yay!</p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>cp1252</em>&nbsp;</td><td>Input string in the CP-1252 encoding </td></tr>
+    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>utf8</em>&nbsp;</td><td>Output UTF8 string </td></tr>
+    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>utf8_sz</em>&nbsp;</td><td>Maximum size of the UTF8 string </td></tr>
   </table>
   </dd>
 </dl>
@@ -346,7 +409,7 @@ bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>reg_read_key</b> (cha
 </iframe>
 </div>
 
-<hr class="footer"/><address style="text-align: right;"><small>Generated on Thu Apr 26 14:11:31 2012 by&nbsp;
+<hr class="footer"/><address style="text-align: right;"><small>Generated on Thu May 24 15:46:48 2012 by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.6.3 </small></address>
 </body>

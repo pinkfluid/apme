@@ -62,8 +62,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <code>#include &quot;<a class="el" href="event_8h_source.html">event.h</a>&quot;</code><br/>
 <table border="0" cellpadding="0" cellspacing="0">
 <tr><td colspan="2"><h2>Defines</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a>&nbsp;&nbsp;&nbsp;&quot;([0-9a-zA-Z_]+)&quot;</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga00bbf2d5580d35cf7a80874c121750df">RE_ITEM</a>&nbsp;&nbsp;&nbsp;&quot;([0-9]+)&quot;</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#gaa45f9b7590f29737fc34a859bf246d02">RE_NAME</a>&nbsp;&nbsp;&nbsp;&quot;([[:alnum:]]+)&quot;</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga00bbf2d5580d35cf7a80874c121750df">RE_ITEM</a>&nbsp;&nbsp;&nbsp;&quot;([[:digit:]]+)&quot;</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga5e2f2fbb6310eafb2021555832dcd367">RE_NUM_ROLL</a>&nbsp;&nbsp;&nbsp;&quot;[0-9\\.]+&quot;</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga005b2375a6d58b26699fcc1e2abadedd">RE_ITEM_LOOT_SELF</a>&nbsp;&nbsp;&nbsp;100</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga81378e5b08ee6b776077435411771f18">RE_ITEM_LOOT_PLAYER</a>&nbsp;&nbsp;&nbsp;101</td></tr>
@@ -71,6 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga855bcb92174bc99724325a93e939be69">RE_DAMAGE_CRITICAL</a>&nbsp;&nbsp;&nbsp;201</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga84a9c52c414e80ab729e5c7fea3d6944">RE_GROUP_SELF_JOIN</a>&nbsp;&nbsp;&nbsp;300</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga7822663561a6449fc822e3d2d7233466">RE_GROUP_SELF_LEAVE</a>&nbsp;&nbsp;&nbsp;301</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga3fe93caa52158d9b72a300284cdcea1c">RE_GROUP_SELF_KICK</a>&nbsp;&nbsp;&nbsp;302</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga88e9d67844a7a33b948b5f493e7766e9">RE_GROUP_PLAYER_JOIN</a>&nbsp;&nbsp;&nbsp;303</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#gaffca978ac20a9a1f0ff52764006c7d0e">RE_GROUP_PLAYER_LEAVE</a>&nbsp;&nbsp;&nbsp;304</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga2ecb197e692972d386d5acb49fda03a1">RE_GROUP_PLAYER_DISCONNECT</a>&nbsp;&nbsp;&nbsp;305</td></tr>
@@ -79,6 +80,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga08c8c79c94ad3847fc7050895c958e5b">RE_GROUP_DISBAND</a>&nbsp;&nbsp;&nbsp;308</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga96c3ae25aeec525a242101c772432250">RE_ALI_SELF_JOIN</a>&nbsp;&nbsp;&nbsp;350</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga5cf624c47dafff76b42d4288dd5155e5">RE_ALI_SELF_LEAVE</a>&nbsp;&nbsp;&nbsp;351</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga63f40e05fae9f2fb1541d32a94e3042c">RE_ALI_SELF_KICK</a>&nbsp;&nbsp;&nbsp;352</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#gadec6a3a011c46a151fd35e6af0f60eff">RE_ALI_PLAYER_JOIN</a>&nbsp;&nbsp;&nbsp;353</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#gaebf2bd6310b1587e09a7ffc12a90140e">RE_ALI_PLAYER_LEAVE</a>&nbsp;&nbsp;&nbsp;354</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__chatlog.html#ga046e1c3b12f26eb981ab5e6c7d621d7d">RE_ALI_PLAYER_DISCONNECT</a>&nbsp;&nbsp;&nbsp;355</td></tr>
@@ -149,7 +151,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </iframe>
 </div>
 
-<hr class="footer"/><address style="text-align: right;"><small>Generated on Thu Apr 26 14:11:28 2012 by&nbsp;
+<hr class="footer"/><address style="text-align: right;"><small>Generated on Thu May 24 15:46:47 2012 by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.6.3 </small></address>
 </body>
