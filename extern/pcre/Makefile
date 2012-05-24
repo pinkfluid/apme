@@ -13,6 +13,9 @@ PCRE_VER        := 8.12
 PCRE_URL        := http://noom.ath.cx/mitja/pcre-$(PCRE_VER).tar.gz
 
 PCRE_CONFIG     := --disable-shared
+PCRE_CONFIG     += --disable-cpp
+PCRE_CONFIG     += --enable-utf8
+PCRE_CONFIG     += --enable-unicode-properties
 ifdef XBUILD
 PCRE_CONFIG     += --host=$(XBUILD_TARGET)
 PCRE_CONFIG     += --build=$(XBUILD_MACH)
