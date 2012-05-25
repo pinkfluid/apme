@@ -30,10 +30,10 @@ OBJ += apme.res
 endif
 
 # Add external dependencies
-$(eval $(PCRE_INCLUDE))
-$(eval $(INIPARSER_INCLUDE))
+include $(EXTERN_DIR)/pcre/module.mk
+include $(EXTERN_DIR)/iniparser/module.mk
 
-APme$(EXE): $(PCRE_DEP) $(OBJ)
+APme$(EXE): $(OBJ) $(DEPS)
 	$(CC) $(OBJ) -o $@ $(LDFLAGS)
 	$(STRIP) $@
 

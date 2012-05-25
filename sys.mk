@@ -5,11 +5,15 @@ TOP_DIR:=$(abspath $(TOP_DIR_SHORT))
 # Allow the flags to be overwritten by config.mk
 CFLAGS:=
 LDFLAGS:=
+
+DEPS:=
+
+# This is not defined
 STRIP:=strip
 
 EXTERN_DIR:=$(TOP_DIR)/extern
 EXTERN_DIR_SHORT:=$(TOP_DIR_SHORT)/extern
-EXTERN_BUILD:=$(EXTERN_DIR)/build
+PKG_DIR:=$(EXTERN_DIR)/pkg
 
 include $(TOP_DIR)/config.mk
 
@@ -19,7 +23,6 @@ UNAME:=$(shell uname -s)
 
 ifneq ($(findstring CYGWIN, $(UNAME)),)
     SYS_CFLAGS      :=  -DSYS_WINDOWS -DOS_CYGWIN
-    BUILTIN_PCRE    :=  true
     USE_MANIFEST    :=  true
     WINDRES         :=  windres
 
@@ -33,12 +36,10 @@ ifneq ($(findstring MINGW, $(UNAME)),)
     SYS_CFLAGS      :=  -DSYS_WINDOWS -DOS_MINGW 
     CC              :=  gcc
     LD              :=  gcc
-    BUILTIN_PCRE:=true
 endif
 
 ifneq ($(findstring DragonFly, $(UNAME)),)
     SYS_CFLAGS      :=  -DSYS_UNIX -DOS_DRAGONFLY
-    BUILTIN_PCRE    :=  true
 
     XBUILD          :=  $(XBUILD_DRAGONFLY)
     XBUILD_TARGET   ?=  i686-w64-mingw32
@@ -59,7 +60,6 @@ ifdef XBUILD
     # Override the system CFLAGS 
     SYS_CFLAGS          :=  -DSYS_WINDOWS -DOS_MINGW
     USE_MANIFEST        :=  true
-    BUILTIN_PCRE        :=  true
 
     XBUILD_CC           :=  $(XBUILD_TARGET)-gcc
     XBUILD_LD           :=  $(XBUILD_TARGET)-gcc
@@ -80,9 +80,6 @@ ifdef XBUILD
     WINDRES             :=  $(XBUILD_WINDRES)
     EXE                 := .exe
 endif
-
-include $(EXTERN_DIR)/pcre/sys_pcre.mk
-include $(EXTERN_DIR)/iniparser/sys_iniparser.mk
 
 CFLAGS+=-I$(EXTERN_DIR) $(SYS_CFLAGS)
 

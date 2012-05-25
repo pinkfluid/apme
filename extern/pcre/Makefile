@@ -1,14 +1,9 @@
 include ../../sys.mk
 include ../../package.mk
 
-ifdef BUILTIN_PCRE
 all: PCRE
-else
-all: 
-	@echo Will use system PCRE.
-endif
-	
-PCRE_PREFIX     := $(PCRE_PKGDIR)
+
+PCRE_PREFIX     := $(PKG_DIR)/pcre
 PCRE_VER        := 8.30
 PCRE_URL        := ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-$(PCRE_VER).tar.bz2
 
@@ -22,6 +17,13 @@ PCRE_CONFIG     += --build=$(XBUILD_MACH)
 endif
 
 $(eval $(call MAKE_PACKAGE,PCRE))
+    
+$(PCRE_TARGET_DONE): $(PCRE_PREFIX)/build.mk
+
+$(PCRE_PREFIX)/build.mk: $(PCRE_TARGET_INSTALL)
+	echo CFLAGS += $(shell "$(PCRE_PREFIX)/pcre-config" --cflags-posix) > "$@"
+	echo LDFLAGS += $(shell "$(PCRE_PREFIX)/pcre-config" --libs-posix) >> "$@"
+
 
 clean: PCRE_clean 
-	rm -rf "$(PCRE_PKGDIR)"
+	rm -rf "$(PCRE_PREFIX)"

@@ -4,10 +4,9 @@ doc/html/
 doc/latex/
 extern/pcre/pcre-*.tar.bz2
 extern/pcre/pcre-*/
-extern/pcre/pkg/
 extern/iniparser/iniparser-*.tar.gz
 extern/iniparser/iniparser/
-extern/iniparser/pkg/
+extern/pkg/
 src/APme
 src/APme.exe
 src/apme.res
