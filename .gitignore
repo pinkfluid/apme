@@ -6,6 +6,8 @@ extern/pcre/pcre-*.tar.bz2
 extern/pcre/pcre-*/
 extern/iniparser/iniparser-*.tar.gz
 extern/iniparser/iniparser/
+extern/wxwidgets/wxWidgets-*.tar.bz2
+extern/wxwidgets/wxWidgets-*/
 extern/pkg/
 src/APme
 src/APme.exe
