@@ -10,13 +10,9 @@ CFLAGS+=-Wall -Wextra -O2 -Werror
 LDFLAGS+=
 
 #
-# Do a MINGW cross-compile under Cygwin
+# The MinGW-W64 cross-build is the default now, use the option below to override it
 #
-XBUILD_CYGWIN:=true
-#
-# Do a MINGW cross-compile under Linux
-#
-XBUILD_LINUX:=true
+#NATIVE_BUILD:=true
 
 # 
 # Command used to fetch remote packages

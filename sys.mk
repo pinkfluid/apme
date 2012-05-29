@@ -26,7 +26,6 @@ ifneq ($(findstring CYGWIN, $(UNAME)),)
     USE_MANIFEST    :=  true
     WINDRES         :=  windres
 
-    XBUILD          :=  $(XBUILD_CYGWIN)
     XBUILD_TARGET   ?=  i686-w64-mingw32
     XBUILD_ERROR    :=  Unable to find the 32-bit MinGW compiler. Please install the mingw64-i686-gcc-core package
 endif
@@ -41,7 +40,6 @@ endif
 ifneq ($(findstring DragonFly, $(UNAME)),)
     SYS_CFLAGS      :=  -DSYS_UNIX -DOS_DRAGONFLY
 
-    XBUILD          :=  $(XBUILD_DRAGONFLY)
     XBUILD_TARGET   ?=  i686-w64-mingw32
     XBUILD_ERROR    :=  Unable to find the 32-bit MinGW compiler. 
 endif
@@ -50,13 +48,12 @@ ifneq ($(findstring Linux, $(UNAME)),)
     SYS_CFLAGS      :=  -DSYS_UNIX -DOS_LINUX
 
 # Linux actually has these available
-    XBUILD          :=  $(XBUILD_LINUX)
     XBUILD_TARGET   ?=  i686-w64-mingw32
     XBUILD_ERROR    :=  Unable to find the 32-bit MinGW compiler. Please install the gcc-mingw-w64 package
 endif
 
 # Check if we should do a MinGW cross compile
-ifdef XBUILD
+ifndef NATIVE_BUILD
     # Override the system CFLAGS 
     SYS_CFLAGS          :=  -DSYS_WINDOWS -DOS_MINGW
     USE_MANIFEST        :=  true

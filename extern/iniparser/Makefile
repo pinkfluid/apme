@@ -9,7 +9,7 @@ INIPARSER_URL       := http://ndevilla.free.fr/iniparser/iniparser-$(INIPARSER_V
 INIPARSER_DIR       := $(CURDIR)/iniparser
 
 INIPARSER_CONFIG    := --disable-shared
-ifdef XBUILD
+ifndef NATIVE_BUILD
 INIPARSER_CONFIG    += --host=$(XBUILD_TARGET)
 INIPARSER_CONFIG    += --build=$(XBUILD_MACH)
 endif

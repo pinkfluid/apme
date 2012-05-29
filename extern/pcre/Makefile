@@ -11,7 +11,7 @@ PCRE_CONFIG     := --disable-shared
 PCRE_CONFIG     += --disable-cpp
 PCRE_CONFIG     += --enable-utf8
 PCRE_CONFIG     += --enable-unicode-properties
-ifdef XBUILD
+ifndef NATIVE_BUILD
 PCRE_CONFIG     += --host=$(XBUILD_TARGET)
 PCRE_CONFIG     += --build=$(XBUILD_MACH)
 endif

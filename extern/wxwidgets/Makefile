@@ -10,7 +10,7 @@ WXW_URL         := http://downloads.sourceforge.net/project/wxwindows/$(WXW_VER)
 WXW_CONFIG      := --disable-shared
 # --enable-monolithic builds a SINGLE monolithic library
 WXW_CONFIG      += --enable-monolithic
-ifdef XBUILD
+ifndef NATIVE_BUILD
 WXW_CONFIG     += --host=$(XBUILD_TARGET)
 WXW_CONFIG     += --build=$(XBUILD_MACH)
 endif
