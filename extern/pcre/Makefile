@@ -25,5 +25,7 @@ $(PCRE_PREFIX)/build.mk: $(PCRE_TARGET_INSTALL)
 	echo LDFLAGS += $(shell "$(PCRE_PREFIX)/pcre-config" --libs-posix) >> "$@"
 
 
+fetch: $(FETCH_PKGS)
+
 clean: PCRE_clean 
 	rm -rf "$(PCRE_PREFIX)"

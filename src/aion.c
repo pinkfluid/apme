@@ -32,7 +32,7 @@
 #include <assert.h>
 #include <ctype.h>
 
-#include "bsdqueue/queue.h"
+#include "queue.h"
 
 #include "aion.h"
 #include "util.h"

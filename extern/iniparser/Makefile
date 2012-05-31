@@ -36,6 +36,7 @@ $(INIPARSER_PREFIX)/build.mk:
 	echo 'CFLAGS  += -I"$(PKG_DIR)/iniparser"' > "$@"
 	echo 'LDFLAGS += -L"$(PKG_DIR)/iniparser" -liniparser' >> "$@"
 
-    
+fetch: $(FETCH_PKGS)
+
 clean: INIPARSER_clean 
 	rm -rf "$(INIPARSER_PREFIX)"

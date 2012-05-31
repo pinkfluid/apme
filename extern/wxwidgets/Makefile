@@ -23,5 +23,7 @@ $(WXW_PREFIX)/build.mk:
 	echo CFLAGS += $(shell "$(WXW_PREFIX)/wx-config" --cflags) > "$@"
 	echo LDFLAGS += $(shell "$(WXW_PREFIX)/wx-config" --libs) >> "$@"
 
+fetch: $(FETCH_PKGS)
+
 clean: WXW_clean 
 	rm -rf "$(WXW_PREFIX)"

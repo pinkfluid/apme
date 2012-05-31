@@ -78,5 +78,5 @@ ifndef NATIVE_BUILD
     EXE                 := .exe
 endif
 
-CFLAGS+=-I$(EXTERN_DIR) $(SYS_CFLAGS)
+CFLAGS+=$(SYS_CFLAGS)
 

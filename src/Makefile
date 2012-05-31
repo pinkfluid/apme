@@ -30,8 +30,10 @@ OBJ += apme.res
 endif
 
 # Add external dependencies
+include $(EXTERN_DIR)/bsdqueue/module.mk
 include $(EXTERN_DIR)/pcre/module.mk
 include $(EXTERN_DIR)/iniparser/module.mk
+include $(EXTERN_DIR)/wxwidgets/module.mk
 
 APme$(EXE): $(OBJ) $(DEPS)
 	$(CC) $(OBJ) -o $@ $(LDFLAGS)
