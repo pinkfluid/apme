@@ -345,7 +345,7 @@ void apme_periodic(void)
 #include <strings.h>
 #include <fcntl.h>
 
-int main(int argc, char *argv[])
+int old(int argc, char *argv[])
 {
     /* Initialize APme */
     if (!apme_init(argc, argv))
@@ -377,7 +377,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-
 /**
  * @}
  */ 
+

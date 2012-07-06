@@ -4,6 +4,7 @@ TOP_DIR:=$(abspath $(TOP_DIR_SHORT))
 
 # Allow the flags to be overwritten by config.mk
 CFLAGS:=
+CXXFLAGS:=
 LDFLAGS:=
 
 DEPS:=
@@ -34,6 +35,7 @@ ifneq ($(findstring MINGW, $(UNAME)),)
 # MinGW doesn't have a default compiler so we have to force it to GCC
     SYS_CFLAGS      :=  -DSYS_WINDOWS -DOS_MINGW 
     CC              :=  gcc
+    CXX             :=  g++
     LD              :=  gcc
 endif
 
@@ -59,6 +61,7 @@ ifndef NATIVE_BUILD
     USE_MANIFEST        :=  true
 
     XBUILD_CC           :=  $(XBUILD_TARGET)-gcc
+    XBUILD_CXX          :=  $(XBUILD_TARGET)-g++
     XBUILD_LD           :=  $(XBUILD_TARGET)-gcc
     XBUILD_AR           :=  $(XBUILD_TARGET)-ar
     XBUILD_STRIP        :=  $(XBUILD_TARGET)-strip
@@ -71,6 +74,7 @@ ifndef NATIVE_BUILD
     endif
 
     CC                  :=  $(XBUILD_CC)
+    CXX                 :=  $(XBUILD_CXX)
     LD                  :=  $(XBUILD_LD)
     AR                  :=  $(XBUILD_AR)
     STRIP               :=  $(XBUILD_STRIP)
@@ -78,5 +82,6 @@ ifndef NATIVE_BUILD
     EXE                 := .exe
 endif
 
-CFLAGS+=$(SYS_CFLAGS)
+CFLAGS += $(SYS_CFLAGS)
+CXXFLAGS += $(SYS_CFLAGS)
 

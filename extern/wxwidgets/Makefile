@@ -21,6 +21,7 @@ $(WXW_TARGET_DONE): $(WXW_PREFIX)/build.mk
 
 $(WXW_PREFIX)/build.mk:
 	echo CFLAGS += $(shell "$(WXW_PREFIX)/wx-config" --cflags) > "$@"
+	echo CXXFLAGS += $(shell "$(WXW_PREFIX)/wx-config" --cxxflags) >> "$@"
 	echo LDFLAGS += $(shell "$(WXW_PREFIX)/wx-config" --libs) >> "$@"
 
 fetch: $(FETCH_PKGS)

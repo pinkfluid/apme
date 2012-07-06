@@ -56,32 +56,28 @@ const char *help_chatlog_warning =
 "\n"
 "USE THIS APPLICATION AT YOUR OWN RISK\n"
 "\n"
-"The chatlog feature is required for this application to work properly,\n"
-"but it is currently disabled.\n"
+"The chatlog feature of the AION client must be enable in order for"
+" APme to work properly.\n"
 "\n"
-"This application can enable the chatlog feature for you, but keep in\n"
-"mind that using it was never officially aproved by NCSoft.\n"
+"Unofficially, representatives from NCSoft and later Gameforge confirmed that"
+" the use of chatlog and chatlog parsers is *tolerated*, but they reserve the"
+" right to change this policy at any time without notice.\n"
 "\n"
-"Most likely WILL NOT get banned, but please be aware that you are \n"
-"walking on the gray area until there is an official answer by NCSoft.\n"
-"\n"
-"The legality status of this application falls in the same category\n"
-"as the DPS meters, since the principles behind are the same (chatlog\n"
-"parsing). The difference is only in that I was kind enough to warn you :)\n"
+"Do you wish to enable the chatlog feature of the AION client?\n"
 "\n";
 
 /** Chatlog enabled help text */
 const char *help_chatlog_enabled =
-"The chatlog feature was enabled in AION.\n"
-"You must restart the game client to apply the new settings.\n"
+"The chatlog is now enabled. You must restart the AION game client\n"
+"in order to apply the new settings.\n"
 "\n"
 "At any point in time, you can remove the SYSTEM.OVR file in\n"
-"the client directory to disable this feature.\n"
+"the client directory to disable the chatlog.\n"
 "\n";
 
 /** Error enabling chatlog */
 const char *help_chatlog_enable_error =
-"Error enabling the CHATLOG feature. Restart the application to try again.\n";
+"Error enabling the chatlog. Restart the application to try again.\n";
 
 /** Main screen help */
 const char *help_mainscreen = 

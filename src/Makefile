@@ -16,9 +16,11 @@ SRC := main.c \
        aion_trans.c \
        aion_sys.c \
        event.c \
-       term.c
+       term.c \
+       wxmain.cc
 
 OBJ := $(patsubst %.c,%.o,$(SRC))
+OBJ := $(patsubst %.cc,%.o,$(OBJ))
 
 ifdef USE_MANIFEST
 # Include the manifest file as a resource in apme.rc
@@ -36,7 +38,7 @@ include $(EXTERN_DIR)/iniparser/module.mk
 include $(EXTERN_DIR)/wxwidgets/module.mk
 
 APme$(EXE): $(OBJ) $(DEPS)
-	$(CC) $(OBJ) -o $@ $(LDFLAGS)
+	$(CXX) $(OBJ) -o $@ $(LDFLAGS)
 	$(STRIP) $@
 
 .PHONY: clean

@@ -3,6 +3,7 @@
 #
 # CFLAGS:=-g
 CFLAGS+=-Wall -Wextra -O2 -Werror
+CXXFLAGS+=$(CFLAGS)
 
 #
 # Standard LDFLAGS
