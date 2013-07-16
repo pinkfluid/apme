@@ -57,10 +57,12 @@
  * 
  * @{
  */
-
-#define RE_NAME     "([[:alnum:]]+)"            /**< Character name regex pattern           */
-#define RE_ITEM     "([[:digit:]]+)"            /**< Item number regex pattern              */
-#define RE_NUM_ROLL "[0-9\\.]+"                 /**< Item link regex pattern                */
+/** Character name regex pattern            */
+#define RE_NAME     "([[:alnum:]]+)"
+/** Item number regex pattern               */
+#define RE_ITEM     "\\[item:([[:digit:]]+).*\\]"
+/** Item link regex pattern                 */
+#define RE_NUM_ROLL "[0-9\\.]+"
 
 #define RE_ITEM_LOOT_SELF           100         /**< Event, item looted by player           */
 #define RE_ITEM_LOOT_PLAYER         101         /**< Event, item looted by a character      */
@@ -140,29 +142,29 @@ struct regeng re_aion[] =
     /* Item looted by the player */
     {
         .re_id  = RE_ITEM_LOOT_SELF,
-        .re_exp = "^: You have acquired \\[item:" RE_ITEM "\\]",
+        .re_exp = "^: You have acquired " RE_ITEM,
     },
     {
         .re_id  = RE_ITEM_LOOT_SELF,
-        .re_exp = "^: Vous avez gagné \\[item:" RE_ITEM "\\]",
+        .re_exp = "^: Vous avez gagné " RE_ITEM,
     },
     {
         .re_id  = RE_ITEM_LOOT_SELF,
-        .re_exp = "^: Ihr habt \\[item:" RE_ITEM "\\] erhalten\\.",
+        .re_exp = "^: Ihr habt " RE_ITEM " erhalten\\.",
     },
 
     /* Item lootd by another player */
     {
         .re_id  = RE_ITEM_LOOT_PLAYER,
-        .re_exp = "^: " RE_NAME " has acquired \\[item:" RE_ITEM "\\]",
+        .re_exp = "^: " RE_NAME " has acquired " RE_ITEM,
     },
     {
         .re_id  = RE_ITEM_LOOT_PLAYER,
-        .re_exp = "^: " RE_NAME " a gagné \\[item:" RE_ITEM "\\]",
+        .re_exp = "^: " RE_NAME " a gagné " RE_ITEM,
     },
     {
         .re_id  = RE_ITEM_LOOT_PLAYER,
-        .re_exp = "^: " RE_NAME " hat \\[item:" RE_ITEM "\\] erhalten\\."
+        .re_exp = "^: " RE_NAME " hat " RE_ITEM " erhalten\\."
     },
 
     /* The player joined a group */
