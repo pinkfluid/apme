@@ -32,7 +32,7 @@
 /** Minor version number        */
 #define APME_VERSION_MINOR      6
 /** Revision number             */
-#define APME_VERSION_REVISION   0
+#define APME_VERSION_REVISION   1
 /** Version codename            */
 #define APME_VERSION_NAME       "Ablanca"
 
